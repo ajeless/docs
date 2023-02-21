@@ -128,5 +128,3 @@ virsh autostart deb11_001
 # virsh autostart <vm_name> --disable
 virsh autostart deb11_001 --disable
 ```
-
-
