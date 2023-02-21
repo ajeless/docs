@@ -1,9 +1,12 @@
 # docs
 
-A collection of commands, scripts, documents and recipes, with examples to simplify developement and dev related setup.
+A collection of scripts, documents and recipes to simplify developement and dev related setup.
 
+## QEMU + KVM
 
-* [QEMU+ KVM + libvirt for virtualization](./qemu_kvm_libvirt.md)  
+[QEMU](https://www.qemu.org/)  
+[KVM](https://www.linux-kvm.org)  
+[libvirt](https://libvirt.org/)  
 
 
 ### Install
