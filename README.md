@@ -4,3 +4,4 @@ A collection of commands, scripts, documents and recipes, with examples to simpl
 
 * [QEMU+ KVM + libvirt for virtualization](./qemu_kvm_libvirt.md)
 
+* [lxc](./lxc.md)
