@@ -44,10 +44,7 @@ Validation answers the question: "Are we building the right product"?
    - **Verification** assesses the software's internal attributes and adherence to requirements.
    - **Validation** assesses the software's external attributes, usability, and fitness for its intended purpose.
 
-In summary, verification ensures that the software is built correctly, while validation ensures that it is the right product that meets user needs and expectations. Both verification and validation are essential components of software quality assurance and are carried out to ensure the overall quality and reliability of the software.
-
-
-<hr>
+In summary, verification ensures that the software is built correctly, while validation ensures that it is the right product that meets user needs and expectations. Both verification and validation are essential components of software quality assurance and are carried out to ensure the overall quality and reliability of the software.  
 
 ## Common definitions used in testing and quality assurance
 
