@@ -9,4 +9,5 @@
 * [The 3 axes of software testing](./axes_of_testing.md)  
 * [Black, grey, and white box Testing](./black_grey_white_box_testing.md)
 * [Cost of bugs](./cost_of_bugs.md)
-* [Common definitions](./common_definitions.md)
+* [Test driven development, software testing and development documentation](./tdd.md)
+* [Glossary](./glossary.md)
