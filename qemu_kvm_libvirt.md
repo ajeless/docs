@@ -1,6 +1,6 @@
 # QEMU + KVM + libvirt
 
-A collection of commands to use QEMU and KVM and libvirt to manage kernel based virtual machines in linux.
+A collection of commands to use QEMU, KVM, and libvirt to manage kernel-based virtual machines in Linux.
 
 ## Links to tools discussed here
 

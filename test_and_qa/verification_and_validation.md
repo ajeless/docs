@@ -18,7 +18,7 @@ Verification answers the question: "Are we building the product right?"
 
 Validation answers the question: "Are we building the right product"?
 
-- **Purpose**: Validation focuses on ensuring that the software meets the needs and expectations of the end users and stakeholders. It answers the question, "Are we building the right product?"
+- **Purpose**: Validation focuses on ensuring that the software meets the needs and expectations of the end-users and stakeholders. It answers the question, "Are we building the right product?"
 - **Activities**: Validation involves dynamic testing, user acceptance testing (UAT), and other activities that assess the software's functionality, usability, and overall fitness for its intended purpose.
 - **Scope**: Validation is an external process and typically occurs after the development phase when the software is ready to be delivered to users or customers.
 - **Examples**:
@@ -44,4 +44,5 @@ Validation answers the question: "Are we building the right product"?
    - **Verification** assesses the software's internal attributes and adherence to requirements.
    - **Validation** assesses the software's external attributes, usability, and fitness for its intended purpose.
 
-In summary, verification ensures that the software is built correctly, while validation ensures that it is the right product that meets user needs and expectations. Both verification and validation are essential components of software quality assurance and are carried out to ensure the overall quality and reliability of the software.
+In summary, verification ensures that the software is built correctly, while validation ensures that it meets user needs and expectations.
+
