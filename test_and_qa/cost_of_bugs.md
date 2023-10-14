@@ -1,7 +1,5 @@
 # The Cost-Efficiency of Early Defect Detection in Software Development
 
-## Introduction
-
 The importance of identifying and addressing defects early in the development lifecycle is widely acknowledged as a cost-effective practice. The rationale is that it is easier and cheaper to fix bugs early on in the SDLC than later on towards delivery or after deploy to production.
 
 ## The Cost Implications of Late Defect Detection
@@ -29,7 +27,7 @@ Early defect detection in the SDLC offers several compelling advantages:
 4. **Enhanced Customer Satisfaction**: Early defect detection contributes to more robust and user-friendly software, which translates into higher customer satisfaction and reduced support costs.
 
 ## Approximate Normalized Costs
-The least expensive bugs to catch are in the requriments phase.
+The least expensive bugs to catch are in the requriments phase.  It's difficult to put exact numbers due to the fact that costs will vary depending on country and currency.  However, it is generally estimated that fixing bugs once they have been deployed to production tend to cost between 50 to 100 times what the bug would have cost to fix if it had been caught during requirements gathering.  Although it is not always possible to catch bugs this early.  The point is the earlier the bug is caught, the cheaper it is to fix.
 
 | SDLC Stage              | Cost to Detect and Fix Bug (Normalized) |
 |-------------------------|-----------------------------------------|
@@ -42,7 +40,5 @@ The least expensive bugs to catch are in the requriments phase.
 
 In this table, the cost estimates are normalized relative to the cost of detecting and fixing bugs during the Requirements Analysis stage, which is considered as the baseline (1x). The other stages are presented as multiples of this baseline cost. Please note that these are still hypothetical and simplified estimates, and the actual costs can vary significantly depending on the project and organization.
 
-## Conclusion
-
-In conclusion, the cost-efficiency of early defect detection in software development is well-substantiated by practical examples and case studies. By identifying and resolving defects in the early stages of the SDLC, organizations can conserve valuable resources, curtail development time, elevate software quality, and bolster customer satisfaction. This approach not only lowers costs but also enhances the prospects of success and competitiveness for software projects. Therefore, it is imperative for software development teams to prioritize early defect detection and prevention as fundamental practices within their development processes.
+The cost-efficiency of early defect detection in software development is well-substantiated by practical examples and case studies. By identifying and resolving defects in the early stages of the SDLC, organizations can conserve valuable resources, curtail development time, elevate software quality, and bolster customer satisfaction. This approach not only lowers costs but also enhances the prospects of success and competitiveness for software projects. Therefore, it is imperative for software development teams to prioritize early defect detection and prevention as fundamental practices within their development processes.
 
