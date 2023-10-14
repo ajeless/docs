@@ -32,7 +32,7 @@
 - ***Orthogonal Array Testing:*** A systematic, statistical way of testing which involves pair-wise testing. A systematic and statistical way of testing that uses orthogonal arrays to ensure that all combinations of variables are tested with a minimum set of test cases.
   - **Concrete Example:** For a software with three parameters each having 3 possible values, instead of testing all 27 combinations, pick a subset that gives pair-wise coverage.
 
-## 3. White Box (or Glassbox) Testing
+## 3. White Box (or Glass Box) Testing
 **Definition:** White box testing, also known as glassbox testing, is a software testing method where the internal structure/design/implementation of the item being tested is known to the tester. It focuses on checking the internal logic, pathways, and code structure of the software.
 
 **Examples:**
