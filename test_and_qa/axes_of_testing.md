@@ -7,6 +7,7 @@ Software testing is a vast domain, and understanding its different dimensions is
     - **Integration Testing**: Ensures that integrated components or systems work together as expected.
     - **System Testing**: Validates the complete and fully integrated software product to ensure it meets the specified requirements.
     - **Acceptance Testing**: Determines if the software is ready for release and meets the business needs.
+    - **End-to-End Testing**: Validates the flow of an application from start to finish ensuring that the entire process of inputs, outputs, and execution behaves as expected.
 
 2. **Breadth of Testing**
     - **Functional Testing**: Validates that the software performs its intended functions correctly.
