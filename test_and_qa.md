@@ -2,7 +2,7 @@
 
 ## Verification vs. Validation in Software Testing
 
-**Verification**:
+**Verification**
 
 Verification answers the question: "Are we building the product right?"
 
@@ -14,7 +14,7 @@ Verification answers the question: "Are we building the product right?"
   - **Static Code Analysis**: Tools like linters and static analyzers examine the source code for potential issues without executing it.
   - **Unit Testing**: Developers write and run unit tests to ensure that individual components or units of code function correctly.
 
-**Validation**:
+**Validation**
 
 Validation answers the question: "Are we building the right product"?
 
@@ -26,7 +26,7 @@ Validation answers the question: "Are we building the right product"?
   - **Functional Testing**: Testers verify that the software functions according to the specified requirements, including various use cases and scenarios.
   - **Usability Testing**: Testers or users assess the software's user interface, ease of use, and overall user experience.
 
-**Key Differences**:
+**Key Differences**
 
 1. **Focus**:
    - **Verification** focuses on confirming that the software is built correctly according to its specifications and design.
@@ -53,7 +53,7 @@ In summary, verification ensures that the software is built correctly, while val
 
 **Dependability** - The quality of a delivered service such that reliance can justifiably be placed on the service.  
 
-**Error** - The part of the system or service that can lead to failure.  
+**Error** - The part of the system or service that can lead to failure. This is usually, but not always some part of the code in a software product. 
 
 **Failure** - Unwanted effects that occur when the delivered service deviates from the specification of the expected service.  
 
