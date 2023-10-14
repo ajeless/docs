@@ -7,5 +7,6 @@ Software testing serves multiple objectives that contribute to overall quality a
 - **Assessment of Non-Functional Attributes**: Evaluating attributes like usability, performance, security, and compliance with industry standards.
 - **Ensuring Compliance**: Verifying software compliance with industry standards, legal requirements, and best practices.
 - **Confidence to Develop Software Faster**: Imparting confidence to the software development team, allowing them to move quickly and efficiently in the development process.
+- **Improvement**: Identify areas in the software and code that can be improved.
 
 By conducting thorough testing, development teams gain assurance that their code functions as intended, which in turn, enables a smoother and more agile development cycle.
