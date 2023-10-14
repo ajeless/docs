@@ -15,8 +15,8 @@
 - **Error**: A part of the system or service that can lead to failure, often related to a segment of the software product's code.
 
 ## F
-- **Failure**: The unwanted effects that occur when the delivered service deviates from the specification of the expected service.
-- **Fault/Defect/Bug**: The root cause of an error. Faults can arise from poor requirements specification, design flaws, manufacturing defects, hardware wear and tear, and coding mistakes in software.
+- **Failure**: The unwanted effects that occur when the delivered service deviates from the specification of the expected service.  It is the inability of the software to perform as intended.  
+- **Fault/Defect/Bug**: The root cause of an error. Faults can arise from poor requirements specification, design flaws, manufacturing defects, hardware wear and tear, and coding mistakes in software, and usually lead to unexpected behavior.
 
 ## G
 - **Grey Box Testing**: A software testing method that combines both black box and white box testing techniques. In this method, the tester has partial knowledge of the software's internal workings.
