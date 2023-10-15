@@ -1,6 +1,6 @@
 # Static Testing vs. Dynamic Testing
 
-**Static Testing:**
+## Static Testing
 - **Definition:** Static testing refers to the examination of a software's code, documentation, and design without actually executing the program. It's a form of testing that checks the software's non-runtime behavior.
 - **Purpose:** The main purpose of static testing is to identify defects early in the development process, which can lead to cost savings and improved software quality. It focuses on verifying the software, ensuring that it meets specified requirements and adhering to standards and guidelines.
 - **Examples of Tools and Techniques:** 
@@ -10,7 +10,7 @@
   - **Walkthroughs:** A formal assessment of a software component, usually led by its author.
   - **Inspections:** A more formalized review process where reviewers follow a defined process to find defects.
 
-**Dynamic Testing:**
+## Dynamic Testing
 - **Definition:** Dynamic testing involves executing the software system to observe its behavior and evaluate it against expected results.
 - **Purpose:** The primary purpose of dynamic testing is to validate the software system, ensuring it behaves as expected when run. It checks the software's runtime behavior.
 - **Examples of Tools and Techniques:** 
@@ -22,11 +22,11 @@
   - **Whitebox Testing:** Testing based on knowledge of the internal logic of the application's code.
   - **Greybox Testing:** A combination of both blackbox and whitebox testing techniques.
 
-**Relevance to SDLC:**
+## Relevance to SDLC
 - **Static Testing:** Relevant in the early stages of the Software Development Life Cycle (SDLC), especially during the requirements gathering, design, and coding phases.
 - **Dynamic Testing:** More pertinent during the later stages of SDLC, specifically during the testing and deployment phases.
 
-**Benefits and Drawbacks:**
+## Benefits and Drawbacks
 - **Static Testing:**
   - **Benefits:** 
     - Early detection of defects, leading to cost savings.
