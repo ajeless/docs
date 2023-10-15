@@ -1,6 +1,6 @@
 # Testing Techniques: Black Box, Grey Box, and White Box
 
-## 1. Black Box Testing
+## Black Box Testing
 **Definition:** Black box testing is a software testing method where the tester does not have knowledge of the internal structure/design/implementation of the item being tested. It focuses solely on testing the software's functionality based on its requirements.
 
 **Examples:**
@@ -16,7 +16,7 @@
 - ***State Transition Testing:*** Testing the software's behavior for different states and transitions between those states. Focuses on testing the transitions between different states that an application can be in.
   - **Concrete Example:** For an online shopping cart, states can be "Empty", "Items Added", and "Purchased". Test transitions like "Empty" to "Items Added", "Items Added" to "Purchased", etc.
 
-## 2. Grey Box Testing
+## Grey Box Testing
 **Definition:** Grey box testing is a software testing method that combines both black box and white box testing techniques. The tester has partial knowledge of the internal workings of the software.
 
 **Examples:**
@@ -32,7 +32,7 @@
 - ***Orthogonal Array Testing:*** A systematic, statistical way of testing which involves pair-wise testing. A systematic and statistical way of testing that uses orthogonal arrays to ensure that all combinations of variables are tested with a minimum set of test cases.
   - **Concrete Example:** For a software with three parameters each having 3 possible values, instead of testing all 27 combinations, pick a subset that gives pair-wise coverage.
 
-## 3. White Box (or Glass Box) Testing
+## White Box (Glass Box) Testing
 **Definition:** White box testing, also known as glassbox testing, is a software testing method where the internal structure/design/implementation of the item being tested is known to the tester. It focuses on checking the internal logic, pathways, and code structure of the software.
 
 **Examples:**
