@@ -40,7 +40,7 @@ Identify and rectify bugs, errors, and failures to ensure the software applicati
 
 ### Additional Resources:
 
-* [Verification and Validation](./verification_and_validation.md)
+* [Verification, Validation, and QA](./verification_and_validation.md)
 * [Objectives of testing](./testing_objectives.md)
 * [Software Development Lifecycle](./sdlc.md)
 * [Static vs Dynamic Testing](./static_vs_dynamic.md)
