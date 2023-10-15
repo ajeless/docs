@@ -46,6 +46,7 @@ Identify and rectify bugs, errors, and failures to ensure the software applicati
 * [Why software testing is "inherently" hard](./inherently_hard.md)
 * [The 3 axes of software testing](./axes_of_testing.md)
 * [Black, grey, and white box Testing](./black_grey_white_box_testing.md)
+* [Test levels, test types, and the test pyramid](./test_types_pyramid.md)
 * [Cost of bugs](./cost_of_bugs.md)
 * [Test driven development, software testing and development documentation](./tdd.md)
 * [Glossary](./glossary.md)
