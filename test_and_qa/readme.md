@@ -11,7 +11,7 @@ Software testing is the process of evaluating and verifying that a software appl
 
 Software testing is fundamental for ensuring the quality and functionality of software applications. Delving deeper into its concepts, we come across several key terms and objectives:
 
-#### Key Terms in Software Testing:
+### Key Terms in Software Testing:
 
 1. **Bug**: A flaw in the software code causing it to produce unexpected results or behave in unintended ways.
 1. **Error**: A result of human action or decision that leads to an incorrect or unexpected outcome.
