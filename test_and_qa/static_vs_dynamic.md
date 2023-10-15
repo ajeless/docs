@@ -1,4 +1,4 @@
-### Static Testing vs. Dynamic Testing
+# Static Testing vs. Dynamic Testing
 
 **Static Testing:**
 - **Definition:** Static testing refers to the examination of a software's code, documentation, and design without actually executing the program. It's a form of testing that checks the software's non-runtime behavior.
