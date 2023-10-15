@@ -55,7 +55,7 @@ The test pyramid is a concept that helps teams understand how to balance differe
 - **Unit Tests (Bottom Layer)**:
   - These are the foundation of the pyramid.
   - They are numerous, quick to run, and focus on small parts of the software.
-  - They are cheaper to run the most reliable.
+  - They are cheaper to run and the most reliable.
   
 - **Integration Tests (Middle Layer)**:
   - Fewer than unit tests but more than end-to-end tests.
