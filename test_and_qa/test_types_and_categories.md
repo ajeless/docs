@@ -41,10 +41,8 @@
 33. **Operational Testing**: Tests the software's operational readiness in a production environment. This is dynamic validation testing for operational readiness.
 34. **Static Testing**: Reviews the software documentation for errors. This is static verification testing, often done without executing the code.
 35. **Dynamic Testing**: Tests the software by executing it. This involves running the software and validating its behavior.
-36. **Compliance Testing**: Ensures the
-
- software adheres to specific standards or regulations. This is dynamic validation testing for regulatory compliance.
-37. **A/B Testing**: Compares two versions of the software to determine which one performs better. This is dynamic validation testing for optimization.
+36. **Compliance Testing**: Ensures the software adheres to specific standards or regulations. This is dynamic validation testing for regulatory compliance.  
+37. **A/B Testing**: Compares two versions of the software to determine which one performs better. This is dynamic validation testing for optimization.  
 38. **Mutation Testing**: Modifies the software's source code to check if the existing tests can detect the changes. This is dynamic verification testing for test coverage.
 39. **Accessibility Testing**: Ensures the software can be used by people with disabilities. This is dynamic validation testing for accessibility standards.
 40. **Fuzz Testing**: Sends random, malformed data to software components to find vulnerabilities. This is dynamic validation testing for unexpected inputs.
