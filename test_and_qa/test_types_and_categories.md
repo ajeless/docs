@@ -55,7 +55,7 @@
 47. **Risk-Based Testing**: Prioritizes testing based on the potential risks of software failures. This is dynamic validation testing based on risk assessment.
 48. **Shadow Testing**: Runs two systems simultaneously for comparison, usually an old system against a new one. This is dynamic validation testing for system comparison.
 49. **Review**: A static verification activity where the software artifacts (like requirements, design, and code) are examined by individuals or a group to identify defects and provide feedback.
-    - **Peer Review**: Team members review each other's work.
+    - **Peer Review/Code Review**: Team members review each other's work.
     - **Walkthrough**: The author of the artifact under review presents it to colleagues and gathers feedback.
     - **Formal Inspection**: A structured process with predefined roles (like moderator, author, and reviewer) to identify defects in the artifact.
 50. **Static Analysis**: A static verification activity where tools are used to analyze code (or sometimes design) to detect potential vulnerabilities, code violations, and defects without actually executing the code.
