@@ -1,4 +1,4 @@
-List of Some Software Testing Techniques, and Activities
+# List of Some Software Testing Techniques, and Activities
 
 1. **Functional Testing**: Ensures that the software functions according to specified requirements. This is a form of dynamic validation testing.
 2. **Unit Testing**: Tests individual units or components of the software. It's a dynamic verification testing method to ensure each unit functions as designed.
