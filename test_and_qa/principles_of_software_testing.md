@@ -38,7 +38,7 @@ Effective testing requires a systematic approach:
 - **Control Scope**: Define clear boundaries for each test to ensure clarity and focus.
 - **Diverse Techniques**: Depending on the testing purpose, employ various techniques, from white-box to black-box testing.
 
-### Visibility
+### Visibility (Observability)
 
 For effective testing, visibility into the results is paramount. This might require:
 
