@@ -21,7 +21,7 @@ While the reasons for mistakes are vast, their manifestations often follow patte
 - **Complex Boolean Expressions**: Their intricate nature can make them hard to evaluate correctly.
 - **Type Conversions**: Careless conversions, especially without considering implications, can introduce errors.
 
-## 2. The Five Ws of Testing Analysis
+## 2. The Four Ws of Testing Analysis
 
 The "5 Ws" framework provides a structured approach to testing:
 
@@ -29,7 +29,6 @@ The "5 Ws" framework provides a structured approach to testing:
 - **Where**: Identify where to test. This could be at the unit level, integration level, or system level.
 - **When**: Decide when to test. Should it be after every change (continuous integration) or at specific milestones?
 - **Who**: Determine who should test. Is it the developer, a dedicated tester, or an end-user?
-- **How**: This chapter focuses extensively on the "How," detailing the methodologies and principles to employ.
 
 ### Divide and Conquer
 
@@ -62,6 +61,6 @@ Iterative testing, informed by feedback, ensures continuous improvement. Feedbac
 
 The principles provide a foundation, but the actual techniques and methods form the core of the testing process. From static analysis to dynamic testing, from manual testing to automated frameworks, the landscape of software testing is vast and varied. Future chapters will delve deeper into these techniques, offering practical insights and best practices.
 
----
+<hr>
 
 In conclusion, software testing, while challenging, is a rewarding endeavor. By understanding common pitfalls and applying systematic testing principles, developers can significantly enhance the quality of their software, ensuring it meets user expectations and business requirements.
