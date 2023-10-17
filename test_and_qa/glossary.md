@@ -13,8 +13,7 @@
 - **Backward Compatibility Testing**: Ensures new versions of the software remain compatible with older versions. This is dynamic validation testing for version compatibility.
 - **Beta Testing**: Performed by real users in a real environment before the software release. This is dynamic validation testing.
 - **Black Box Testing**: A software testing method in which the tester does not have knowledge of the internal structure, design, or implementation of the item being tested. The focus is solely on testing the software's functionality based on its requirements.
-- **Boundary Testing**: Tests the behavior of the software at boundary limits. This is dynamic validation testing for input boundaries.
-- **Boundary Value Analysis**: A method of testing the software using input values at the boundary limits.
+- **Boundary Value Analysis**: : Tests the behavior of the software at boundary limits. This is dynamic validation testing for input boundaries.
 - **Branch Coverage**: A measure that ensures each branch (decision) in the software is executed at least once.
 - **Bug**: A flaw in the software code causing it to produce unexpected results or behave in unintended ways.
 
