@@ -48,6 +48,7 @@ Identify and rectify bugs, errors, and failures to ensure the software applicati
 * [Test levels, test types, and the test pyramid](./test_types_pyramid.md)
 * [Test design techniques](./test_design_techniques.md)
 * [List of Software Testing Techniques and Activities](./test_types_and_categories.md)
+* [Dependability](./dependability.md)
 * [Why software testing is "inherently" hard](./inherently_hard.md)
 * [The 3 axes of software testing](./axes_of_testing.md)
 * [Cost of bugs](./cost_of_bugs.md)
