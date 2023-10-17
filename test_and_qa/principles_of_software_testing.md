@@ -23,7 +23,7 @@ While the reasons for mistakes are vast, their manifestations often follow patte
 
 ## 2. The Four Ws of Testing Analysis
 
-The "5 Ws" framework provides a structured approach to testing:
+The "4 Ws" framework provides a structured approach to testing:
 
 - **What**: Determine what needs testing. Is it a new feature, a bug fix, or a performance enhancement?
 - **Where**: Identify where to test. This could be at the unit level, integration level, or system level.
