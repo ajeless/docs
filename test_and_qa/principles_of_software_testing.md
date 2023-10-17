@@ -61,6 +61,6 @@ Iterative testing, informed by feedback, ensures continuous improvement. Feedbac
 
 The principles provide a foundation, but the actual techniques and methods form the core of the testing process. From static analysis to dynamic testing, from manual testing to automated frameworks, the landscape of software testing is vast and varied. Future chapters will delve deeper into these techniques, offering practical insights and best practices.
 
-<hr>
+---
 
 In conclusion, software testing, while challenging, is a rewarding endeavor. By understanding common pitfalls and applying systematic testing principles, developers can significantly enhance the quality of their software, ensuring it meets user expectations and business requirements.
