@@ -1,4 +1,4 @@
-# Dependability in Software Engineering
+# Dependability and Availability in Software Engineering
 
 ## Introduction
 
@@ -58,6 +58,38 @@ Other crucial metrics include:
 - **Safety**: Ensures the software doesn't lead to catastrophic outcomes when it fails.
 - **Integrity**: Ensures unauthorized alterations don't occur within the system.
 - **Maintainability**: Reflects the ease with which the software can be modified or repaired.
+
+## Mean Time Between Failures (MTBF)
+
+**Definition:**  
+MTBF is the predicted elapsed time between inherent failures of a mechanical or electronic system during normal system operation. It can be calculated as the arithmetic mean (average) time between failures of a system. MTBF is used for repairable systems, while Mean Time To Failure (MTTF) denotes the expected time to failure for a non-repairable system.
+
+**How it's Calculated:**  
+Consider three identical systems that start functioning properly at time 0. If the first system fails after 100 hours, the second after 120 hours, and the third after 130 hours, the MTBF of the systems is the average of the three failure times, which is 116.667 hours.
+
+Mathematically, the MTBF of a component is the sum of the lengths of the operational periods divided by the number of observed failures.
+
+**Importance:**  
+The higher the MTBF, the longer a system is likely to work before failing. It's a critical metric in reliability engineering and is used to compare the reliability of different systems or designs.
+
+## Mean Time to Recover (MTTR)
+
+**Definition:**  
+MTTR is the average time required to repair a failed component or system and restore it to its operating condition. It's a measure of the maintainability of repairable items.
+
+**Difference from MDT (Mean Down Time):**  
+MDT can be defined as the mean time during which the system is down after a failure. MDT usually includes organizational and logistical factors, such as waiting for components to arrive, while MTTR is usually understood as more technical and focused on the actual repair process.
+
+**Importance:**  
+MTTR is crucial in understanding how quickly a system can be restored after a failure. A lower MTTR indicates a system that can be quickly repaired and made operational, minimizing downtime and potential loss.
+
+**Formula Relationship:**  
+For systems with constant failure rates, the relationship between MTBF and MTTR can be expressed in terms of system availability. System availability is the proportion of time a system is operational and available for use. It's calculated as:
+
+$$Availability = MTBF/(MTBF + MTTR)$$
+
+In this formula, a higher MTBF and a lower MTTR will result in higher system availability, indicating a more reliable and maintainable system.
+
 
 ## Conclusion
 
