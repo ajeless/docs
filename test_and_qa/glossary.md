@@ -7,6 +7,7 @@
 - **Alpha Testing**: Conducted by the internal teams after the development phase. It's dynamic validation testing in a controlled environment.
 - **API Testing**: Validates the application programming interfaces. It's dynamic validation testing for backend services.
 - **A/B Testing**: Compares two versions of the software to determine which one performs better. This is dynamic validation testing for optimization.
+- **Availability**: The readiness of the software to respond to user requests.
 
 ## B
 - **Backward Compatibility Testing**: Ensures new versions of the software remain compatible with older versions. This is dynamic validation testing for version compatibility.
@@ -37,55 +38,66 @@
 - **Effective Error**: An error that results in a noticeable system failure or deviation from expected behavior. Unlike latent errors, effective errors manifest as active failures.
 - **Equivalence Partitioning**: A method of dividing the input data of a software unit into partitions of equivalent data from which test cases can be derived.
 - **Error**: A part of the system or service that can lead to failure, often related to a segment of the software product's code.
+- **Error Forecasting**: A way of measuring how likely we are to have failures based on the behavior of the program.
+- **Error Removal**: The process of getting rid of the errors themselves, often through verification.
 
 ## F
 - **Fake**: Working implementations with shortcuts unsuitable for production.
 - **Failure**: The unwanted effects that occur when the delivered service deviates from the specification of the expected service. It is the inability of the software to perform as intended.
+- **Fault Avoidance**: Preventing, by construction, certain kinds of faults. Some programming languages have built-in fault avoidance mechanisms.
+- **Fault Tolerance**: Having redundant subsystems such that one of them can fail and the rest will continue to operate.
 - **Fault/Defect/Bug**: The root cause of an error. Faults can arise from poor requirements specification, design flaws, manufacturing defects, hardware wear and tear, and coding mistakes in software, and usually lead to unexpected behavior.
 
 ## G
 - **Grey Box Testing**: A software testing method that combines both black box and white box testing techniques. In this method, the tester has partial knowledge of the software's internal workings.
 
+## I
+- **Integrity**: The absence of improper system alteration.
+- **Integration Testing**: Validates the interactions between different software modules. This is dynamic validation testing for module interactions.
+- **Interface Testing**: Validates the software's interfaces, including UI and API. This is dynamic validation testing for interfaces.
+
 ## L
-- **Latent Error**: An error that exists but does not necessarily cause a failure. It remains dormant until triggered by executing the portion of the code where it resides, resulting in failure.
-- **Loop Testing**: A method of testing the loops in the software to ensure they function as expected.
+- **Latent Error**: An error that exists in the system but does not result in a failure until certain conditions are met.
+- **Load Testing**: Validates the software's behavior under expected loads. This is dynamic validation testing for system performance under load.
+- **Localization Testing**: Validates the software's behavior for a specific locale or culture. This is dynamic validation testing for localization.
 
 ## M
-- **Mock**: Objects pre-programmed with expectations regarding their method calls.
-- **Matrix Testing**: A method of identifying all the variables of an application and then testing them in pairs.
-
-## O
-- **Oracle**: In software testing, an oracle refers to a mechanism or method used to determine whether a test has passed or failed. It provides the expected outcome for a given test case.
-- **Orthogonal Array Testing**: A systematic, statistical method of testing that uses orthogonal arrays to ensure all combinations of variables are tested with a minimal set of test cases.
+- **Maintainability**: The ability for a process to undergo modifications and repairs.
+- **Manual Testing**: Testing the software manually without the use of automated tools. This is dynamic validation testing performed by testers.
+- **Mock**: Objects with pre-defined answers to method calls.
+- **Monkey Testing**: A random testing process where the system is tested by providing random inputs and observing the behavior.
+- **Mutation Testing**: A method of software testing where certain statements of the source code are changed/mutated to check if the test cases are able to find the errors.
 
 ## P
-- **Path Coverage**: A measure that ensures all paths in the software are executed at least once.
-- **Pattern Testing**: A method of testing the software based on predefined patterns.
+- **Performance Testing**: Validates the software's performance characteristics. This is dynamic validation testing for performance metrics.
+- **Positive Testing**: Tests the software's behavior with valid input data. This is dynamic validation testing for positive scenarios.
+- **Post-mortem Testing**: A process of analyzing the software after it has been executed to determine the causes of any failures.
 
 ## R
-- **Regression Testing**: A method of ensuring that new changes in the software have not adversely affected the existing functionalities.
-- **Reliability**: The probability that an end user will not encounter a fault leading to an error and subsequent failure.
+- **Recoverability**: How quickly, if the system fails, it can be restored to correct operation.
+- **Regression Testing**: Ensures that new changes in the software do not affect the existing functionality. This is dynamic validation testing for regression.
+- **Reliability**: Continuity of correct service.
+- **Robustness**: The ability of a system to handle and recover from unexpected inputs or conditions.
 
 ## S
-- **SDLC (Software Development Life Cycle)**: A systematic process for planning, creating, testing, deploying, and maintaining software applications or systems. It encompasses various phases, including requirements gathering, system design, coding, testing, deployment, and maintenance.
-- **Service**: The system behavior as perceived by the user.
-- **Spy**: Stubs that record information based on how they were called.
-- **State Transition Testing**: A method of testing the software's behavior for different states and the transitions between those states.
-- **Statement Coverage**: A measure that ensures each statement in the software is executed at least once.
-- **Stub**: A minimal implementation of an interface that can be used to satisfy a system's dependency.
-- **System**: A combination of interacting elements organized to achieve one or more stated purposes.
-
-## T
-- **Test Case**: A set of conditions or variables under which a tester will determine whether a system under test satisfies requirements or works correctly.
-- **Test Scenario**: A high-level description of what needs to be tested in terms of functionality.
-- **Test Suite**: A collection of test cases that are intended to be used to test a software program to show that it has some specified set of behaviors.
+- **Safety**: The absence of catastrophic consequences based on failures of the software.
+- **Sanity Testing**: A subset of regression testing to determine if a section of the application is still working after a minor change.
+- **Security Testing**: Validates the software's security features. This is dynamic validation testing for security vulnerabilities.
+- **Smoke Testing**: Preliminary testing to check the software's basic functionality. This is dynamic validation testing for basic functionality.
+- **Spy**: Objects that store arguments for method calls.
+- **Static Testing**: Validates the software without executing it. This involves reviewing the software's code, requirements, and design.
+- **Stress Testing**: Validates the software's behavior under extreme conditions. This is dynamic validation testing for system performance under stress.
+- **Stub**: Used to simulate the behavior of modules/ components.
 
 ## U
-- **Unit Testing**: A method of testing individual units or components of a software. It is often automated but can also be done manually.
+- **Unit Testing**: Validates individual units or components of the software. This is dynamic validation testing for individual units.
+- **Usability Testing**: Validates the software's usability aspects. This is dynamic validation testing for user experience.
 
 ## V
-- **Validation**: The process of evaluating software during or at the end of the development process to determine whether it satisfies specified requirements.
-- **Verification**: The process of evaluating a system or component to determine whether the products of a given development phase satisfy the conditions imposed at the start of that phase.
+- **Validation**: The process of evaluating software at the end of the development process to ensure compliance with software requirements.
+- **Verification**: The process of evaluating software during or at the end of the development process to ensure it satisfies specified requirements in a specific context.
+- **Volume Testing**: Validates the software's behavior with a large amount of data. This is dynamic validation testing for data volume handling.
 
 ## W
-- **White Box Testing**: A software testing method in which the tester has complete knowledge of the internal workings of the item being tested. It focuses on checking the flow of inputs and outputs through the application, improving design and usability, strengthening security, and ensuring all functionalities work as expected.
+- **White Box Testing**: A software testing method in which the tester has knowledge of the internal workings, structure, and design of the item being tested. The focus is on testing the software's logic paths, code statements, branches, and internal logic.
+
