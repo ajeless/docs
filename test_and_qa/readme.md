@@ -55,4 +55,7 @@ Identify and rectify bugs, errors, and failures to ensure the software applicati
 * [Cost of bugs](./cost_of_bugs.md)
 * [Test driven development, software testing and development documentation](./tdd.md)
 * [Understanding risk based testing](./risk_based_testing.md)
+* [Generic Defect Report Template](./defect_report_template.md)
+* [Generic Test Plan Template](./test_plan_template.md)
+* [Generic Test Report Template](./test_report_template.md)
 * [Glossary](./glossary.md)

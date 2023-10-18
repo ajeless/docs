@@ -5,7 +5,7 @@ Risk-Based Testing (RBT) is a software testing approach that prioritizes testing
 ## Risk Assessment
 
 Risk is defined as the occurrence of an uncertain event that can have a positive or negative effect on the project's success criteria. The formula for risk is:
-\[ \text{Risk} = \text{Impact} \times \text{Likelihood} \]
+$$Risk = Impact * Likelihood$$
 Where:
 - **Impact**: The potential damage or negative outcome that could result from the risk.
 - **Likelihood**: The probability of the risk occurring.
@@ -34,7 +34,7 @@ Metrics provide quantifiable data that can be used to make informed decisions. T
 #### **1. Risk Exposure**
 
 **Definition**: Risk exposure quantifies the potential loss if the risk materializes. It's calculated as:
-\[ \text{Risk Exposure} = \text{Probability of Occurrence} \times \text{Potential Loss} \]
+$$Risk Exposure = Probability of Occurrence * Potential Loss$$
 
 #### **2. Test Coverage of High-Risk Areas**
 
