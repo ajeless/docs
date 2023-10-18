@@ -38,6 +38,7 @@
 
 ## E
 - **Effective Error:** An error that results in a noticeable system failure or deviation from expected behavior. Unlike latent errors, effective errors manifest as active failures.
+- **EOT:** Evidence of Testing.  Can include stack traces, error dumps, screenshots, video, HAR files, etc...
 - **Equivalence Partitioning:** A method of dividing the input data of a software unit into partitions of equivalent data from which test cases can be derived.
 - **Error:** A part of the system or service that can lead to failure, often related to a segment of the software product's code.
 - **Error Forecasting:** A way of measuring how likely we are to have failures based on the behavior of the program.

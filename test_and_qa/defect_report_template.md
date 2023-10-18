@@ -16,6 +16,7 @@
   - Any error messages, dialogue boxes, onscreen behavior.
   - Test case used.
 - **Attachments**: (List any attachments, e.g., log files, screenshots. Mention if they are attached to the report.)
+  - Includes EOT (Evidence of Testing)
 
 ## Environment Details
 - **Operating System**: (Details about the OS where the defect was found.)
