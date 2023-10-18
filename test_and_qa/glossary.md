@@ -7,8 +7,8 @@
 - **Alpha Testing:** Conducted by the internal teams after the development phase. It's dynamic validation testing in a controlled environment.
 - **API Testing:** Validates the application programming interfaces. It's dynamic validation testing for backend services.
 - **A/B Testing:** Compares two versions of the software to determine which one performs better. This is dynamic validation testing for optimization.
-- **Availability:** The readiness of the software to respond to user requests.  $$Availability = MTBF/(MTBF + MTTR)$$  
-
+- **Absence of Errors Fallacy:** The misconception that just because a software product has no known defects, it is of high quality. A software product can be defect-free but still be unusable or fail to meet user needs.
+- **Availability:** The readiness of the software to respond to user requests.
 
 ## B
 - **Backward Compatibility Testing:** Ensures new versions of the software remain compatible with older versions. This is dynamic validation testing for version compatibility.
@@ -27,12 +27,14 @@
 - **Configuration Testing:** Validates the software's behavior under different configurations. This is dynamic validation testing for configuration scenarios.
 - **Content Testing:** Validates the content for its correctness, readability, and usability. This is dynamic validation testing for content accuracy.
 - **Conformance Testing:** Validates the software against defined standards or specifications. This is dynamic validation testing against standards.
+- **Context Variability:** The idea that the effectiveness and relevance of certain tests can vary based on the context in which they are applied. Different software environments, user bases, or application purposes can influence which tests are most pertinent.
 
 ## D
 - **Decision Table Testing:** A method of testing the software's behavior for different input combinations using a table format.
 - **Dependability:** The quality of a delivered service on which reliance can justifiably be placed.
 - **Dummy:** Objects passed around but never used.
 - **Dynamic Testing:** Tests the software by executing it. This involves running the software and validating its behavior.
+- **Defect Clustering:** The principle that defects or bugs tend to cluster around certain modules or functionalities within software. By identifying these areas, testers can focus their efforts more effectively.
 
 ## E
 - **Effective Error:** An error that results in a noticeable system failure or deviation from expected behavior. Unlike latent errors, effective errors manifest as active failures.
@@ -40,6 +42,7 @@
 - **Error:** A part of the system or service that can lead to failure, often related to a segment of the software product's code.
 - **Error Forecasting:** A way of measuring how likely we are to have failures based on the behavior of the program.
 - **Error Removal:** The process of getting rid of the errors themselves, often through verification.
+- **Exhaustive Testing:** A testing approach where all possible inputs, paths, and scenarios in a software application are tested. It's often impractical due to the vast number of possible combinations.
 
 ## F
 - **Fake:** Working implementations with shortcuts unsuitable for production.
@@ -74,6 +77,7 @@
 - **Performance Testing:** Validates the software's performance characteristics. This is dynamic validation testing for performance metrics.
 - **Positive Testing:** Tests the software's behavior with valid input data. This is dynamic validation testing for positive scenarios.
 - **Post-mortem Testing:** A process of analyzing the software after it has been executed to determine the causes of any failures.
+- **Pesticide Paradox:** The phenomenon where the same set of tests, when executed repeatedly, will no longer find new defects. To overcome this, tests need to be regularly reviewed and revised.
 
 ## R
 - **Recoverability:** How quickly, if the system fails, it can be restored to correct operation.

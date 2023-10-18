@@ -54,4 +54,5 @@ Identify and rectify bugs, errors, and failures to ensure the software applicati
 * [The 3 axes of software testing](./axes_of_testing.md)
 * [Cost of bugs](./cost_of_bugs.md)
 * [Test driven development, software testing and development documentation](./tdd.md)
+* [Understanding risk based testing](./risk_based_testing.md)
 * [Glossary](./glossary.md)
