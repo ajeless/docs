@@ -1,4 +1,4 @@
-<img alt='testing image' src='./cover.png' width='25%'>
+<a href="https://coursera.org/verify/85RGWRQRRMZB"><img alt='testing image' src='./coursera_85RGWRQRRMZB.png' width='25%'></a>
 
 # Test Engineering and Quality Assurance
 
