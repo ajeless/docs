@@ -18,12 +18,12 @@
 ## 4. Develop User Stories
 - **Definition**: Descriptive narratives that detail how users will interact with the product.
 - **INVEST Criteria**: A guideline to ensure stories are:
-  - **Independent**: Each story should stand on its own, without dependencies on other stories. This allows for flexibility in the development process and reduces complexities.
-  - **Negotiable**: Until a story is part of the current sprint, its details can be changed. This ensures that the team and stakeholders can adapt to changing requirements or new information.
-  - **Valuable**: Every story should provide value to the end-users and stakeholders. This ensures that the team's efforts are always aligned with the project's goals.
-  - **Estimable**: The team should be able to estimate the effort required for a story. This ensures proper planning and resource allocation.
-  - **Small**: Stories should be small enough to be completed within a single sprint. This ensures that the team can deliver regular increments of the product.
-  - **Testable**: Each story should have clear criteria that can be tested. This ensures that the delivered feature meets the desired quality standards.
+  - **I**ndependent: Each story should stand on its own, without dependencies on other stories. This allows for flexibility in the development process and reduces complexities.
+  - **N**egotiable: Until a story is part of the current sprint, its details can be changed. This ensures that the team and stakeholders can adapt to changing requirements or new information.
+  - **V**aluable: Every story should provide value to the end-users and stakeholders. This ensures that the team's efforts are always aligned with the project's goals.
+  - **E**stimable: The team should be able to estimate the effort required for a story. This ensures proper planning and resource allocation.
+  - **S**mall: Stories should be small enough to be completed within a single sprint. This ensures that the team can deliver regular increments of the product.
+  - **T**estable: Each story should have clear criteria that can be tested. This ensures that the delivered feature meets the desired quality standards.
 - **Acceptance Criteria (AC)**: Specific benchmarks that determine when a user story is considered complete.
 - **Outcome**: A set of clear, valuable, and achievable tasks for the development team.
 
