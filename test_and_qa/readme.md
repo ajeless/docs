@@ -6,7 +6,7 @@ This is a short guide about software testing and quality assurance. This handboo
 
 Software testing is an essential aspect of the software development process, ensuring that software products meet specified requirements and are relatively and acceptably free from defects. This handbook covers a wide range of topics, including the different axes of software testing, the importance of early defect detection, and various testing techniques such as black box, grey box, and white box testing. It also delves into the challenges of software testing, the principles that guide effective testing practices, and the role of risk in shaping testing strategies.
 
-Additionally, this guide provides valuable templates and insights into the software development life cycle (SDLC), emphasizing the importance of unit testing, verification, and validation in ensuring software quality. With a glossary of terms and a focus on best practices, this handbook serves as a resource for quality assurance teams to help them get started.
+Additionally, this guide provides templates and insights into the software development life cycle (SDLC), emphasizing the importance of unit testing, verification, and validation in ensuring software quality. With a glossary of terms and a focus on best practices, this handbook serves as a resource for quality assurance teams to help them get started.
 
 ## Table of Contents
 
