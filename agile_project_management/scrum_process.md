@@ -27,6 +27,19 @@
 - **Acceptance Criteria (AC)**: Specific benchmarks that determine when a user story is considered complete.
 - **Outcome**: A set of clear, valuable, and achievable tasks for the development team.
 
+The following simple format can help us write user stories:
+```
+As a <user role>, I want
+<user requirement> so that 
+<desired benefit>
+```
+
+Example:
+
+```
+As a registered user, I want to log in so that I can track my activities.
+```
+
 ## 5. Determine Boundaries
 - **Definition of Done**: A set of criteria that all user stories must meet to be considered complete.
 - **Backlog Prioritization**: Organizing user stories by importance or value to the project.
