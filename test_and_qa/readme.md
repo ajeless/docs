@@ -1,72 +1,32 @@
-<a href="https://coursera.org/verify/85RGWRQRRMZB"><img alt='testing image' src='./coursera_85RGWRQRRMZB.png' width='25%'></a>
+# Software Testing and Quality Assurance Handbook
 
-# Test Engineering and Quality Assurance
+This is a short guide about software testing and quality assurance. This handbook is designed to provide you with a high level overview of software testing, from foundational principles to advanced techniques.
 
-## The Role of Quality Assurance (QA)
+Software testing is an essential aspect of the software development process, ensuring that software products meet specified requirements and are free from defects. This handbook covers a wide range of topics, including the different axes of software testing, the importance of early defect detection, and the intricacies of various testing techniques such as black box, grey box, and white box testing. It also delves into the challenges of software testing, the principles that guide effective testing practices, and the role of risk in shaping testing strategies.
 
-**QA**: A holistic approach to ensure software quality throughout its lifecycle.
+Additionally, this guide provides valuable templates and insights into the software development life cycle (SDLC), emphasizing the importance of unit testing, verification, and validation in ensuring software quality. With a glossary of terms and a focus on best practices, this handbook serves as a go-to resource for both beginners and seasoned professionals in the field of software testing and quality assurance.
 
-- **Definition**: QA is a systematic process that oversees the quality of software from inception to delivery. It's not just about finding defects but preventing them.
-- **Scope**: QA encompasses all stages of development, from defining requirements to managing releases.
-- **Importance of Testing**:
-  - Testing is a cornerstone of both verification and validation.
-  - It identifies discrepancies between expected and actual results, allowing for timely corrections.
+## Table of Contents
 
-## Software Testing
+1. [The 3 Axes of Software Testing](https://github.com/ajeless/docs/blob/master/test_and_qa/axes_of_testing.md)
+2. [Testing Techniques: Black Box, Grey Box, and White Box](https://github.com/ajeless/docs/blob/master/test_and_qa/black_grey_white_box_testing.md)
+3. [The Cost-Efficiency of Early Defect Detection](https://github.com/ajeless/docs/blob/master/test_and_qa/cost_of_bugs.md)
+4. [Defect Report Template](https://github.com/ajeless/docs/blob/master/test_and_qa/defect_report_template.md)
+5. [Dependability and Availability in Software Engineering](https://github.com/ajeless/docs/blob/master/test_and_qa/dependability.md)
+6. [Definitions used in Testing and Quality Assurance](https://github.com/ajeless/docs/blob/master/test_and_qa/glossary.md)
+7. [Why Software Testing is 'Inherently' Hard](https://github.com/ajeless/docs/blob/master/test_and_qa/inherently_hard.md)
+8. [Principles of Software Testing](https://github.com/ajeless/docs/blob/master/test_and_qa/principles_of_software_testing.md)
+9. [Understanding Risk-Based Testing (RBT)](https://github.com/ajeless/docs/blob/master/test_and_qa/risk_based_testing.md)
+10. [Software Development Life Cycle (SDLC)](https://github.com/ajeless/docs/blob/master/test_and_qa/sdlc.md)
+11. [Static Testing vs. Dynamic Testing](https://github.com/ajeless/docs/blob/master/test_and_qa/static_vs_dynamic.md)
+12. [Test Driven Development, Software Testing and Development Documentation](https://github.com/ajeless/docs/blob/master/test_and_qa/tdd.md)
+13. [Test Design Techniques](https://github.com/ajeless/docs/blob/master/test_and_qa/test_design_techniques.md)
+14. [Objectives of Software Testing](https://github.com/ajeless/docs/blob/master/test_and_qa/testing_objectives.md)
+15. [Generic Test Plan](https://github.com/ajeless/docs/blob/master/test_and_qa/test_plan_template.md)
+16. [Test Status Report](https://github.com/ajeless/docs/blob/master/test_and_qa/test_report_template.md)
+17. [List of Some Software Testing Techniques, and Activities](https://github.com/ajeless/docs/blob/master/test_and_qa/test_types_and_categories.md)
+18. [Test Levels, Test Types, and the Test Pyramid](https://github.com/ajeless/docs/blob/master/test_and_qa/test_types_pyramid.md)
+19. [Unit Testing Software](https://github.com/ajeless/docs/blob/master/test_and_qa/unit_testing.md)
+20. [Software Quality: Verification, Validation, and QA](https://github.com/ajeless/docs/blob/master/test_and_qa/verification_and_validation.md)
 
-**Definition**:
-Software testing is the process of evaluating and verifying that a software application or system meets specified requirements and functions correctly. It involves executing a software component or system component to evaluate one or more properties of interest. The main objective of software testing is to identify defects, errors, or other issues that might adversely affect the functionality, performance, or usability of the software.
-
-### Reasons Why We Do Software Testing:
-
-Software testing is fundamental for ensuring the quality and functionality of software applications. Delving deeper into its concepts, we come across several key terms and objectives:
-
-### Key Terms in Software Testing:
-
-1. **Bug**: A flaw in the software code causing it to produce unexpected results or behave in unintended ways.
-1. **Error**: A result of human action or decision that leads to an incorrect or unexpected outcome.
-1. **Failure**: The software's inability to perform its intended function due to a bug or an error.
-1. **Stakeholders**: Individuals or groups involved in the development and production of the software.
-1. **End Users**: The actual users who utilize and interact with the software product.
-
-### Primary Goal of Software Testing:
-
-Identify and rectify bugs, errors, and failures to ensure the software application operates as intended and adheres to quality standards.
-
-### Objectives of Software Testing:
-
-1. **Validation**: Confirm that the software application aligns with the requirements and specifications set by stakeholders, including end users.
-1. **Verification**: Testing.  Confirm that the software application strictly behaves according to those specifications.
-1. **Ensure Quality**: Testing is done as part of supporting the overall quality assurance effort.  Testing ensures that the software meets the quality standards and performs as expected. It helps in verifying that the software functions correctly and meets user requirements.
-1. **Identify Defects**: Through testing, defects or bugs in the software can be identified and rectified before the software is released to the end-users.
-1. **Reduce Risks**: By identifying issues early in the development process, testing helps in reducing the risks associated with software failures, which can lead to financial losses, reputation damage, or even legal liabilities.
-1. **Increase User Satisfaction**: A well-tested software provides a better user experience, leading to increased user satisfaction and trust in the product.
-1. **Cost-Efficiency**: Detecting and fixing defects early in the development lifecycle is less expensive than addressing them after the software is in production.
-1. **Ensure Compatibility**: Testing ensures that the software is compatible across different devices, browsers, operating systems, and network environments.
-1. **Validate Software Performance**: Performance testing ensures that the software operates smoothly under expected loads and doesn't suffer from issues like slow response times or crashes.
-1. **Regulatory Compliance**: In certain industries, software must meet specific regulatory standards. Testing ensures that the software complies with these regulations.
-1. **Build Confidence**: Testing provides confidence to stakeholders, developers, and users that the software is reliable and can be trusted.
-1. **Support Continuous Integration/Continuous Deployment (CI/CD)**: Automated testing supports CI/CD processes, allowing for faster and more frequent releases.
-
-### Additional Resources:
-
-* [Verification, Validation, and QA](./verification_and_validation.md)
-* [Objectives of testing](./testing_objectives.md)
-* [Software Development Lifecycle](./sdlc.md)
-* [Static vs Dynamic Testing](./static_vs_dynamic.md)
-* [Black, grey, and white box Testing](./black_grey_white_box_testing.md)
-* [Test levels, test types, and the test pyramid](./test_types_pyramid.md)
-* [Test design techniques](./test_design_techniques.md)
-* [List of Software Testing Techniques and Activities](./test_types_and_categories.md)
-* [Principles of software testing](./principles_of_software_testing.md)
-* [Dependability](./dependability.md)
-* [Why software testing is "inherently" hard](./inherently_hard.md)
-* [The 3 axes of software testing](./axes_of_testing.md)
-* [Cost of bugs](./cost_of_bugs.md)
-* [Test driven development, software testing and development documentation](./tdd.md)
-* [Unit Testing](./unit_testing.md)
-* [Understanding risk based testing](./risk_based_testing.md)
-* [Generic Defect Report Template](./defect_report_template.md)
-* [Generic Test Plan Template](./test_plan_template.md)
-* [Generic Test Report Template](./test_report_template.md)
-* [Glossary](./glossary.md)
+Dive into each section to explore the vast world of software testing and quality assurance. Happy learning!
