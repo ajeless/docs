@@ -1,15 +1,16 @@
-# Organizational Hierarchy and Agile Workflow in Context of Methodologies
+# Organizational Hierarchy, Agile Workflow, Milestones, and Methodologies
 
 In this integrated hierarchy, we start from the broad organizational purpose and drill down to the specific work items and quality assurance processes. This flow ensures that every piece of work, from high-level strategic objectives to day-to-day tasks and testing, aligns with the company's broader purpose and objectives, ensuring quality and user satisfaction.
 
 ## Purpose
 - **Definition:** The fundamental reason the company exists.
 - **Example:** "To empower individuals through technology."
+- **Methodology to Next Step:** Alignment with Company Values.
 
 ## Vision
 - **Definition:** The aspirational future state of the company.
 - **Example:** "A world where everyone has access to cutting-edge technological tools."
-- **Methodology to Next Step:** Alignment with Company Values.
+- **Methodology to Next Step:** Goal Setting Frameworks (e.g., OKRs, SMART Goals).
 
 ## Mission
 - **Definition:** Describes the company's current state and how it operates to achieve its vision.
@@ -24,6 +25,11 @@ In this integrated hierarchy, we start from the broad organizational purpose and
 - **Definition:** High-level targets derived from the mission and vision.
 - **Example:** "Launch three new products this year to increase our market share by 15%."
 - **Methodology to Next Step:** Impact Mapping.
+
+## Milestones
+- **Definition:** Significant events or markers in a project timeline.
+- **Example:** "Completion of the first product prototype", "Achieving 50% of the annual sales target."
+- **Methodology to Next Step:** Review and Adjust based on Progress and Feedback.
 
 ## Initiatives
 - **Definition:** Large-scale efforts undertaken to achieve specific goals.
@@ -56,15 +62,6 @@ In this integrated hierarchy, we start from the broad organizational purpose and
     - **Example:** A tester wears the device and checks if the heart rate is displayed in real-time.
   - **Automated Testing:** Uses scripts and tools to run tests.
     - **Example:** A script simulates heart rate data input and checks if the display updates every second.
-  - **Types of Tests:**
-    - **Unit Testing:** Testing individual units or components of the software.
-      - **Example:** Testing the function that calculates heart rate averages.
-    - **Integration Testing:** Testing interactions between integrated units or components.
-      - **Example:** Testing the synchronization between the wearable device and the smartphone app.
-    - **System Testing:** Testing the complete system as a whole.
-      - **Example:** Testing the entire wearable device's software after integration.
-    - **Acceptance Testing:** Ensures the software meets the business requirements.
-      - **Example:** End-users test the device to see if it meets their needs and expectations.
 - **Methodology to Next Step:** Bug Tracking and Resolution.
 
 ## Bugs/Defects
