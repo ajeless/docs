@@ -1,3 +1,5 @@
+<a alt="Link to Coursera Certificate" href="https://www.coursera.org/account/accomplishments/verify/85RGWRQRRMZB"><img alt="Image of Coursera Certificate" src="./coursera_85RGWRQRRMZB.png" width="25%"></a>
+
 # Software Testing and Quality Assurance Handbook
 
 This is a short guide about software testing and quality assurance. This handbook is designed to provide you with a high level (from 10,000 feet) view of software testing, from foundational principles to advanced techniques.
@@ -28,5 +30,4 @@ Additionally, this guide provides valuable templates and insights into the softw
 18. [Test Levels, Test Types, and the Test Pyramid](https://github.com/ajeless/docs/blob/master/test_and_qa/test_types_pyramid.md)
 19. [Unit Testing Software](https://github.com/ajeless/docs/blob/master/test_and_qa/unit_testing.md)
 20. [Software Quality: Verification, Validation, and QA](https://github.com/ajeless/docs/blob/master/test_and_qa/verification_and_validation.md)
-
 
