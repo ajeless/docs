@@ -14,7 +14,7 @@ $$
 \end{equation}
 $$
 
-where:
+where:  
 $ a_1, a_2, ... , a_n $ are constants (coefficients)  
 $ x_1, a_x, ... , x_n $ are variables (unknowns)  
 $ b $ is a constant
