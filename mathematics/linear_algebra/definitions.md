@@ -4,6 +4,10 @@
 
 A vector is a mathematical entity/object that have both a mangitude (eg: quantity or length) and direction. Vectors can not be fully described using just a magnitude. Vectors can be thought of as arrows where the length represents that magnitude and their direction is the direction that they point in. Vectors are often represented in various ways.
 
+Sometimes as a variable such as $ \vec{\beta} $ with an arrow on top
+
+Sometimes as a list $ \begin{bmatrix} c_1 \\ c_2 \\ \vdots \\ c_n \end{bmatrix} $
+
 ### What is a scalar?
 
 A scalar is a single element of a field, typically a real ($ \real $) or a complex ($ \Complex $) number. A scalar is a constant that is used to multiply (scale) a vector. Hence the term scalar. A vector multiplied by a scalar is "scaled" (it's magnitude increased or decreased) by the scalar. Scalars are fully described by a magnitude (a quantity or a number).
