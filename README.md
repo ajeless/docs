@@ -8,3 +8,4 @@ A collection of commands, scripts, documents, and recipes, with examples to simp
 - [lxc](./lxc.md)
 - [Test Engineering and QA](./test_and_qa/readme.md)
 - [Agile Project Management](./agile_project_management/readme.md)
+- [Mathematics](./mathematics/readme.md)
