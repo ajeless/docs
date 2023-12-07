@@ -1,3 +1,3 @@
 # Definitions
 
-## What is a scalar?
+### What is a scalar?
