@@ -2,7 +2,7 @@
 
 ### What is a scalar?
 
-A scalar is a single element of a field, typically a real ($ \real $) or a complex ($ \Complex $) number. A scalar is a constant that is used to multiply (scale) a vector. Hence the term scalar. A vector multiplied by a scalar is "scaled" (it's magnitude increased or decreased) by the scalar.
+A scalar is a single element of a field, typically a real ($ \real $) or a complex ($ \Complex $) number. A scalar is a constant that is used to multiply (scale) a vector. Hence the term scalar. A vector multiplied by a scalar is "scaled" (it's magnitude increased or decreased) by the scalar. Scalars are fully described by a magnitude (number).
 
 ### What is a linear equation?
 
@@ -18,3 +18,21 @@ where:
 $a_1, a_2, ... , a_n$ are constants (coefficients)  
 $x_1, a_x, ... , x_n$ are variables (unknowns)  
 $b$ is a constant
+
+### What is linear algebra?
+
+Linear algebra is the branch of mathematics that studies vectors, vector spaces, linear combinations, linear transformations, systems of equations, matrices, and the operations that act on these objects.
+
+### What is a matrix?
+
+A matrix (over the field $F$) is a rectangular array of elements of $F$. The elements of $F$ that occur in the matrix $A$ are called the entries of $A$. Matrices generally look something like this:
+
+$$
+A_{m,n} =
+ \begin{pmatrix}
+  a_{1,1} & a_{1,2} & \cdots & a_{1,n} \\
+  a_{2,1} & a_{2,2} & \cdots & a_{2,n} \\
+  \vdots  & \vdots  & \ddots & \vdots  \\
+  a_{m,1} & a_{m,2} & \cdots & a_{m,n}
+ \end{pmatrix}
+$$
