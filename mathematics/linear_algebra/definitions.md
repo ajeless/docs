@@ -13,13 +13,15 @@ $$
 Sometimes as a list such as:
 
 $$
-    \alpha = \begin{bmatrix}
-    c_1
-    \\
-    c_2
-    \\
-    \vdots
-    \\ c_n
+    \alpha =
+    \begin{bmatrix}
+        c_1
+        \\
+        c_2
+        \\
+        \vdots
+        \\
+        c_n
     \end{bmatrix}
 $$
 
