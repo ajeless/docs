@@ -6,7 +6,7 @@ A vector is a mathematical entity/object that have both a mangitude (eg: quantit
 
 $ \vec{a} $
 $ \langle{a,b}\rangle{} $  
-$ \vec{c} = \begin{bmatrix} c_1 \\ c_2 \\ \vdots\\c_n \end{bmatrix}$  
+$ \vec{c} = \begin{bmatrix} c_1 \\ c_2 \\ \vdots \\ c_n \end{bmatrix}$  
 $ \vec{r} = [r_1 \quad r_2 \quad \dots \quad r_n] $
 
 ### What is a scalar?
