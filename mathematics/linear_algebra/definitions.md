@@ -8,7 +8,7 @@ Sometimes as a variable or letter with an arrow on top such as
 
 $$
     \vec{\beta}
-$$$ with an arrow on top
+$$ with an arrow on top
 
 Sometimes as a list such as
 
