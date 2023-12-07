@@ -2,7 +2,7 @@
 
 ### What is a scalar?
 
-A scalar is a single element of a field, typically a real ($ \real $) or a complex ($ \Complex $) number. A scalar is a constant that is used to multiply (scale) a vector. Hence the term scalar. A vector multiplied by a scalar is "scaled" (it's magnitude increased or decreased) by the scalar. Scalars are fully described by a magnitude (number).
+A scalar is a single element of a field, typically a real ($ \real $) or a complex ($ \Complex $) number. A scalar is a constant that is used to multiply (scale) a vector. Hence the term scalar. A vector multiplied by a scalar is "scaled" (it's magnitude increased or decreased) by the scalar. Scalars are fully described by a magnitude (a quantity or a number).
 
 ### What is a linear equation?
 
