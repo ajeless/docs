@@ -4,10 +4,15 @@
 
 A vector is a mathematical entity/object that have both a mangitude (eg: quantity or length) and direction. Vectors can not be fully described using just a magnitude. Vectors can be thought of as arrows where the length represents that magnitude and their direction is the direction that they point in. Vectors are often represented in various ways:
 
-$ \vec{a} $
-$ \langle{a,b}\rangle{} $  
-$ \vec{c} = \begin{bmatrix} c_1 \\ c_2 \\ \vdots \\ c_n \end{bmatrix}$  
-$ \vec{r} = [r_1 \quad r_2 \quad \dots \quad r_n] $
+$$
+ \vec{a}
+ \\
+ \langle{a,b}\rangle{}
+ \\
+ \vec{c} = \begin{bmatrix} c_1 \\ c_2 \\ \vdots \\ c_n \end{bmatrix}
+ \\
+ \vec{r} = [r_1 \quad r_2 \quad \dots \quad r_n]
+$$
 
 ### What is a scalar?
 
