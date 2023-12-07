@@ -39,9 +39,9 @@ a_1x_1 + a_2x_2 + ... + a_nx_n = b
 \end{equation}
 $$
 
-where:
-$a_1, a_2, ... , a_n$ are constants (coefficients)
-$x_1, a_x, ... , x_n$ are variables (unknowns)
+where:  
+$a_1, a_2, ... , a_n$ are constants (coefficients)  
+$x_1, a_x, ... , x_n$ are variables (unknowns)  
 $b$ is a constant
 
 ### What is linear algebra?
