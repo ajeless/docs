@@ -1,4 +1,3 @@
 # Linear Algebra
 
-(Definitions)[./definitions.md
-]
+(Definitions)[./definitions.md]
