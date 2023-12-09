@@ -2,9 +2,15 @@
 
 ### What is a vector?
 
-A vector is a mathematical entity/object that have both a mangitude (eg: quantity or length) and direction. Vectors can not be fully described using just a magnitude. Vectors can be thought of as arrows where the length represents that magnitude and their direction is the direction that they point in. Vectors are often represented in various ways.
+A vector is a mathematical entity/object that has both a mangitude (eg: quantity or length) and a direction. Vectors are often represented in various ways.
 
-Sometimes as a variable or letter with an arrow on top such as
+Sometimes as a two letter variable where each letter denotes their start (tail) and end (head) respectively:
+
+$$
+\overrightarrow{\alpha\beta}
+$$
+
+Sometimes as a variable or letter with an arrow on top such as:
 
 $$
 \vec{\beta}
@@ -31,7 +37,7 @@ And sometimes geometrically as a arrow.
 
 ### What is a scalar?
 
-A scalar is a single element of a field, typically a real ($ \real $) or a complex ($ \Complex $) number. A scalar is a constant that is used to multiply (scale) a vector. Hence the term scalar. A vector multiplied by a scalar is "scaled" (it's magnitude increased or decreased) by the scalar. Scalars are fully described by a magnitude (a quantity or a number).
+A scalar is a single element of a field, typically a real $\real$ or a complex $\Complex$ number. A scalar is a constant that is used to multiply (scale) a vector. Hence the term scalar. A vector multiplied by a scalar is "scaled" (it's magnitude increased or decreased) by the scalar. Scalars are fully described by a magnitude (a quantity or a number).
 
 ### What is a linear equation?
 
