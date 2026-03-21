@@ -1,4 +1,4 @@
 # docs
 
-Project documentation, guides, references, ideas, example, templates and working materials.
+Project documentation, guides, references, ideas, examples, templates and working materials.
 
