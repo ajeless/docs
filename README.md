@@ -1,2 +1,5 @@
+<img src="assets/logo.png" alt="Docs logo" width="240" />
+
 # docs
-Development docs and journals.
+
+## Technical documentation and engineering notes.
