@@ -1,0 +1,17 @@
+.
+├── docs
+│   ├── decisions
+│   │   └── README.md
+│   ├── ideas
+│   │   ├── first-conversation-synthesis.md
+│   │   └── README.md
+│   ├── author-types.md
+│   ├── feasibility-boundary.md
+│   ├── index.md
+│   ├── mental-model.md
+│   ├── ontology.md
+│   ├── open-questions.md
+│   ├── principles.md
+│   ├── research-topics.md
+│   └── vision.md
+└── README.md
