@@ -65,6 +65,6 @@ To be revisited once the core game is playable. The AI landscape moves fast; any
 
 ## Preserved prior ideation
 
-Earlier ideation explored setting, IP direction, faction architecture, cosmology, and many other creative directions. That work is preserved at [path to preserved ideation doc] as a creative artifact and reference resource.
+Earlier ideation explored setting, IP direction, faction architecture, cosmology, and many other creative directions. That work is preserved at That work is preserved at [../space_game_1/idea_capture.md](../space_game_1/idea_capture.md) as a creative artifact and reference resource. as a creative artifact and reference resource.
 
 **It is not binding on this project.** Design decisions here start fresh. Ideas from the preserved doc may be drawn on when useful, but they are not commitments, and scope here is not pre-allocated to honor them.
