@@ -1,6 +1,8 @@
-# Tactical Starship Combat Game — Ideation State
+# Tactical Starship Combat Game — Ideation Capture
 
-*Working document. Nothing here is decided. This is a snapshot of an ideation conversation, preserving the forks, the leanings, and the open questions.*
+*Working document. Nothing here is decided unless explicitly labeled as such. This is a preserved snapshot of an ideation conversation, capturing forks, leanings, reasoning, and open questions at the moment ideation was suspended in favor of a bottom-up vertical-slice build approach.*
+
+*This document is the **full ideation archive**. Not everything captured here made it into the v0.1 project's scope — by design. The companion project that carries this forward (space_game_2) deliberately starts with a minimal scope contract and will draw from this doc only as needed. The purpose of this document is to preserve the ideas in the richness they were generated, so they remain available for future videogames, sci-fi novels, or creative projects. It is not a design contract.*
 
 ---
 
@@ -12,7 +14,7 @@ The game uses **turn planning + animated execution** — not full real-time comb
 
 ---
 
-## The market landscape (as surveyed)
+## The market landscape
 
 The space currently has a specific gap that this concept maps to:
 
@@ -25,7 +27,7 @@ The space currently has a specific gap that this concept maps to:
 
 ---
 
-## Core thesis (working stake-in-the-ground)
+## Core thesis
 
 A tactical starship game that treats the SSD as the primary game interface, the turn as a planning problem, and the execution phase as an animated film you can re-watch from any perspective. Built async-native from day one so it can scale from hot-seat to real-time PvP to (optionally, someday) persistent play, without architectural rewrites.
 
@@ -41,20 +43,22 @@ Three load-bearing ideas:
 
 **Scope is capped at v0-v2.** No tech trees. No empire layer. No 4X.
 
-This was a real conversation and landed firmly here. The reasoning:
+Reasoning:
 
-- The tactical game alone — momentum-based movement, full SSD depth, WEGO resolution, fog of war, ship designer, community-shareable replays — is already five Steam games stacked in a trench coat. It is genuinely on the edge of feasibility for a small team.
+- The tactical game alone — deep SSD, WEGO resolution, fog of war, ship designer, community-shareable replays — is already several games of scope stacked together. Genuinely on the edge of feasibility for a small team.
 - The cognitive load on the *player* is already heavy. Adding an empire layer adds cognitive scope on top of already-complex tactical decisions.
 - "Slow growth to MMOG" is seductive but creates design pressure on every v0-v2 decision to preserve paths that may never be walked. That constraint is expensive.
-- A pure tactical game is a purer design. Players express themselves through *choice* within a fixed physics, not through *progression*. Chess and Go have no tech tree and have the longest competitive lives.
+- Pure tactical games have the longest competitive lives — chess, Go, fighting games. Players express themselves through *choice* within fixed rules, not through accumulation.
 - If in year three the tactical game is alive and loved, the campaign layer becomes a natural next step — much smaller leap than jumping to 4X.
 
-**The roadmap as it stands:**
+**The roadmap as it stood during ideation:**
 
 - **v0 — Duel.** One ship vs. one ship, skirmish only. Proof that the core loop is fun for an hour.
 - **v1 — Squadron skirmish.** 2-4 ships per side, single map. PvP and vs-AI.
 - **v2 — Ship designer + community.** Workshop-style sharing, point-cost balancing.
 - *Future versions (v3+): campaign, persistent sector, etc. are "architecturally possible, not committed."*
+
+*Note: the actual build that followed this ideation adopted a more disciplined vertical-slice approach, which supersedes this roadmap for execution purposes. See space_game_2 for the live contract.*
 
 ---
 
@@ -62,90 +66,217 @@ This was a real conversation and landed firmly here. The reasoning:
 
 **Original IP, not licensed.**
 
-Reasoning:
-
 - The Deadlock delisting is a sobering case study — a beautiful game can become unpurchasable because of a contract decision.
 - For a project with a multi-year horizon, owning the IP is the only way to guarantee it stays alive.
-- Original IP lets **mechanics drive the setting** rather than the reverse. Factions can be designed as mechanical archetypes first, with lore grown around them, rather than being locked into "Klingons cloak because the show said so."
+- Original IP lets **mechanics drive the setting** rather than the reverse. Factions can be designed as mechanical archetypes first, with lore grown around them.
 
 ---
 
-## Movement model — working lean
+## Setting frame
 
-**Working lean: momentum-hex (Triplanetary / Mayday / Brilliant Lances lineage), with an optional elevation-band system deferred to post-launch.**
+This is where the creative identity of the game lives. It took several passes to find the right frame. What we settled on during ideation:
 
-Not finalized, but the argument is strong. The full spectrum we considered:
+**The solar system, roughly 500 years from now.** Humanity has mostly colonized the system — Earth, Luna, Mars, the Belt, the Jovian and Saturnian moons, habitats in high orbit and at the Lagrange points, frontier outposts further out. There is no FTL. No aliens have been encountered. The solar system is humanity's entire stage, and it is a very large one.
 
-- **(A) Pure hex, no momentum** (SFB / FedCom style). Crisp, teachable, chess-like. But doesn't feel like space — ships stop on a dime.
-- **(B) Pure Newtonian vector in 3D** (Attack Vector: Tactical / Squadron Strike). Real physics, genuinely deeper gameplay, but cognitively expensive. In WEGO specifically, the opponent's next-turn position becomes a fuzzy volume rather than a specific location, which fights the "chess problem with hidden intent" feel that makes WEGO plotting satisfying.
+Humanity is **plural**. Centuries of life in radically different gravitational and radiation environments have produced genuinely different peoples — dense high-g Terran lineages, leaner Mars-adapted bloodlines, long-limbed low-density Belters, Europan aquatic-subculture engineers, microgravity-native populations who can't survive planetary surfaces unassisted. Politically, the old national and corporate structures have fragmented, recombined, and diverged. The solar system is a patchwork of sovereignties — national successor-states, Martian republics, Belter collectives, corporate sovereign zones, post-state networked polities, frontier outposts with idiosyncratic governance.
+
+Technologically, the setting is **one careful step beyond The Expanse**. Fusion torch drives, gigawatt lasers, serious coilguns and railguns, sophisticated missiles and drones, widespread industrial automation, robust AI. The tech is extrapolative rather than speculative — everything is continuous with trajectories visible from now.
+
+At the **edge of known space**, something is wrong. Exactly what is not said and is not important for v0.1 — but people have disappeared, signals have been classified, ships have come back changed or have not come back at all. The setting *knows about* mystery. The mystery is not played on-screen at launch.
+
+### Why 500 years, not 1000
+
+A 500-year horizon lets humanity diverge meaningfully without fracturing into essentially different species. At 500 years:
+
+- Physiological adaptation is real but not speciation — Belters and Terrans are different, but they're still human, and crews can mix on long voyages.
+- Political fragmentation is mature — no single Earth government, a patchwork of polities with distinct identities.
+- Tech has grown substantially but continuously — nothing in the setting requires speculative physics breakthroughs.
+- AI is ubiquitous, sophisticated, and *integrated into human life* — not transcendent or post-human.
+- Nobody has uploaded. Nobody is a hive mind. Nobody experiences time non-linearly.
+
+A 1000-year horizon makes it too tempting to introduce humans-that-aren't-really-humans-anymore, and that slide is exactly what we want to avoid.
+
+---
+
+## The continuity-of-humanity principle
+
+This is a **design discipline**, not just a setting detail. Naming it explicitly because it has operational consequences:
+
+> **Every faction must be comprehensible as "people making hard choices under real pressures" rather than as "what if we became something else." The player's empathy must remain continuous across all factions. You should be able to imagine sitting down to dinner with any faction's crew and recognizing them as people.**
+
+Things this principle rules out at v0.1:
+
+- **Uploaded consciousness as a faction identity.** Plausible in the timeframe, but it cracks the "people in ships" frame — the gameplay experience of fighting uploaded-crew warships necessarily pushes toward alien cognition, different tempo, different values. That is exactly the slide this principle blocks.
+- **Distributed / hive minds across multiple bodies.** Same reason.
+- **Full-AI-autonomous warships as a faction.** Autonomous ships exist in the setting as *tools*, but no faction is constituted *as* autonomous ships.
+- **Speciation-level physiological divergence.** Adaptation is fine; speciation is not.
+- **Vat-grown clones with pre-loaded memories as a reproductive strategy.** Too far.
+
+What the principle *allows*:
+
+- Heavy cybernetic integration, up to and including neural interfaces, replaced organs, augmented reflexes, pharmaceutical combat cocktails — but the person is still recognizably a person who dies when the hull breaches and has family waiting at home.
+- Strong physiological adaptation to native environments — dense high-g Terrans, leaner Mars-adapted bloodlines, long-limbed low-density Belters, pressure-adapted Europans.
+- Radical political, cultural, ideological, religious divergence.
+- Radically different doctrinal and industrial approaches to warfare.
+- Ship crews that are mostly automated, with skeleton human complements.
+
+The principle is a **guardrail for future design**. When a future faction concept starts to feel exciting, check it against the principle. If the excitement is coming from the "alien-feeling" vector, it may be the held-in-reserve idea bleeding through.
+
+---
+
+## AI in the setting
+
+**AIs are part of humanity's story, not a separate story.**
+
+The setting's premise is that AI development went reasonably well over the 500 years. There were incidents, debates, ethical disasters, probably some limited conflicts — but the net arc was *integration*, not conquest, not uprising. AIs came up alongside humans through the solar system's colonization. They are of humanity in the same root-sense that Belters and Terrans are of humanity, even though they arrived through silicon rather than biology.
+
+In day-to-day setting texture:
+
+- Physical AI — humanoid robots, autonomous drones, damage-control swarms, tactical computers with personalities — is **ubiquitous and unremarkable**.
+- AIs work alongside humans at every scale, from personal assistants to warship command support.
+- A nearly-conscious 8-foot service droid is a normal sight, not a marvel.
+
+### The emerging question
+
+The status of AI personhood is **legally and ethically contested across the solar system.** Not resolved one way; genuinely contested. Different factions have taken different positions:
+
+- Some treat their ship AIs as crew, with names, ranks, and memorial honors when lost.
+- Some treat the same AI legally as a depreciating corporate asset.
+- Most are somewhere in between, or have incoherent positions they haven't fully examined.
+
+This is a **faction-flavor axis**, not a faction-defining one. No faction is "the AI faction." But every faction has a position on the question, and that position tells you something about who they are.
+
+Narrative hooks this opens up without requiring resolution:
+
+- A Belter captain whose sister is a ship AI.
+- A corporate officer with private opinions about her ship's personhood that diverge from her employer's policy.
+- Mixed-crew dynamics across factions with different AI-status positions.
+
+### Why this matters for the edge-mystery
+
+Because AIs and humans are on the same side of the "us" line in this setting, when something from *outside* arrives, the asymmetry is clean and powerful. Humans and their droids stand side by side and are equally strangers to whatever has just appeared. That's the dramatic move. It only works because we've established AI-human continuity first.
+
+---
+
+## The edge-mystery
+
+There is something at the edge of known space. It does not play by the rules. The setting carries this knowledge as a **background weight**, not as gameplay.
+
+At v0.1:
+
+- **Present in lore** — loading-screen fiction, briefings, classified-file flavor text, reference to a lost ship.
+- **Absent from gameplay** — no alien presence in any battle, no mysterious wreckage you can examine, no classified-file scenarios that actually run.
+- **Unresolved** — the game does not explain what it is. Different factions have different rumors. Some factions deny anything is there.
+
+The **dread scales with the cozy-familiar frame holding in the foreground**. If v0.1 opens with any direct manifestation of the edge-mystery, the asymmetry is spent before it's earned. The full first-contact experience is reserved for future expansions where it can have real dramatic weight.
+
+This is a **promise to the future game**, not a feature of this one.
+
+---
+
+## Movement model
+
+**Continuous Newtonian physics, free coordinates (no hex grid), with rich digital planning visualization.**
+
+This was one of the more significant design shifts in the conversation. An earlier pass had been leaning toward momentum-hex (Triplanetary/Mayday lineage). The push that flipped it: if the game's identity is about honoring Newtonian physics as an authentic civilizational choice, hex-quantization of facing and velocity *undercuts* that identity. The ships would be doing hex physics with a Newtonian flavor, not Newtonian physics. The continuous model is more honest to the fiction.
+
+The grid was a solution to a problem the computer has already solved. Paper games used hexes because humans can't do trigonometry at the table. The computer can, and should.
+
+### The full movement-model spectrum considered
+
+For the historical record — five positions were discussed:
+
+- **(A) Pure hex, no momentum** (SFB / FedCom style). Crisp, teachable, chess-like. But doesn't feel like space — ships stop on a dime. Rejected.
+- **(B) Pure Newtonian vector in 3D** (Attack Vector: Tactical / Squadron Strike). Real physics, genuinely deeper gameplay, but cognitively expensive. In WEGO specifically, the opponent's next-turn position becomes a fuzzy volume rather than a specific location, which fights the "chess problem with hidden intent" feel. Rejected in 3D form; the 2D continuous model below is its spiritual cousin.
 - **(C) Continuous sim with hex overlay.** Rejected on reflection — reads hex to new players, Newtonian to nerds, pleases neither. The grid has to be doing real work or it shouldn't exist.
-- **(D) Hex + momentum vectors** (Triplanetary / Mayday lineage). Each ship has a velocity arrow; thrust modifies it within a delta-v budget. Legibility of hex + feel of space. Discrete end-states preserve the chess quality of WEGO. Facing and velocity vector decoupled — you can drift one way while pointing another. **This is the current lean.**
-- **(E) Hex + momentum + elevation bands** (three layers: high/mid/low, with thrust cost to change). Cheap approximation of 3D that recovers some of the dorsal/ventral arc richness AVT has, without requiring real 3D vector math from the player. **Deferred to v1.5+.**
+- **(D) Hex + momentum vectors** (Triplanetary / Mayday lineage). Was the working lean for much of the conversation. Ultimately rejected because hex-quantization undercuts the Newtonian identity the faction-physics idea depends on. (Later held in reserve — see below — for a possible faction that genuinely plays on momentum-hex as its civilizational mechanic.)
+- **(E) Hex + momentum + elevation bands.** Cheap approximation of 3D that recovers some of the dorsal/ventral arc richness AVT has. Deferred; rejected when hex itself was rejected.
 
-### Why momentum-hex specifically for this game
+### The concerns the hex was solving, and how to solve them without it
 
-Three reasons, ranked:
+Three concerns justified hex in the earlier pass. All three have good continuous-space solutions:
 
-1. **WEGO wants discrete end-states.** The pleasure of plot-and-execute is inversely proportional to how fuzzy the prediction problem is. Hex-based momentum produces a finite, enumerable set of possible end positions — the opponent will land on one of these ~7 hexes. That preserves the chess feel.
-2. **The SSD is already complex.** Movement must be legible so the player has cognitive budget left for ship operations, where the depth actually lives.
-3. **Information warfare needs crisp geometry.** "Did I get a lock? What's my arc? Am I in range?" must have clean hex answers for EW play to feel tactical rather than spreadsheet-y.
+**"WEGO wants discrete end-states."** The deeper need is *bounded, visualizable* end-states, not literally discrete ones. In continuous space, the opponent has a **reachable region** each turn — a specific skewed-oval shape defined by their velocity and thrust budget. The UI draws this shape during planning. Players plot against the *shape*, which communicates more information than a hex cluster (a fast maneuverable ship's region is round and wide; a heavy committed ship's region is narrow and skewed). This is a *richer* tactical vocabulary than hex reasoning.
 
-### Key digital-medium enabler
+**"SSD is already complex, so movement must be legible."** The bookkeeping problem with continuous space on a tabletop is real. Digital eliminates it entirely. The player never sees a number. They see their ship, a velocity arrow, a ghost projection of where they'll drift to next turn, thrust handles they drag, and live constraint feedback (handle goes red at thrust limit, collision warnings highlight). Trigonometry-free, visually immediate, matches physical intuition.
 
-The paper versions of momentum-hex (Triplanetary, Mayday) stayed niche because of the learning curve — new players fly into asteroids because they mispredict drift. **Ghost-trajectory preview in the planning UI** — showing end-hex and next-turn vector live as the player drags thrust handles — is the affordance this mechanic was literally waiting for. The computer is the thing that unlocks this design.
+**"Information warfare needs crisp geometry."** Solution: **quantize the effects, not the positions.** Ships have continuous positions, but sensor ranges, firing arcs, and weapon ranges are displayed as specific meaningful threshold-circles, cones, and bands. "Inside lock-on range / inside tracking range / inside passive-detection range" are visible, crossable boundaries. You never think in meters; you think in "inside missile envelope / outside missile envelope." This is how Command: Modern Operations, DCS, and similar modern sims work, and it works beautifully.
+
+### The one honest downside
+
+Continuous-coordinate movement makes **verbal after-action descriptions harder**. Hex games have natural shorthand ("turned 60° starboard, advanced 2 hexes, fired") that forum AARs can use. Continuous games don't.
+
+Mitigation: replays are first-class shareable URLs. Players link the moment rather than describe it. The social infrastructure works around the descriptive limitation — but the hex-game community culture of written AARs remains slightly less natural. This is an accepted cost.
+
+### Digital planning UI elements
+
+- Velocity arrow on each ship (length and direction = current velocity).
+- Ghost projection showing end-of-next-turn position with no thrust applied.
+- Draggable thrust handles, with live update of the resulting ghost.
+- Reachable-region envelope around the ghost (edge of what's possible this turn).
+- Collision warnings and constraint feedback (red handles at limits, highlighted obstacles).
+- Opponent's reachable region displayed during planning (estimated from known velocity and inferred thrust budget).
 
 ### Open sub-questions on movement
 
-- Symmetric vs. asymmetric thrust budgets (main drive vs. maneuvering thrusters as separate pools). Asymmetry is more flavorful and realistic but another system to teach.
-- Plotted course (one shot per turn) vs. per-impulse thrust (spread across 8-32 impulses). Per-impulse is more expressive and more SFB-authentic; plotted is simpler. Tentative lean: per-impulse with "ease of use" presets.
-- Does a ship ever meaningfully "stop"? Whether zero-velocity is a real tactic or just a theoretical state tells us a lot about map sizes and engagement ranges.
+- Symmetric vs. asymmetric thrust budgets (main drive vs. maneuvering thrusters as separate pools). Asymmetric is more flavorful and physically realistic but adds another system to teach.
+- Plotted whole-turn thrust vs. per-impulse thrust (8-32 impulses per turn). Per-impulse is more expressive and SFB-authentic; plotted is simpler. Tentative lean: per-impulse with presets.
+- Does a ship ever meaningfully reach zero velocity? Answer shapes map sizing and engagement ranges.
+- How large are the engagement volumes? Expanse-scale light-seconds-apart battles are dramatically different from Deadlock-scale kilometer-range slugfests. The choice affects weapon design and sensor design and pacing.
+- 2D or pseudo-3D? Earlier pass suggested elevation bands (high/mid/low layers) as a v1.5+ addition. Tentatively deferred.
 
 ---
 
 ## The SSD — proposed features
 
-Drawing unapologetically from SFB and Federation Commander, but doing what paper can't:
+Drawing from SFB and Federation Commander, doing what paper can't:
 
-- **Live energy curve across the impulse track.** Not one static allocation per turn — a line graph per system, drawable and re-editable. Want to surge phasers on impulse 16? Draw it in. Reactor has max sustained output plus a peak with heat cost.
-- **Heat as a second resource.** Paper games mostly hide this. Digital shows heat accumulating per subsystem, glowing red, requiring coolant or venting (which lights you up on sensors).
-- **Subsystem health with mechanical consequences.** A hit to the starboard phaser capacitor reduces that arc's damage output by 40% for 3 turns until repaired. A hit to life support causes crew casualties unless vented/patched.
-- **Damage control as automated-with-priorities.** Player sets standing orders in plot phase; DC parties move between compartments during execution, triaging by those orders. Re-prioritize each turn, not mid-resolution.
-- **Casualty reports with named crew.** Minor morale effects next mission. Optional narrative layer — memorial plaque in the ready room, etc.
+- **Live energy curve across the impulse track.** A line graph per system, drawable and re-editable. Want to surge lasers on impulse 16? Draw it. Reactor has max sustained output plus a peak with heat cost.
+- **Heat as a second resource.** Paper games mostly hide this; digital shows heat accumulating per subsystem, requiring coolant or venting (which lights you up on sensors).
+- **Subsystem health with mechanical consequences.** Hit to starboard laser capacitor reduces that arc's damage by 40% for 3 turns. Hit to life support causes crew casualties unless vented/patched.
+- **Damage control as automated-with-priorities.** Player sets standing orders in plot phase; DC parties move between compartments during execution, triaging by those orders.
+- **Casualty reports with named crew.** Minor morale effects next mission. Optional narrative layer — memorial plaque in the ready room.
+- **Faction-flavored SSD presentation.** All ships share the same underlying systems engine, but the UI emphasis differs per faction. A Belter ship's SSD prominently features rad shielding and reaction-mass status; a heavily-automated corporate corvette's SSD emphasizes autonomous-system health and cyber-intrusion resistance; a high-g Terran warship foregrounds crew g-load tolerance and compartment pressurization. Same mechanics underneath, different felt experience at the interface.
 
 ---
 
 ## Weapons — rough categories
 
-The WEGO structure makes certain weapon categories sing:
+The WEGO structure makes certain weapon categories sing. All plausible, all Newtonian-compatible:
 
-- **Direct-fire** (phasers, beams, disruptors) — resolved on the impulse they fire. Arc-limited, range-falloff, predictable but punishing.
-- **Seeking weapons** (drones, plasma torpedoes, missiles) — launched in plot phase, maneuver during execution. Their own mini-SSDs (fuel, seeker head, warhead). Counterable with PD, decoys, terrain.
-- **Mines, probes, ECM drones** — pre-deployed terrain. Rewards forethought.
-- **Tractor beams, boarding, transporters** — the weird SFB stuff. Digital handles the bookkeeping cardboard couldn't.
-- **Fighters / shuttles** — mini-ships with tiny SSDs. Managed as squadrons, not individuals.
-- **Electronic warfare** — sensor spoofing, jamming, decoys, signature management. Especially powerful in WEGO because it degrades the certainty of the opponent's plot.
+- **Direct-fire (lasers, particle beams, coilgun/railgun rounds at close range).** Resolved on the impulse they fire. Arc-limited, range-falloff, predictable but punishing. Lightspeed-lag at long range introduces real tactical texture.
+- **Kinetic projectiles (coilgun/railgun rounds at long range, casaba howitzer bus rounds).** Travel-time weapons. Fire a volley now, it arrives in three turns — opponent has time to dodge or intercept. This is an especially beautiful fit for WEGO plotting.
+- **Missiles and torpedoes.** Seeking weapons with their own mini-SSDs — fuel, seeker head, warhead, terminal burn capacity. Launched in plot phase, maneuver during execution. Counterable with point defense, decoys, terrain, EW.
+- **Drones / loitering munitions.** Deployed, then patrol or pursue. Some are kinetic-kill, some are sensor platforms, some are ECM.
+- **Mines, sensor probes, jammer drones.** Pre-deployed battlefield elements. Rewards forethought.
+- **Nuclear-pumped X-ray lasers / casaba howitzers.** Plausibly-real one-shot beam weapons derived from nuclear charges. High-damage, short-effective-range, morally loaded in-setting.
+- **Point defense — CIWS, interceptors, flak.** The counter to kinetics and missiles. Critical layer of the tactical game.
+- **Electronic warfare — jamming, spoofing, signature management, decoys.** Degrades opponent's plot certainty, which is especially valuable in WEGO.
+
+All of these are grounded in real or plausibly-real physics. No exotic technology required.
 
 ---
 
 ## Information asymmetry
 
-A pure digital superpower that tabletop cannot match:
+A pure digital superpower:
 
 - Your own SSD: fully legible.
 - Enemy SSD: **estimated** — silhouette, emissions signatures, observed weapon flashes, inferred mounts.
-- Sensor operators build a dossier over the course of a battle, and that dossier *persists across battles if your fleet survives*. "We know that cruiser has disruptors on the port arc; we saw it at Deneb."
+- Sensor operators build a dossier over the course of a battle, and that dossier **persists across battles if your fleet survives**. "We know that cruiser has coilguns on the port arc; we saw it at Eros."
+- Emissions management is a real in-combat decision — run cool to hide (at the cost of functionality) or run hot and be seen.
 
 ---
 
-## Digital-medium superpowers to lean on hard
+## Digital-medium superpowers
 
-Features no cardboard game can do, to be baked in from v0.1:
+Features no cardboard game can do, baked in from v0.1:
 
-- Perfect bookkeeping — no manual energy allocation on paper SSDs.
-- Conditional orders / standing orders — scales complexity without scaling tedium.
-- Replays as first-class shareable objects — with URLs. The best battles become legend.
+- Perfect bookkeeping — no manual energy allocation on paper.
+- Conditional orders / standing orders — scales complexity without scaling tedium ("if shields drop below 30%, rotate starboard"; "if locked by seekers, launch decoys").
+- Replays as first-class shareable objects with URLs. The best battles become legend.
 - Ghost runs — re-plot your orders post-battle to see how it would have gone. Great for learning.
-- Fog of war with memory.
+- Fog of war with persistent memory.
 - Async PBEM play with configurable turn timers.
 - Ship designer with live physics validation.
 - Community-shareable ship designs.
@@ -153,15 +284,13 @@ Features no cardboard game can do, to be baked in from v0.1:
 
 ---
 
-## The faction-identity idea (the big one)
+## Faction architecture
 
-This is where the conversation got most generative, and it's still partially open. The progression:
+The faction architecture evolved substantially across the conversation. Both the earlier ambitious version and the narrower landing version are captured here, because both have value.
 
-### First move: faction = physics
+### The ambitious version: civilizations as vectors across metaphysical spheres
 
-The question arose: if momentum-hex is the core movement model, what happens when an opponent has inertial compensators / gravity control? They wouldn't be bound by momentum-hex.
-
-Rather than treating this as a workaround, promote it to the *central creative conceit of the setting*: different civilizations have climbed different tech trees to get to space, and each tech tree commits its civilization to different physical realities. **Factions don't share a common chassis with different stat blocks — they play under genuinely different rulesets.**
+Early in the conversation, a genuinely rich idea surfaced. It began with the observation that if momentum-hex is the core movement model, what happens when an opponent has inertial compensators or gravity control? They wouldn't be bound by momentum-hex. Rather than treating this as a workaround, promote it to the *central creative conceit of the setting*: different civilizations have climbed different tech trees to get to space, and each tech tree commits its civilization to different physical realities. **Factions don't share a common chassis with different stat blocks — they play under genuinely different rulesets.**
 
 Sketched faction archetypes (illustrative only, not committed):
 
@@ -171,9 +300,7 @@ Sketched faction archetypes (illustrative only, not committed):
 - **Swarm** — no one ship is interesting; swarm health and formation are the unit.
 - **Drifters / Solar-Sailors** — little active propulsion; manipulate existing momentum and environment. Strong near stars, nebulae, gravity wells; helpless in empty space.
 
-### Second move: civilizations are vectors across multiple spheres
-
-The next realization: movement physics is just one sphere of a civilization's identity. There are others:
+The idea then generalized. Movement physics is just one sphere of a civilization's identity. Others include:
 
 - **Biology / crew** (organic, machine, hive-mind, uploaded, symbiotic)
 - **Cultural / warfare doctrine** (honor culture, pragmatic, swarm, scavenger, ritualized, apocalyptic)
@@ -185,95 +312,194 @@ The next realization: movement physics is just one sphere of a civilization's id
 
 Each sphere produces *different mechanics at the table*, not just different flavor. Biology changes whether the game even has a crew casualty system. Temporal changes whether plotting is symmetric between the two players.
 
-### Three implementation forks for the spheres idea
+Three implementation forks were considered:
 
-- **Fork A: Fixed authored factions.** Small roster of curated, monolithic factions. Spheres exist only as the designer's internal tool. How most games handle this. Tight and balanced, but the combinatorial richness is invisible to the player.
-- **Fork B: Full player composition.** Each sphere has a menu; players build factions by picking options. Maximally rich and original, but combinatorial explosion in matchup space (5 spheres × 4 options = 1024 factions, ~500K matchups). Balance likely unsolvable; some combinations degenerate.
-- **Fork C: Authored factions on a public metaphysics.** 4-6 curated factions at launch, but the spheres-structure is exposed in UI and lore. Each faction shown as a specific point in a visible combinatorial map. New factions added over time as new combinations. Custom composition possibly unlocked v2+ as a workshop feature. **This is the current lean.**
-
-### Why Fork C is the working lean
-
-- At launch, players get a clean curated experience — authored factions with voice.
-- But the metaphysics is *legible* — players can see that the Gravitics differ from the Inertialists on propulsion and sensors but share biology and temporality. The universe's structure is visible.
-- The lore has explicit shape — different civilizations walked different tech pathways, and each one in the game is a historical record of one such walk.
-- New factions feel like illuminating new corners of the map rather than piling on flavor text.
-- The architecture supports future composition without committing to it.
-- **Design discipline follows automatically** — each faction is forced to be a specific point in a shared design language, rather than a messy pile of cool ideas.
+- **Fork A: Fixed authored factions, monolithic.** Small roster, no visible axes structure.
+- **Fork B: Full player composition.** Each sphere has a menu; players build factions. Combinatorially explosive; likely unbalanceable.
+- **Fork C: Authored factions on a publicly visible metaphysics.** 4-6 curated factions at launch, but the spheres-structure is exposed in UI and lore. Each faction shown as a specific point in a visible combinatorial map. New factions added over time as new combinations. Was the working lean until the scope reconsideration.
 
 ### The temporal trap (flagged)
 
-Temporal/causal factions are a design trap that must be addressed, not deferred. A faction that literally re-plots after seeing the opponent's orders, or sends a unit backward in time, **breaks WEGO symmetry** and cracks the core loop. Temporal abilities should manifest as small asymmetric information advantages — "sees a probability distribution of enemy plot before committing," "can spend energy to force a damage re-roll" — not literal time travel. The spheres framework forces this conversation early, which is itself a point in its favor.
+Temporal/causal factions are a design trap. A faction that literally re-plots after seeing the opponent's orders, or sends a unit backward in time, **breaks WEGO symmetry** and cracks the core loop. Temporal abilities, if ever included, should manifest as small asymmetric information advantages — "sees a probability distribution of enemy plot before committing," "can spend energy to force a damage re-roll" — not literal time travel. The spheres framework forced this conversation early, which was itself a point in its favor.
+
+### The narrowing: why the ambitious version was ultimately held in reserve
+
+A scope reconsideration noted that multi-physics factions cost roughly as much as multi-games. Each is a separate balance problem, AI development effort, art pipeline, and tutorial. They also strain the WEGO core loop in specific ways (Jumpers break positional reasoning; temporally-aware factions break plot symmetry). Committing to a single-physics setting preserves the loop and the scope.
+
+The full sphere-composition cosmology is preserved as a future possibility — for expansions, sequels, or separate games — but is not the architecture of v0-v2.
+
+### The narrowed version: plausible-human axes
+
+What remains for this game's ideation: a narrower faction architecture grounded in the 500-year human-plural setting.
+
+Each faction is a point across roughly five axes, all plausibly human:
+
+- **Gravitational origin.** Terran-heavy, Mars-medium, Belter-microgravity, Europan, Jovian-orbital, Mercurian, free-orbital habitat, frontier-mixed. Shapes ship design, crew rotation, acceleration tolerance, medical requirements.
+- **Political/economic structure.** Old-Earth national bloc, Martian republic, Belter collective, corporate sovereign zone, post-state network, frontier polity. Shapes industrial base, doctrinal tradition, fleet composition, strategic tempo.
+- **Doctrinal tradition.** Decisive-battle, attritional, distributed-swarm, commerce-raiding, defensive-denial. Shapes tactical behavior and ship role mix.
+- **Industrial base philosophy.** Centralized/dreadnought, distributed/swarm, modular/reconfigurable, scavenger-refit. Shapes what ships the faction can field and how they're maintained.
+- **AI-integration philosophy.** Where the faction sits on AI-personhood and AI-automation questions. Affects crew-to-automation ratios, AI-assisted tactical decision speed, damage-control approaches, and the character of the fleet.
+
+A sixth candidate axis — **augmentation-level of the crew** — exists but is *capped* by the continuity-of-humanity principle. Factions can vary from baseline to heavily cyborg, but not into uploaded/post-human territory.
+
+### What Fork C means for the first-faction sketch
+
+When the first faction is sketched (deferred past this ideation), the specification takes the form of a declared combination, not a monolithic blob. Example stub (for shape-illustration only):
+
+> "First Expeditionary Fleet of the Ceres Collective — Belter-gravitational-origin, Belter-collective political structure, attritional doctrine, distributed-swarm industrial base, AI-integrated philosophy ('ship AIs are crew')."
+
+Every subsequent design decision about these ships — crew-to-automation ratio, habitat module sizing, acceleration ceilings, armor philosophy, weapon mix, UI flavor — flows from that specification. The axes do real work.
+
+### A real tactical consequence of the physiology axis
+
+Worth noting because it illustrates how the axes aren't just flavor: **high-g sustained burns are a weapon a Terran-crewed ship can use against a Belter-crewed ship.** The Belter crew hits medical limits before the Terran crew does. A Martian crew is somewhere in between. This isn't just flavor; it's a doctrinal asymmetry that could show up in gameplay as sustained-acceleration endurance or as specific medical-status consequences when a faction's ships are pushed beyond their crew's native tolerance.
+
+---
+
+## Held in reserve
+
+Several genuinely strong ideas surfaced in the ideation that are **not** for this game's v0.1. They are preserved here explicitly so that future design (expansions, sequels, or other games) can pick them up cleanly.
+
+### Exotic-physics factions
+
+Different civilizations playing under genuinely different physical rules — Inertialists, Gravitics, Jumpers, Swarms, Drifters. A *strong* idea. Held for possible non-human expansion or for a separate future game.
+
+*Why not now:* Multi-physics factions cost roughly as much as multi-games. They also strain the WEGO core loop in specific ways. Committing to the human-plural-single-physics setting preserves the loop and the scope.
+
+### Full sphere-composition cosmology
+
+Civilizations as vectors across many metaphysical spheres — movement physics, biology, cultural doctrine, temporal relationship, sensor paradigm, power source, scale philosophy, damage-relationship. Players would build custom factions by picking an option in each sphere. Combinatorially rich, structurally original, probably unique in the genre.
+
+*Why not now:* The Fork B approach. Beautiful as a cosmological conceit but catastrophic as a launch architecture. A narrower version (the axes above) is what this ideation landed on. The full version is preserved for future development.
+
+### Uploaded consciousness / post-human factions
+
+Plausible within a 500-1000 year horizon. Genuinely interesting. Explicitly ruled out by the continuity-of-humanity principle because the gameplay experience of fighting uploaded-crew warships would necessarily push toward alien cognition and would crack the "people in ships" frame the rest of the setting depends on.
+
+*Why not now:* Would collapse the asymmetry that makes the edge-mystery work. Preserved for future non-human expansions where that asymmetry can be deliberately crossed.
+
+### First contact with the edge-mystery
+
+The thing at the edge. Whatever it is. Its presence in the gameplay rather than just in the lore.
+
+*Why not now:* Its dramatic weight scales with how long the player has lived inside the cozy-familiar frame of human-vs-human combat. Cashing it in at v0.1 spends it before it's earned. Reserved for an expansion where it can be the center of the experience.
+
+### Empire / strategic / persistent-sector layers
+
+The campaign, the tech tree, the 4X. Originally sketched as a v3-v5 roadmap.
+
+*Why not now:* The tactical game alone is the game at v0.1-v2. Scaling above it is a future optionality if the base game thrives.
 
 ---
 
 ## Open questions
 
-Forks still unresolved, roughly in priority order:
+Forks still genuinely open at the end of this ideation session, roughly in priority order:
 
-### On faction / civilization structure
+### On setting
 
-1. **Commit to Fork C for the spheres idea?** (Currently leaning yes, not decided.)
-2. **What's the final list of spheres?** Movement, biology, doctrine, temporality, sensors, power, scale, damage-relationship — is that the right set? Too many? Missing ones?
-3. **How many options within each sphere at launch?** (Three? Four? Fewer?)
-4. **Which sphere-combinations are off-limits** to preserve WEGO integrity and game coherence?
-5. **How many authored factions at launch?** Four? Six? Which specific combinations?
-6. **Does a first-faction sketch (Inertialists) happen before or after the spheres pass?** (Current lean: after, so the sketch is a declared combination rather than a monolithic blob that bakes in implicit sphere-choices.)
+1. **Political posture at v0.1 opening.** What is actually happening in the solar system when the game starts? Cold war? Active hot war? Pirate suppression? Great powers action? Civil war within a faction? Frontier incidents? This would shape what kind of battles v0.1 is about.
+2. **Edge-mystery specifics in lore.** Even as background flavor, what is the texture? A ship lost with all hands? A signal nobody can classify? A derelict of unknown construction? How much does the player learn even indirectly?
+3. **Tone register.** Grounded-procedural (Expanse-like, professional naval dignity), grim-gritty (Battlestar Galactica bleakness), operatic (Honor Harrington social weight), baroque (Alastair Reynolds strangeness).
+4. **Aesthetic direction.** The Expanse's industrial working-spacecraft look? Something sleeker, like Mass Effect? Something more varied per faction? What about the edge-mystery design language?
 
-### On movement mechanics
+### On factions
 
-7. Symmetric vs. asymmetric thrust budgets (main drive vs. maneuvering thrusters as separate pools)?
-8. Plotted course (one shot per turn) vs. per-impulse thrust (8-32 impulses)?
-9. Does a ship ever meaningfully reach zero velocity?
-10. Elevation bands at v1 or deferred to v1.5+?
+5. **How many factions at launch?** 3? 4? 6?
+6. **Which specific factions at launch?** The axes constrain the space but don't pick the points. Which combinations get the authored treatment first?
+7. **What is the first faction to sketch in detail?** Probably informed by the political posture question.
 
-### On turn mechanics
+### On movement and tactical mechanics
 
-11. Impulse count per turn — SFB's 32 (granular, heavy), FedCom's 8 (clean, streamlined), or somewhere between?
-12. Conditional orders — how expressive should the standing-order language be? Too simple = limited; too expressive = a programming language.
+8. Symmetric vs. asymmetric thrust budgets (main drive vs. maneuvering thrusters as separate pools)?
+9. Plotted whole-turn thrust vs. per-impulse thrust (8-32 impulses per turn)?
+10. Engagement scale — light-seconds apart (Expanse-scale) or kilometers apart (Deadlock-scale)?
+11. Does a ship ever meaningfully reach zero velocity in the gameplay?
+12. 2D or pseudo-3D (elevation bands) at launch?
+13. Impulse count per turn — 8 (FedCom-streamlined), 32 (SFB-granular), or between?
+14. How expressive should the conditional/standing-order language be? Too simple = limiting; too expressive = a programming language.
 
 ### On scope and positioning
 
-13. Solo-first (campaign) or PvP-first (skirmish) at launch? Deadlock leaned solo; Nebulous leaned PvP. Tentative lean: solo-first with PvP added once AI is strong enough to pass a decent Turing test, but contested.
-14. How loud is the RPG knob? Named crew, captain careers, ship logs — how deep in v1?
-15. Map terrain — asteroids, nebulae, gravity wells, debris fields. Which make v1? Do battle wreckage fields persist?
-
-### On the setting
-
-16. What is the metaphysical framing of the universe? Why do different civilizations have different relationships to physics? Is there a deeper underlying physics, or are the sphere-options genuinely just incompatible truths?
-17. What is the in-universe reason civilizations encounter each other despite incompatible physics? (Neutral space where all physics work? Shared discoveries that bridge?)
-18. Tone — grim-gritty, operatic, scientific-optimistic, weird-baroque?
+15. **Solo-first (campaign) or PvP-first (skirmish)?** Deadlock leaned solo; Nebulous leaned PvP. Tentative lean was solo-first with PvP strong, but contested.
+16. How loud is the RPG knob at v1? Named crew, captain careers, ship logs — how deep?
+17. Map terrain — asteroids, debris fields, radiation zones, ECM-scattering gas clouds, gravity wells. Which make v1? Does battle wreckage persist as terrain within a battle?
+18. What is the v0.1 scenario set? A one-ship-vs-one-ship duel is the proof-of-concept; what fiction does it sit in?
 
 ---
 
-## What's decided vs. leaning vs. open
+## Decided / Leaning / Open summary
 
-**Decided:**
+This is the state at the moment ideation was suspended. The subsequent build (see space_game_2) has adopted a vertical-slice approach that supersedes many of these leanings for execution purposes, but the reasoning is preserved here.
 
-- Original IP, not licensed.
-- Scope capped at v0-v2. No tech tree, no empire layer.
-- WEGO plot-and-execute turn structure.
-- SSD as primary game interface.
-- Async-native architecture from day one.
-- Replays as first-class shareable objects.
+### Decided during ideation
 
-**Working leans (argued for but not committed):**
+- **Scope:** Capped at v0-v2. No empire layer, no tech tree.
+- **IP:** Original, not licensed.
+- **Turn structure:** WEGO plot-and-execute.
+- **Primary interface:** SSD-centric gameplay.
+- **Architecture:** Async-native from day one.
+- **Replays:** First-class shareable objects.
+- **Setting horizon:** 500 years from now, solar system, no FTL.
+- **Humanity:** Plural, diverged within continuity — physiologically, politically, culturally, technologically.
+- **Continuity-of-humanity principle:** Factions must be recognizably "people making hard choices." Uploaded consciousness, hive minds, full-AI factions, speciation-level divergence are out of scope.
+- **AI in setting:** Integrated into humanity's story, not separate. Personhood is contested in-universe, not resolved.
+- **Edge-mystery:** Present in lore only at v0.1. Reserved for future expansions.
+- **Movement model:** Continuous Newtonian, free coordinates, with rich digital planning UI.
+- **No exotic-physics factions at launch.** Held in reserve.
 
-- Momentum-hex movement (Triplanetary lineage).
-- Elevation bands deferred post-launch.
-- Fork C for faction structure (authored factions on a public spheres-metaphysics).
-- Spheres-pass happens before first-faction sketch.
-- Solo-first, PvP-strong.
+### Working leans (argued for, not formally committed)
+
+- Fork C for faction structure (authored factions on publicly visible axes).
+- Faction axes: gravitational origin, political/economic structure, doctrinal tradition, industrial base philosophy, AI-integration philosophy (+ capped augmentation as a sixth).
 - Per-impulse thrust with presets.
+- Solo-first campaign with PvP strong from launch.
+- Elevation bands deferred to post-launch.
+- Faction-flavored SSD presentation on a shared underlying systems engine.
 
-**Wide open:**
+### Wide open
 
-- Everything about specific factions and their specific combinations.
-- The metaphysical framing of the setting.
-- All the open-questions list above.
-- The tone and aesthetic of the universe.
+- Political posture at v0.1 opening.
+- Number and identities of launch factions.
+- Tone and aesthetic direction.
+- Edge-mystery specifics in lore.
+- All the remaining tactical sub-questions (thrust budget structure, engagement scale, impulse count, etc.).
+- First-faction-sketch target.
 
 ---
 
-## Suggested next ideation session
+## Transition to bottom-up build
 
-If/when we pick this up: do the spheres pass. Name the five or six spheres definitively, enumerate three or four options each, flag the off-limits combinations. That gives us a map of the universe before picking our first point on it. Then — and only then — sketch the first faction (probably Inertialists) as a declared combination across all spheres.
+The ideation session concluded with a recognition that the conversation had drifted toward being a sci-fi novel brainstorm rather than a game design exercise. Setting ideation is comfortable and infinite; mechanical ideation hits walls and requires commitment. The pattern had been top-down ideation without a bottom to reach toward — every decision referenced other decisions that themselves weren't concrete.
+
+The resolution: **preserve this doc as a creative artifact and start fresh in a sibling project (space_game_2) with a bottom-up, vertical-slice discipline.** Each slice is a working, multiplayer-capable, internet-reachable version of the game that players can actually play. New features earn their place in the next slice by serving the players currently playing the previous slice.
+
+Key architectural commitments carried forward into the build project:
+
+- **Peer-hosted networked multiplayer via tunnel** (Cloudflare Tunnel or equivalent). No dedicated server until peer-hosting is the actual bottleneck.
+- **Networked-first, then AI opponent, then hot-seat.** Hot-seat is structurally harder in WEGO than networked play (secret-state management on a shared screen) and should ride on top of a working networked foundation, not precede it.
+- **v0.1 target:** Two identical ships, continuous Newtonian movement with planning UI, minimal SSD (reactor + one weapon + hull), one direct-fire weapon, full plot-commit-execute-debrief loop, peer-hosted multiplayer, deterministic replays. Nothing else.
+
+Everything else from this ideation — the spheres framework, the faction axes, the setting frame, the weapons taxonomy, the EW and information-asymmetry ideas — remains available as reference material to draw from when a specific slice needs a specific decision. But nothing in this doc is a commitment for the build project. The build project's scope is its own.
+
+---
+
+## Research questions (for a future session)
+
+A research area that surfaced near the end of ideation, to be revisited when there is a playable game to layer this on top of. The AI landscape moves fast; any recommendation captured now will be partially stale.
+
+- What is the state of classical tactical game AI — MCTS, policy networks, learned opponent models — for WEGO-style games with large plot-space and imperfect information?
+- What is the state of hybrid architectures that combine classical game AI for decisions with LLMs for explanation, personality, and flavor? (Meta's CICERO Diplomacy work is probably the closest published analog.)
+- What is the right split between deterministic tactical AI (for opponent moves) and LLM-driven presentation (for briefings, debriefs, captain-voice narration, faction-flavored text)?
+- How can an AI opponent be made to feel like a *person* commanding a ship, with personality and voice, without the LLM being on the critical path for tactical decisions?
+- What can procedural content generation contribute to scenario design, mission generation, or dynamic campaign events?
+- What does imitation learning from player data look like once there's enough player data to learn from?
+- What safeguards and design choices are needed to keep an AI opponent challenging without cheating (perfect information access, unrealistic reaction speed, etc.)?
+
+---
+
+## Closing note
+
+This document is the end of an ideation phase, not the beginning of a design phase. Many ideas captured here will never be built. Some may resurface in a sequel. Some may become a novel. Some may inform a completely different game years from now. That is fine. The purpose of ideation is not to produce a blueprint; it is to produce a rich enough space of possibilities that the next, more disciplined phase has good material to draw from.
+
+The discipline of the build project (space_game_2) is narrower by design. That is a feature, not a regression.
