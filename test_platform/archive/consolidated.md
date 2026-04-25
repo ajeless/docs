@@ -1,10 +1,20 @@
 # TEST EVERYTHING: Consolidated Ideation
 
+```
+────────────────────────────────────────────────────────────────────────
+  PROJECT     test-platform
+  FILE        archive/consolidated.md
+  ROLE        merged ideation
+  STATUS      reference · not authoritative
+  UPDATED     2026-04-25
+────────────────────────────────────────────────────────────────────────
+```
+
 *Interim merge of ideation1.md – ideation7.md. Preserves unique ideas from each; resolves nothing. Open questions collected at the end.*
 
 ---
 
-## 1. The Vision
+## §1 — The Vision
 
 An **AI-native, containerized, cloud-native testing platform** with one attitude: **TEST EVERYTHING**.
 
@@ -26,7 +36,7 @@ An **AI-native, containerized, cloud-native testing platform** with one attitude
 
 ---
 
-## 2. Market Landscape & Competitive Gap
+## §2 — Market Landscape & Competitive Gap
 
 ### 2.1 What exists today (fragmented)
 
@@ -47,7 +57,7 @@ Nobody has built an **open-source, self-hosted, AI-native orchestrator** that ti
 
 ---
 
-## 3. Architecture
+## §3 — Architecture
 
 ### 3.1 Four-engine framing (ideation3)
 
@@ -122,7 +132,7 @@ services:
 
 ---
 
-## 4. Tool Stack by Dimension
+## §4 — Tool Stack by Dimension
 
 ### 4.1 Unit / Integration
 - **pytest, Jest, Vitest, JUnit 5, Go test, xUnit.net** — language-native
@@ -233,7 +243,7 @@ Playwright navigates (handles auth, state)
 
 ---
 
-## 5. Key Innovations / Differentiators
+## §5 — Key Innovations / Differentiators
 
 *Merged from ideation1 §6 and ideation2 §5. Each distinct idea preserved.*
 
@@ -300,7 +310,7 @@ Common in 2026 commercial tools; worth building in.
 
 ---
 
-## 6. Tech Stack Recommendations
+## §6 — Tech Stack Recommendations
 
 ### 6.1 Core Platform
 | Component | Candidates |
@@ -331,7 +341,7 @@ Atheris, BackstopJS, Nuclei, SonarQube Community, Ruff/ESLint, Faker, Hypothesis
 
 ---
 
-## 7. SaaS / Third-Party Integrations
+## §7 — SaaS / Third-Party Integrations
 
 | Service | Integration | Purpose |
 |---|---|---|
@@ -355,7 +365,7 @@ Atheris, BackstopJS, Nuclei, SonarQube Community, Ruff/ESLint, Faker, Hypothesis
 
 ---
 
-## 8. Implementation Path — Two Competing Approaches
+## §8 — Implementation Path — Two Competing Approaches
 
 ### 8.1 Phased 20-week plan (ideation2)
 
@@ -395,7 +405,7 @@ Start with **Code-to-Unit-Test Repo Analyzer** or **URL-to-Playwright Web Crawle
 
 ---
 
-## 9. Open Questions (consolidated from all 7 docs)
+## §9 — Open Questions (consolidated from all 7 docs)
 
 ### 9.1 Branding
 - Name: "TestAll" / "OmniTest" / "TestForge" / "Panoptic" / "AutoForge Tester" / other?
@@ -448,7 +458,7 @@ Start with **Code-to-Unit-Test Repo Analyzer** or **URL-to-Playwright Web Crawle
 
 ---
 
-## 10. Source Attribution
+## §10 — Source Attribution
 
 - **ideation1** — most comprehensive; source of Novel Ideas §6 (adversarial agent, spec-to-test, differential testing, living KB, shadow testing)
 - **ideation2** — phased 20-week plan; Key Innovations §5 (zero-config, edge-case engine, mutation testing, continuous mode); Open Questions §7
@@ -457,3 +467,12 @@ Start with **Code-to-Unit-Test Repo Analyzer** or **URL-to-Playwright Web Crawle
 - **ideation5** — Gemini-authored; Plugin/Adapter pattern; AutoTestGen/Stoat/CodeXGLUE; MVP fork question
 - **ideation6** — Mockachu, SYDA, Maelstrom, Avocado, Agentic QE Fleet, BugTrace-AI, Speclinter; architectural spike recommendation; learning layer
 - **ideation7** — testRigor/QA Wolf/Baserock/Katalon TrueTest; Diffblue, Cypress cy.prompt; LangChain/LangGraph/CrewAI; Kestra; naming suggestions OmniTest/AutoForge
+
+---
+
+```
+────────────────────────────────────────────────────────────────────────
+  END · archive/consolidated.md
+  merged ideation
+────────────────────────────────────────────────────────────────────────
+```

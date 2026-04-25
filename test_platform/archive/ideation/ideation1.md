@@ -1,9 +1,22 @@
 # TEST EVERYTHING: AI-Native Testing Platform
-## Research & Ideation Document
+
+```
+────────────────────────────────────────────────────────────────────────
+  PROJECT     test-platform
+  FILE        archive/ideation/ideation1.md
+  ROLE        original ideation 1 of 7
+  STATUS      archived · 2026-04-07
+  UPDATED     2026-04-25
+────────────────────────────────────────────────────────────────────────
+```
 
 ---
 
-## 1. The Vision
+## §1 — Research & Ideation Document
+
+---
+
+## §2 — The Vision
 
 An AI-native, containerized, cloud-native testing platform with one attitude: **TEST EVERYTHING**.
 
@@ -13,7 +26,7 @@ An AI-native, containerized, cloud-native testing platform with one attitude: **
 
 ---
 
-## 2. Landscape Research: What Already Exists
+## §3 — Landscape Research: What Already Exists
 
 ### 2.1 AI-Powered Test Generation
 
@@ -169,7 +182,7 @@ Playwright navigates (handles auth, state)
 
 ---
 
-## 3. Platform Architecture: The AI Brain
+## §4 — Platform Architecture: The AI Brain
 
 ### 3.1 Core Architecture
 
@@ -272,7 +285,7 @@ services:
 
 ---
 
-## 4. Key Capabilities Matrix
+## §5 — Key Capabilities Matrix
 
 | Capability | Primary Tool | Backup/Alt | AI Role |
 |-----------|-------------|-----------|---------|
@@ -296,7 +309,7 @@ services:
 
 ---
 
-## 5. SaaS / Third-Party API Integrations
+## §6 — SaaS / Third-Party API Integrations
 
 | Service | Integration Method | What We Get |
 |---------|-------------------|------------|
@@ -313,7 +326,7 @@ services:
 
 ---
 
-## 6. Novel Ideas: What Hasn't Been Done
+## §7 — Novel Ideas: What Hasn't Been Done
 
 ### 6.1 Adversarial Test Agent
 An LLM agent that actively tries to break the application — not just test happy paths but think like a malicious user. It uses chain-of-thought reasoning to discover attack vectors, weird state transitions, and race conditions.
@@ -332,7 +345,7 @@ Use Keploy to capture production traffic, replay it against staging/dev with mut
 
 ---
 
-## 7. Recommended Tech Stack
+## §8 — Recommended Tech Stack
 
 ### Core Platform
 - **Language:** Python (orchestrator) + TypeScript (dashboard)
@@ -362,7 +375,7 @@ Use Keploy to capture production traffic, replay it against staging/dev with mut
 
 ---
 
-## 8. Next Steps
+## §9 — Next Steps
 
 1. **Validate the architecture** — Build a minimal POC that takes a simple repo, analyzes it, and generates + runs unit tests and E2E tests
 2. **Prioritize testing dimensions** — Start with unit + E2E + security as the MVP triad
@@ -374,3 +387,12 @@ Use Keploy to capture production traffic, replay it against staging/dev with mut
 ---
 
 *Document generated April 7, 2026 — Research covers tools and landscape as of this date.*
+
+---
+
+```
+────────────────────────────────────────────────────────────────────────
+  END · archive/ideation/ideation1.md
+  original ideation 1 of 7
+────────────────────────────────────────────────────────────────────────
+```

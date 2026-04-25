@@ -1,3 +1,17 @@
+# Ideation 3
+
+```
+────────────────────────────────────────────────────────────────────────
+  PROJECT     test-platform
+  FILE        archive/ideation/ideation3.md
+  ROLE        original ideation 3 of 7
+  STATUS      archived
+  UPDATED     2026-04-25
+────────────────────────────────────────────────────────────────────────
+```
+
+---
+
 You’re not starting from zero. The building blocks for almost every layer of a “test everything” platform already exist: Playwright for browser automation and agent workflows, Cypress for component testing, Selenium/WebDriver for cross-browser interoperability, Testcontainers for real dependency-backed integration tests, k6 and Locust for load testing, Lighthouse CI for frontend quality budgets, Pact for contract testing, Schemathesis for schema-driven edge-case API testing, Cucumber/Gherkin for executable specs, axe-core for accessibility, BackstopJS or Percy/Applitools for visual regression, Stryker/PIT for mutation testing, ZAP for security automation, Chaos Mesh for resilience testing, and Testkube/Argo/Tekton for Kubernetes-native orchestration. ([Playwright][1])
 
 What I **did not** find is a single mature platform that truly does your full vision end to end: “point me at a repo or URL, infer the system, generate multi-layer tests, exercise edge cases, run real-browser functional and performance checks, validate contracts/specs, orchestrate everything in containers/Kubernetes, and judge quality with evidence.” The market has strong slices of that problem, but mostly not the whole stack in one coherent control plane. That is the opening. ([docs.qawolf.com][2])
@@ -30,3 +44,12 @@ The next thing I’d do is turn this into a concrete architecture and MVP scope:
 [5]: https://cucumber.io/docs/ "Introduction | Cucumber"
 [6]: https://docs.testkube.io/articles/tutorial/introduction "Introduction | Testkube Documentation"
 [7]: https://www.browserstack.com/docs/automate/api-reference/selenium/introduction "Overview of Automate API | BrowserStack Docs"
+
+---
+
+```
+────────────────────────────────────────────────────────────────────────
+  END · archive/ideation/ideation3.md
+  original ideation 3 of 7
+────────────────────────────────────────────────────────────────────────
+```

@@ -1,12 +1,22 @@
 # Test Platform — Synthesis
 
+```
+────────────────────────────────────────────────────────────────────────
+  PROJECT     test-platform
+  FILE        synthesis.md
+  ROLE        platform working doc
+  STATUS      active · authoritative
+  UPDATED     2026-04-25
+────────────────────────────────────────────────────────────────────────
+```
+
 *Companion to `curation.md` (the curation project) and `eval_case_schema.md` (the case schema reference). Where this document and `curation.md` overlap, `curation.md` is authoritative on curation matters and this document is authoritative on test platform matters. The original ideation that preceded this document is preserved in `archive/`; the consolidated merge of those ideation conversations is at `archive/consolidated.md`.*
 
 *This document is the working position for the test platform project. When this document and the archived ideation disagree, this document wins.*
 
 ---
 
-## 1. What this project actually is
+## §1 — What this project actually is
 
 The product is an **autonomous testing control plane**, not a team of agents.
 
@@ -22,7 +32,9 @@ The defensible core is the strategist and the judge. Execution can be borrowed f
 
 The platform is honest about which classes of bugs it can address and which it cannot. Some classes of failure (configuration-dependent, load-dependent, specification-contested) are outside what any reasonable system can determine from a repository alone. The platform names these limits rather than producing false confidence about them.
 
-## 2. The pipeline
+---
+
+## §2 — The pipeline
 
 Five stages, each producing an inspectable artifact:
 
@@ -40,7 +52,9 @@ Five stages, each producing an inspectable artifact:
 
 Each stage must produce an artifact a human (or a separate evaluation system) can read and critique. This is not optional — it's how we avoid the cascade problem below.
 
-## 3. The cascade problem
+---
+
+## §3 — The cascade problem
 
 If Discover builds a bad model, Plan produces a strategy based on wrong assumptions. If Plan picks wrong priorities, Generate produces tests for the wrong surfaces. If Generate produces weak tests, Execute returns meaningless passes. If Judge trusts those passes, the whole system confidently ships broken software.
 
@@ -56,7 +70,9 @@ The architectural response is that every stage produces a **structured, inspecta
 
 This means questions like "was the discovery accurate?" or "given this model, was the strategy appropriate?" can be asked in isolation rather than debugged through an opaque pipeline.
 
-## 4. Reasoning tiers
+---
+
+## §4 — Reasoning tiers
 
 A scale that proved useful while curating evaluation cases. It captures the depth of analysis a system would need to anticipate a given bug.
 
@@ -76,7 +92,9 @@ Costs scale roughly multiplicatively, not additively. Tier 1 is cheap and may ev
 
 The platform is honest about which tiers it covers. A well-designed control plane covers Tiers 1–3 strongly, does useful but partial work on Tier 4, and explicitly acknowledges Tier 5 as "this requires running it in production-like conditions, here's what we'd suggest." Tier 6 is human-only.
 
-## 5. Orthogonal capabilities
+---
+
+## §5 — Orthogonal capabilities
 
 Reasoning depth is one dimension. The platform also needs at least these distinct capabilities, which are orthogonal to each other and to reasoning tier:
 
@@ -96,7 +114,9 @@ The reason this matters: investing more in deep reasoning capability doesn't hel
 
 The case schema records `capability_demand` per bug, which lets evaluation measure whether the platform's capabilities are at compatible levels. See `eval_case_schema.md` §4.2.
 
-## 6. How we evaluate the system itself
+---
+
+## §6 — How we evaluate the system itself
 
 This is the hardest problem in the project, and the curation project (see `curation.md`) is built around solving it.
 
@@ -112,7 +132,9 @@ The curation project produces structured evaluation cases that support this meas
 
 Other modes (issue-assisted, diff-assisted, post-fix test assessment) measure secondary product capabilities and are scored separately.
 
-## 7. The first spike
+---
+
+## §7 — The first spike
 
 Not a platform. Not a CLI. Not an orchestrator.
 
@@ -129,7 +151,9 @@ The architecture flows from knowing what works, not from assuming what will.
 
 This spike depends on the curation project producing enough cases to evaluate against. Until at least 30–60 cases exist in the calibration split, the spike's evaluation will be noisy.
 
-## 8. Execution substrate and harness
+---
+
+## §8 — Execution substrate and harness
 
 **Decision: Docker + Testcontainers + Claude Agent SDK, directly.**
 
@@ -141,7 +165,9 @@ The primitives we actually need — isolated execution environments, resource li
 
 This keeps the architecture simple, auditable, and shaped to testing.
 
-## 9. Human-in-the-loop model
+---
+
+## §9 — Human-in-the-loop model
 
 The autonomy-versus-approval tension is real. The resolution: **checkpoints live at stage boundaries, not per-action.**
 
@@ -155,7 +181,9 @@ This matches how experienced engineers actually want to engage with autonomous s
 
 The perimeter itself is enforced at the infrastructure layer: Docker network policies, read-only mounts where possible, non-root containers, scoped tool sets in the Claude Agent SDK, comprehensive logging for after-the-fact review.
 
-## 10. What's decided
+---
+
+## §10 — What's decided
 
 - **Product identity:** autonomous testing control plane
 - **Pipeline stages:** Discover → Plan → Generate → Execute → Judge
@@ -169,7 +197,9 @@ The perimeter itself is enforced at the infrastructure layer: Docker network pol
 - **Execution substrate:** Docker + Testcontainers + Claude Agent SDK (not OpenClaw, not NanoClaw)
 - **Human-in-the-loop pattern:** checkpoints at stage boundaries, not per-action
 
-## 11. What's still open
+---
+
+## §11 — What's still open
 
 **Target stack for the first spike.** Historical backtesting requires picking projects in a specific stack. Python web backends (FastAPI / Django / Flask) are the working assumption; the curation project's Phase 1 work will produce concrete project selections.
 
@@ -189,7 +219,7 @@ The perimeter itself is enforced at the infrastructure layer: Docker network pol
 
 ---
 
-## 12. Reading order for new collaborators
+## §12 — Reading order for new collaborators
 
 For someone picking up this project family fresh:
 
@@ -202,3 +232,12 @@ For someone picking up this project family fresh:
 7. `archive/ideation/*.md` — the raw ideation documents, only if direct provenance is needed for a particular idea
 
 When this document and `curation.md` overlap, this document is authoritative on test platform matters and `curation.md` is authoritative on curation matters. When this document and the archived ideation disagree, this document wins.
+
+---
+
+```
+────────────────────────────────────────────────────────────────────────
+  END · synthesis.md
+  platform working doc
+────────────────────────────────────────────────────────────────────────
+```

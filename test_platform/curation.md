@@ -1,10 +1,20 @@
 # Curation — Project Working Document
 
+```
+────────────────────────────────────────────────────────────────────────
+  PROJECT     test-platform
+  FILE        curation.md
+  ROLE        curation working doc
+  STATUS      active · authoritative
+  UPDATED     2026-04-25
+────────────────────────────────────────────────────────────────────────
+```
+
 *Companion to `synthesis.md` and `eval_case_schema.md`. Where `synthesis.md` describes the eventual autonomous testing control plane, this document describes a separate project — the curation project — whose output feeds the test platform's evaluation but which has its own goals, methodology, and lifecycle. The schema reference for the curation outputs is `eval_case_schema.md`. This document is the working position for the curation project; when this document and `synthesis.md` overlap, this one is authoritative on curation matters.*
 
 ---
 
-## 1. What curation is
+## §1 — What curation is
 
 Curation is the project of assembling and maintaining the body of evaluation cases against which the test platform's quality is measured. Its outputs are concrete: curated project lists with rationale, evaluation case files with structured ground truth, and a methodology that lets new cases be added without re-deriving the criteria each time.
 
@@ -12,7 +22,9 @@ Curation is not preparation for the test platform. It is one of several projects
 
 The framing matters: if we treat curation as a sidecar, we'll build it sloppily and reuse it sloppily. Treating it as a project means giving it its own goals, its own success criteria, its own decisions, and its own working documents.
 
-## 2. Why this is the right first project
+---
+
+## §2 — Why this is the right first project
 
 Three reasons.
 
@@ -22,7 +34,9 @@ Second, it's the work that produces the most learning per unit of effort. Every 
 
 Third, it plays to the strengths available right now. Identifying good projects, reading bug fixes, classifying them, building rubrics — these are tasks where careful manual work is cheap and produces durable artifacts. Building a control plane, by contrast, requires significant engineering effort whose value is uncertain until evaluation exists.
 
-## 3. What curation produces
+---
+
+## §3 — What curation produces
 
 The deliverables of the curation project, in roughly the order they're produced:
 
@@ -40,7 +54,9 @@ The deliverables of the curation project, in roughly the order they're produced:
 
 The curated project list and the evaluation case files are the visible outputs. The methodology, scale, capabilities list, and rejection rationales are the durable knowledge that lets the project survive new ecosystems and new contributors.
 
-## 4. Phases
+---
+
+## §4 — Phases
 
 The curation project has phases because not all of its work can be done at once, and trying to do it all at once would freeze decisions before they're informed.
 
@@ -54,7 +70,9 @@ The curation project has phases because not all of its work can be done at once,
 
 The phase boundaries are not sharp. Phase 1 produces evidence that informs Phase 2 scope; Phase 2 may surface gaps that motivate Phase 3 more than originally planned. The phases exist to keep us from over-committing to one ecosystem and to force the question "does this generalize?" before it's too expensive to answer.
 
-## 5. Benchmark integrity
+---
+
+## §5 — Benchmark integrity
 
 Curation produces ground truth. But ground truth is only useful if it can't be gamed. The remainder of this section establishes the disciplines that protect benchmark integrity.
 
@@ -226,7 +244,9 @@ For this reason, each case distinguishes:
 
 Changed files are an answer-key input, not the whole answer key. The schema's location_answer_key block makes these layers explicit and scorable separately.
 
-## 6. Inclusion criteria
+---
+
+## §6 — Inclusion criteria
 
 A project is a candidate for inclusion when it satisfies the following:
 
@@ -246,7 +266,9 @@ A project is a candidate for inclusion when it satisfies the following:
 
 These criteria are written in language-neutral terms where possible. Where they're Python-specific (none of them are, intentionally), they should be flagged.
 
-## 7. Exclusion criteria
+---
+
+## §7 — Exclusion criteria
 
 A project is rejected when:
 
@@ -264,7 +286,9 @@ Frameworks and libraries are not categorically excluded but they are not part of
 
 Rejection is itself data. Rejected projects are documented with rationale, which sharpens the criteria.
 
-## 8. Per-project methodology
+---
+
+## §8 — Per-project methodology
 
 For each candidate project, the curation work consists of:
 
@@ -282,7 +306,9 @@ For each candidate project, the curation work consists of:
 
 The work is mostly manual in this phase. Lightweight tooling — scripts to fetch PR metadata from forge APIs, extract diffs against parent commits, identify candidate bug-fix PRs by commit-message convention — speeds the work without making decisions for it.
 
-## 9. Source-forge neutrality
+---
+
+## §9 — Source-forge neutrality
 
 Phase 1 may primarily use GitHub because its issue and PR metadata are easy to access, but the curation methodology is not GitHub-specific.
 
@@ -290,7 +316,9 @@ Neutral concepts are used where possible: repository, source forge, issue or def
 
 This matters because candidate projects may live on multiple forges, and the curation project commits to evaluating projects on their merits rather than on where they happen to be hosted.
 
-## 10. Security case handling
+---
+
+## §10 — Security case handling
 
 Security bugs are high-value evaluation cases — they are often Tier 3 or 4, they represent the kind of finding the platform should excel at, and they tend to come with rigorous public documentation. But they require care.
 
@@ -305,7 +333,9 @@ Security case files distinguish between:
 
 If exploit details are unnecessary for evaluating Discovery or Plan, they're summarized rather than reproduced. The goal is to evaluate risk discovery and test strategy, not to produce exploit documentation.
 
-## 11. Curation tooling roadmap
+---
+
+## §11 — Curation tooling roadmap
 
 Automation is deferred, not rejected. The curation project evolves through stages:
 
@@ -323,7 +353,9 @@ Automation is deferred, not rejected. The curation project evolves through stage
 
 The progression is intentionally cautious. Premature automation freezes weak criteria; the criteria need to mature against real cases first. By Stage 5, the Curator becomes a system in its own right — itself subject to evaluation against the same standards we apply to the test platform.
 
-## 12. What is explicitly out of scope
+---
+
+## §12 — What is explicitly out of scope
 
 Scope creep is the most likely failure mode for a project like this. Each item below has been considered and deferred deliberately.
 
@@ -345,7 +377,9 @@ Scope creep is the most likely failure mode for a project like this. Each item b
 
 **Formal inter-rater calibration protocols.** The principle that disagreements are signal, not noise, is durable. The procedural overhead of formal inter-rater agreement is premature for the current scale of the project.
 
-## 13. Relationship to the test platform
+---
+
+## §13 — Relationship to the test platform
 
 Curation produces the data against which the test platform is evaluated. It does not specify the test platform's architecture, capabilities, or behavior. The platform's design is downstream.
 
@@ -353,7 +387,9 @@ That said, curation surfaces requirements implicitly. When a case requires `syst
 
 This is a healthy pattern: evaluation drives design, rather than design driving evaluation. It's the inverse of what happens when a team builds a system first and then asks "how do we know it works?" That inversion is the whole reason curation comes first.
 
-## 14. Open questions for this project
+---
+
+## §14 — Open questions for this project
 
 **Where does the curated project list live?** A single `projects.md` file alongside the eval case YAML files? A directory of per-project markdown? Some structured registry format? For Phase 1, single markdown is probably sufficient. Worth revisiting at Phase 2 boundary.
 
@@ -369,7 +405,7 @@ This is a healthy pattern: evaluation drives design, rather than design driving 
 
 ---
 
-## 15. Reading order for new collaborators
+## §15 — Reading order for new collaborators
 
 For someone picking up the curation project specifically:
 
@@ -380,3 +416,12 @@ For someone picking up the curation project specifically:
 5. `archive/consolidated.md` — only for historical context on the original ideation
 
 When this document and `synthesis.md` overlap, this document is authoritative on curation matters and the synthesis is authoritative on test platform matters. Where they conflict structurally, flag for resolution rather than picking one.
+
+---
+
+```
+────────────────────────────────────────────────────────────────────────
+  END · curation.md
+  curation working doc
+────────────────────────────────────────────────────────────────────────
+```

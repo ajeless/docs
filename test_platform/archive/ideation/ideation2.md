@@ -1,9 +1,22 @@
 # TEST EVERYTHING: AI-Native Software Testing Platform
-## Research & Ideation Document
+
+```
+────────────────────────────────────────────────────────────────────────
+  PROJECT     test-platform
+  FILE        archive/ideation/ideation2.md
+  ROLE        original ideation 2 of 7
+  STATUS      archived
+  UPDATED     2026-04-25
+────────────────────────────────────────────────────────────────────────
+```
 
 ---
 
-## 1. The Vision
+## §1 — Research & Ideation Document
+
+---
+
+## §2 — The Vision
 
 **Point → Analyze → Test → Report.** You give the platform a repo URL or a live website, and an AI orchestrator figures out what the codebase does, generates comprehensive test cases (including edge cases), selects the right testing tools, executes tests in containers, and delivers a unified report. No test left unwritten.
 
@@ -14,7 +27,7 @@ This is fundamentally different from existing tools because:
 
 ---
 
-## 2. Landscape Analysis: What Exists Today
+## §3 — Landscape Analysis: What Exists Today
 
 ### 2.1 Open-Source Testing Frameworks (Our Execution Layer)
 
@@ -56,7 +69,7 @@ This is fundamentally different from existing tools because:
 
 ---
 
-## 3. Architecture: How It Works
+## §4 — Architecture: How It Works
 
 ### 3.1 Core Workflow
 
@@ -151,7 +164,7 @@ This is a unique capability — testing **before code exists**:
 
 ---
 
-## 4. Technology Stack
+## §5 — Technology Stack
 
 ### 4.1 Core Platform
 
@@ -210,7 +223,7 @@ services:
 
 ---
 
-## 5. Key Innovations / Differentiators
+## §6 — Key Innovations / Differentiators
 
 ### 5.1 "Zero-Config" Test Discovery
 The AI analyzes the repo structure and automatically determines:
@@ -255,7 +268,7 @@ After generating tests, validate their quality:
 
 ---
 
-## 6. Implementation Phases
+## §7 — Implementation Phases
 
 ### Phase 1: Foundation (Weeks 1-4)
 - CLI tool: `testall init`, `testall scan <repo-url>`
@@ -294,7 +307,7 @@ After generating tests, validate their quality:
 
 ---
 
-## 7. Open Questions to Resolve
+## §8 — Open Questions to Resolve
 
 1. **Naming**: "TestAll"? "OmniTest"? "TestForge"? "Panoptic"?
 2. **Licensing**: MIT or Apache 2.0 for the orchestrator?
@@ -305,7 +318,7 @@ After generating tests, validate their quality:
 
 ---
 
-## 8. Tool Reference Quick-Sheet
+## §9 — Tool Reference Quick-Sheet
 
 ### Must-Integrate (Core)
 - **Playwright** — E2E browser testing (primary browser automation layer)
@@ -339,3 +352,12 @@ After generating tests, validate their quality:
 ---
 
 *Document generated April 7, 2026. Based on research of the current testing landscape, open-source tooling, and competitive analysis.*
+
+---
+
+```
+────────────────────────────────────────────────────────────────────────
+  END · archive/ideation/ideation2.md
+  original ideation 2 of 7
+────────────────────────────────────────────────────────────────────────
+```

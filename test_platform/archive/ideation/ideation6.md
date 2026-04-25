@@ -1,3 +1,17 @@
+# Ideation 6
+
+```
+────────────────────────────────────────────────────────────────────────
+  PROJECT     test-platform
+  FILE        archive/ideation/ideation6.md
+  ROLE        original ideation 6 of 7
+  STATUS      archived
+  UPDATED     2026-04-25
+────────────────────────────────────────────────────────────────────────
+```
+
+---
+
 This is an ambitious and timely vision. Building an "AI-native" platform that automatically tests anything you point it at—repositories or live websites—tackles a key challenge in modern software development: the limitations of developer-written tests. The "test everything" philosophy is the right foundation, and as my research shows, you're not starting from scratch; a rich ecosystem of open-source tools exists that can serve as the core engine for your platform.
 
 ### 📚 Research Synthesis: The Lay of the Land
@@ -68,3 +82,12 @@ The goal is to prove the "AI orchestrator" pattern works. The PoC would involve:
 4.  **Evaluating the result**: Assess whether the agent can successfully choose the appropriate tool and execute it without error.
 
 This targeted spike will provide invaluable insight into the feasibility of the core idea and will help you iterate on the prompt engineering and orchestration logic before committing to building the full platform.
+
+---
+
+```
+────────────────────────────────────────────────────────────────────────
+  END · archive/ideation/ideation6.md
+  original ideation 6 of 7
+────────────────────────────────────────────────────────────────────────
+```

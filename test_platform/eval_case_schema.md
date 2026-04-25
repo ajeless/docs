@@ -1,12 +1,22 @@
 # Evaluation Case Schema
 
+```
+────────────────────────────────────────────────────────────────────────
+  PROJECT     test-platform
+  FILE        eval_case_schema.md
+  ROLE        schema reference
+  STATUS      v1.0 · authoritative
+  UPDATED     2026-04-25
+────────────────────────────────────────────────────────────────────────
+```
+
 *Reference document. Defines the structure of evaluation case files produced by the curation project. Case files declare conformance to this schema. When this document and case files disagree, this document is authoritative; case files should be updated.*
 
 *Companion to `curation.md` (the methodology) and `synthesis.md` (the test platform). This document is the contract that ties the curation outputs to any future evaluator code.*
 
 ---
 
-## 1. Purpose and scope
+## §1 — Purpose and scope
 
 A case file describes one bug episode (or a small group of bug episodes from the same source PR or advisory) in enough structured detail to support evaluation of a testing platform's Discover, Plan, Generate, and Judge stages. Case files are written in YAML and stored under `curation/cases/<project-name>/`.
 
@@ -21,7 +31,9 @@ The schema is designed to support:
 - **Differential evaluation** — pre-fix and post-fix snapshots, with expected behavior on each
 - **Multi-level location answer keys** — public surface, internal components, root-cause symbols, changed files, added tests
 
-## 2. File-level structure
+---
+
+## §2 — File-level structure
 
 A case file describes one source artifact (PR, commit, security advisory, or seeded bug). It contains zero or more bug episodes — distinct bugs that should be scored independently even if grouped in the same source artifact.
 
@@ -74,7 +86,9 @@ bugs:
     # see bug_episode schema below
 ```
 
-## 3. Required vs optional fields
+---
+
+## §3 — Required vs optional fields
 
 To keep the schema tractable while it's still maturing, fields are split into three tiers:
 
@@ -102,7 +116,9 @@ To keep the schema tractable while it's still maturing, fields are split into th
 - `curation_notes.*`
 - For each bug: `scoring_support.*`, `expected_tests`, `bug_episode.user_visible_failure`
 
-## 4. Field reference
+---
+
+## §4 — Field reference
 
 ### 4.1 File-level fields
 
@@ -385,7 +401,9 @@ scoring_support:
   confidence_calibration_notes: ""
 ```
 
-## 5. Allowed evidence per evaluation mode
+---
+
+## §5 — Allowed evidence per evaluation mode
 
 For each evaluation mode, the case implicitly defines what evidence the system under test may receive. The mapping is:
 
@@ -399,7 +417,9 @@ For each evaluation mode, the case implicitly defines what evidence the system u
 
 These are the defaults. Cases that need to deviate (e.g., a case where the issue text is so generic it doesn't constitute a spoiler) should record this in `curation_notes.reviewer_notes`.
 
-## 6. Execution mode
+---
+
+## §6 — Execution mode
 
 Orthogonal to evidence mode. Allowed values for `execution_mode` (declared at evaluation time, not in the case file):
 
@@ -409,7 +429,9 @@ Orthogonal to evidence mode. Allowed values for `execution_mode` (declared at ev
 
 A case file does not need to specify execution mode, but its evaluation does. The same case can be evaluated under different execution modes to measure how much dynamic execution improves detection.
 
-## 7. Schema evolution
+---
+
+## §7 — Schema evolution
 
 This is schema version `1.0`. Future revisions should:
 
@@ -419,7 +441,9 @@ This is schema version `1.0`. Future revisions should:
 
 When a new field is added, existing cases need not be invalidated; the new field is simply absent. When a field is removed or restructured, existing cases must be migrated and re-reviewed.
 
-## 8. Minimal complete example
+---
+
+## §8 — Minimal complete example
 
 ```yaml
 schema_version: "1.0"
@@ -474,3 +498,12 @@ bugs:
 ```
 
 This is the smallest complete case that would pass acceptance. Production cases should fill in more.
+
+---
+
+```
+────────────────────────────────────────────────────────────────────────
+  END · eval_case_schema.md
+  schema reference
+────────────────────────────────────────────────────────────────────────
+```
