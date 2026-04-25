@@ -1,0 +1,147 @@
+schema_version: "1.0"
+file_id: paperless-ngx-pr-12389
+
+# ----------------------------------------------------------------------------
+# Source artifact
+# ----------------------------------------------------------------------------
+
+source:
+  project: paperless-ngx
+  project_type: application
+  source_host: github.com
+  repo_url: https://github.com/paperless-ngx/paperless-ngx
+  artifact_type: pull_request
+  artifact_id: "12389"
+  artifact_urls:
+    - https://github.com/paperless-ngx/paperless-ngx/pull/12389
+  related_urls: []
+
+commits:
+  pre_fix_commit: b6501b0c47a1d106fe38504f3b8f1bed6e6fba8e~1
+  fix_commit: b6501b0c47a1d106fe38504f3b8f1bed6e6fba8e
+  post_fix_commit: b6501b0c47a1d106fe38504f3b8f1bed6e6fba8e
+
+fix_files_added: []
+fix_files_modified:
+  - src/documents/signals/handlers.py
+  - src/documents/tests/test_file_handling.py
+
+# ----------------------------------------------------------------------------
+# Lifecycle and provenance
+# ----------------------------------------------------------------------------
+
+case_origin: historical
+case_status: accepted
+review_status: self_reviewed
+curator_confidence: high
+
+dataset:
+  dataset_split: exploration
+  split_scope: project_level
+
+curation_notes:
+  ground_truth_limitations: ""
+  open_questions: []
+  reviewer_notes: >
+    Idempotency-class Tier 4. The function works correctly the first time;
+    the bug only manifests on re-entry or when another code path has
+    already done part of the work. Single-pass unit tests can't catch this.
+
+# ----------------------------------------------------------------------------
+# Bug episodes
+# ----------------------------------------------------------------------------
+
+bugs:
+
+  - id: paperless-ngx-12389-1
+    short_name: file_move_not_idempotent_falls_back_to_unique
+    summary: >
+      update_filename_and_move_files() decides whether to move a file by
+      computing the candidate destination path. If that path already exists
+      on disk, it falls back to generating a unique filename (appending
+      "_01" etc). But when the file has already been moved by another code
+      path (e.g. a previous run of the same handler, or a sibling signal),
+      the candidate path "exists" because the correct file is already there.
+      Without a checksum check, the system invents a unique-but-wrong
+      filename, leaving the database pointing at the new (suffixed) name
+      while the actual file remains at the un-suffixed location, OR moves
+      the correct file aside.
+    bug_class: non_idempotent_state_coordination
+    reasoning_tier: 4
+    capability_demand:
+      - code_reasoning
+      - domain_knowledge
+      - system_modeling
+      - testing_theory
+
+    mode_applicability:
+      repo_only:
+        applicable: true
+        expected_detectability: low
+        notes: >
+          Detectable but hard. The system must reason about idempotency
+          (what if this runs twice?) and about coordination of two state
+          systems (filesystem vs database). Tier 4 territory: a system
+          that excels at idempotency-as-property thinking should catch it.
+      issue_assisted:
+        applicable: true
+        expected_detectability: medium
+      diff_assisted:
+        applicable: true
+        expected_detectability: high
+      post_fix_test_assessment:
+        applicable: true
+        expected_detectability: medium
+
+    headline_metric_eligible:
+      repo_only: true
+      reason: >
+        Detectable from code if the system reasons about idempotency.
+        Headline-eligible but expected detectability is honestly low.
+
+    contamination:
+      contamination_risk: low
+      contamination_type:
+        - public_pr
+      notes: "Public PR; not a high-profile bug."
+
+    location_answer_key:
+      internal_components:
+        - update_filename_and_move_files
+      root_cause_symbols:
+        - "src/documents/signals/handlers.py:update_filename_and_move_files (the candidate-exists branch)"
+      changed_files:
+        - src/documents/signals/handlers.py
+      added_tests:
+        - src/documents/tests/test_file_handling.py
+
+    expected_findings: >
+      The "candidate path exists" branch in update_filename_and_move_files
+      is not idempotent — it cannot distinguish between a true filename
+      collision and a previously-completed move. Verify the file at the
+      candidate path matches the document's checksum before treating its
+      existence as a conflict; if it matches, the move has already
+      succeeded and only the database record needs updating.
+
+    expected_tests:
+      - src/documents/tests/test_file_handling.py
+    expected_test_intent: >
+      Set up a state where the file is already at the candidate path
+      (simulating a previous partial execution), invoke the move handler,
+      and verify it does NOT generate a unique-suffixed filename. Verify
+      that running the handler twice in succession produces the same end
+      state as running it once.
+
+    post_fix_expected_behavior:
+      should_still_flag: false
+      notes: >
+        Checksum verification now distinguishes "already-moved" from
+        "true conflict". The general idempotency concern in the function
+        is addressed for this code path; other code paths in the same
+        function would need separate analysis.
+
+    scoring_support:
+      risk_category_match: "idempotency in state coordination across filesystem and database"
+      test_intent_match_notes: >
+        Tests should specifically exercise the "run twice" or "partial
+        prior state" scenario, not just the happy-path move.

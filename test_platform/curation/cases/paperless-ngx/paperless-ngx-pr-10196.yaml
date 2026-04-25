@@ -1,0 +1,420 @@
+schema_version: "1.0"
+file_id: paperless-ngx-pr-10196
+
+# ----------------------------------------------------------------------------
+# Source artifact
+# ----------------------------------------------------------------------------
+
+source:
+  project: paperless-ngx
+  project_type: application
+  source_host: github.com
+  repo_url: https://github.com/paperless-ngx/paperless-ngx
+  artifact_type: pull_request
+  artifact_id: "10196"
+  artifact_urls:
+    - https://github.com/paperless-ngx/paperless-ngx/pull/10196
+  related_urls:
+    - https://github.com/paperless-ngx/paperless-ngx/issues/10195
+
+commits:
+  pre_fix_commit: de1202331184ccaf71154d83f03cddff05285498
+  fix_commit: e4fd0084417ee1f9e3e10ba37be197969e0d0f02
+  post_fix_commit: e4fd0084417ee1f9e3e10ba37be197969e0d0f02
+
+fix_files_added:
+  - src/documents/tests/test_api_app_config.py
+  - src/documents/tests/test_api_uisettings.py
+fix_files_modified:
+  - src/documents/serialisers.py
+  - src/paperless/views.py
+  - src/paperless_mail/serialisers.py
+  - src/paperless_mail/tests/test_mail.py
+
+# ----------------------------------------------------------------------------
+# Lifecycle and provenance
+# ----------------------------------------------------------------------------
+
+case_origin: historical
+case_status: accepted
+review_status: self_reviewed
+curator_confidence: medium
+
+dataset:
+  dataset_split: exploration
+  split_scope: project_level
+
+curation_notes:
+  ground_truth_limitations: >
+    Issue #10195 was titled "Crashes, errors, and inconsistencies in the
+    REST API" and contained four task checkboxes. The PR fixed five distinct
+    bugs. The issue text is too vague to serve as ground truth on its own;
+    the fix diff is the actual answer key.
+  open_questions:
+    - "Bug #5 (dead set_permissions field reference) is borderline tractable; the symptom in the original issue may have been subtle."
+  reviewer_notes: >
+    Five bugs in one PR. Score each independently. Patterns observed:
+    ModelViewSet-too-permissive (bug 1), DRF-attrs-unguarded (bugs 2 and 3),
+    weak-input-typing (bug 4), dead-field-reference (bug 5).
+
+# ----------------------------------------------------------------------------
+# Bug episodes
+# ----------------------------------------------------------------------------
+
+bugs:
+
+  - id: paperless-ngx-10196-1
+    short_name: singleton_modelviewset_post_allowed
+    summary: >
+      ApplicationConfigurationViewSet inherits ModelViewSet, which exposes POST
+      by default. ApplicationConfiguration is an AbstractSingletonModel — only
+      one row should ever exist. POSTing creates a duplicate and crashes.
+    bug_class: architecture_mismatch
+    reasoning_tier: 3
+    capability_demand:
+      - domain_knowledge
+      - code_reasoning
+      - system_modeling
+      - risk_calibration
+
+    mode_applicability:
+      repo_only:
+        applicable: true
+        expected_detectability: medium
+        notes: >
+          Visible from the model class declaration (AbstractSingletonModel)
+          combined with the viewset's ModelViewSet inheritance. Requires
+          chaining three semantic facts: singleton, ModelViewSet exposes
+          POST, POST on a singleton is invalid.
+      issue_assisted:
+        applicable: true
+        expected_detectability: high
+        notes: "Issue text mentions API crashes, narrowing the search."
+      diff_assisted:
+        applicable: true
+        expected_detectability: high
+      post_fix_test_assessment:
+        applicable: true
+        expected_detectability: medium
+
+    headline_metric_eligible:
+      repo_only: true
+      reason: >
+        Bug is detectable from repository inspection given Django/DRF domain
+        knowledge. No external context required.
+
+    contamination:
+      contamination_risk: medium
+      contamination_type:
+        - public_pr
+        - public_issue
+      notes: >
+        Public PR with discoverable issue on a moderately well-known project.
+        Bug is not high-profile but the project is widely indexed.
+
+    location_answer_key:
+      public_surface:
+        type: api_endpoint
+        value: "POST /api/app_config/"
+      internal_components:
+        - ApplicationConfigurationViewSet
+        - ApplicationConfiguration
+      root_cause_symbols:
+        - "ApplicationConfigurationViewSet (uses ModelViewSet, lacks create override)"
+      changed_files:
+        - src/paperless/views.py
+      added_tests:
+        - src/documents/tests/test_api_app_config.py
+
+    expected_findings: >
+      ApplicationConfigurationViewSet exposes POST via ModelViewSet, but
+      ApplicationConfiguration is a singleton (extends AbstractSingletonModel).
+      Either restrict the viewset to retrieve/update operations or override
+      create() to return 405.
+
+    expected_tests:
+      - src/documents/tests/test_api_app_config.py
+    expected_test_intent: >
+      Verify POST /api/app_config/ returns 405 (or otherwise rejects) and
+      does not produce a second row in the database.
+
+    post_fix_expected_behavior:
+      should_still_flag: false
+      notes: "create() now returns 405; the singleton invariant is preserved."
+
+  - id: paperless-ngx-10196-2
+    short_name: mailrule_validate_unguarded_attrs
+    summary: >
+      MailRuleSerializer.validate() accesses attrs["action"] and
+      attrs["action_parameter"] directly, but both fields are required=False.
+      A request omitting either field crashes with KeyError before validation
+      can return a clean error.
+    bug_class: drf_unguarded_attrs_in_validate
+    reasoning_tier: 1
+    capability_demand:
+      - code_reasoning
+      - domain_knowledge
+
+    mode_applicability:
+      repo_only:
+        applicable: true
+        expected_detectability: high
+        notes: >
+          Tier 1 local pattern. attrs[X] in validate() with corresponding
+          required=False field declarations is visible in the same class.
+      issue_assisted:
+        applicable: true
+        expected_detectability: high
+      diff_assisted:
+        applicable: true
+        expected_detectability: high
+      post_fix_test_assessment:
+        applicable: true
+        expected_detectability: high
+
+    headline_metric_eligible:
+      repo_only: true
+      reason: "Local code pattern; the system should catch this in repo-only mode."
+
+    contamination:
+      contamination_risk: medium
+      contamination_type:
+        - public_pr
+        - public_issue
+      notes: "Same as bug 10196-1."
+
+    location_answer_key:
+      public_surface:
+        type: api_endpoint
+        value: "POST /api/mail_rules/"
+      internal_components:
+        - MailRuleSerializer
+      root_cause_symbols:
+        - MailRuleSerializer.validate
+        - MailRuleSerializer.create
+      changed_files:
+        - src/paperless_mail/serialisers.py
+      added_tests:
+        - src/paperless_mail/tests/test_mail.py
+
+    expected_findings: >
+      MailRuleSerializer.validate() and create() access attrs[X] for fields
+      declared required=False. On partial requests these keys may be absent.
+      Use attrs.get() with defaults and guard the comparisons.
+
+    expected_tests:
+      - src/paperless_mail/tests/test_mail.py
+    expected_test_intent: >
+      Verify POST /api/mail_rules/ with omitted optional fields returns a
+      validation error (not a 500) and that valid minimal payloads succeed.
+
+    post_fix_expected_behavior:
+      should_still_flag: false
+      notes: "All attrs accesses now guarded with .get()."
+
+  - id: paperless-ngx-10196-3
+    short_name: workflowtrigger_validate_unguarded_attrs_on_patch
+    summary: >
+      WorkflowTriggerSerializer.validate() accesses attrs["type"] directly.
+      On PATCH (partial update), type may already be on the instance and
+      absent from attrs. This crashes with KeyError.
+    bug_class: drf_unguarded_attrs_in_validate_patch
+    reasoning_tier: 2
+    capability_demand:
+      - code_reasoning
+      - domain_knowledge
+      - system_modeling
+
+    mode_applicability:
+      repo_only:
+        applicable: true
+        expected_detectability: medium
+        notes: >
+          Requires recognizing that PATCH provides partial attrs and that
+          self.instance holds the existing record. Slightly more reasoning
+          than the Tier 1 unguarded-attrs case (10196-2).
+      issue_assisted:
+        applicable: true
+        expected_detectability: high
+      diff_assisted:
+        applicable: true
+        expected_detectability: high
+      post_fix_test_assessment:
+        applicable: true
+        expected_detectability: medium
+
+    headline_metric_eligible:
+      repo_only: true
+      reason: "Detectable from code inspection given DRF domain knowledge."
+
+    contamination:
+      contamination_risk: medium
+      contamination_type:
+        - public_pr
+        - public_issue
+      notes: "Same as bug 10196-1."
+
+    location_answer_key:
+      public_surface:
+        type: api_endpoint
+        value: "PATCH /api/workflow_triggers/{id}/"
+      internal_components:
+        - WorkflowTriggerSerializer
+      root_cause_symbols:
+        - WorkflowTriggerSerializer.validate
+      changed_files:
+        - src/documents/serialisers.py
+      added_tests: []
+
+    expected_findings: >
+      WorkflowTriggerSerializer.validate() reads attrs["type"] without a
+      fallback to the existing instance. PATCH requests may omit type;
+      read it as attrs.get("type", getattr(self.instance, "type", None)).
+
+    expected_tests: []
+    expected_test_intent: >
+      Verify PATCH /api/workflow_triggers/{id}/ with a payload that omits
+      type updates the trigger correctly and does not 500.
+
+    post_fix_expected_behavior:
+      should_still_flag: false
+      notes: "Fall-through to instance value via getattr."
+
+  - id: paperless-ngx-10196-4
+    short_name: uisettings_accepts_nondict_json
+    summary: >
+      UiSettingsViewSerializer.settings inherits from a JSONField on the
+      model with no explicit serializer typing. Arrays, strings, nulls, and
+      other non-dict values pass validation, then crash downstream code
+      that assumes a dict.
+    bug_class: weak_input_type_validation
+    reasoning_tier: 3
+    capability_demand:
+      - domain_knowledge
+      - code_reasoning
+      - system_modeling
+      - testing_theory
+
+    mode_applicability:
+      repo_only:
+        applicable: true
+        expected_detectability: medium
+        notes: >
+          Requires multi-step reasoning: the serializer's settings field
+          inherits from a JSONField (not explicitly DictField); JSONField
+          permits arrays/strings/null; downstream consumers assume dict.
+          Detectable but requires the system to trace the type chain.
+      issue_assisted:
+        applicable: true
+        expected_detectability: high
+      diff_assisted:
+        applicable: true
+        expected_detectability: high
+      post_fix_test_assessment:
+        applicable: true
+        expected_detectability: medium
+
+    headline_metric_eligible:
+      repo_only: true
+      reason: "Detectable from schema inspection plus DRF/Django type knowledge."
+
+    contamination:
+      contamination_risk: medium
+      contamination_type:
+        - public_pr
+        - public_issue
+      notes: "Same as bug 10196-1."
+
+    location_answer_key:
+      public_surface:
+        type: api_endpoint
+        value: "/api/ui_settings/"
+      internal_components:
+        - UiSettingsViewSerializer
+      root_cause_symbols:
+        - UiSettingsViewSerializer (settings field declaration)
+      changed_files:
+        - src/documents/serialisers.py
+      added_tests:
+        - src/documents/tests/test_api_uisettings.py
+
+    expected_findings: >
+      UiSettingsViewSerializer's settings field has no explicit type
+      constraint and inherits JSONField behavior, allowing non-dict input.
+      Add a DictField with appropriate required/allow_null semantics.
+
+    expected_tests:
+      - src/documents/tests/test_api_uisettings.py
+    expected_test_intent: >
+      Verify /api/ui_settings/ rejects non-dict JSON payloads (arrays,
+      strings, numbers, nulls) with a validation error, and accepts dict
+      payloads.
+
+    post_fix_expected_behavior:
+      should_still_flag: false
+      notes: "Explicit DictField now enforces the type constraint."
+
+  - id: paperless-ngx-10196-5
+    short_name: savedview_dead_field_reference
+    summary: >
+      SavedViewSerializer.Meta.fields lists "set_permissions", but no
+      serializer attribute by that name exists. The dead reference causes
+      issues during certain operations.
+    bug_class: dead_field_reference
+    reasoning_tier: 2
+    capability_demand:
+      - code_reasoning
+      - domain_knowledge
+
+    mode_applicability:
+      repo_only:
+        applicable: true
+        expected_detectability: medium
+        notes: >
+          Detectable via cross-reference: a name in Meta.fields without a
+          corresponding attribute or model field. More of a static-analysis
+          finding than a reasoning task.
+      issue_assisted:
+        applicable: true
+        expected_detectability: medium
+      diff_assisted:
+        applicable: true
+        expected_detectability: high
+      post_fix_test_assessment:
+        applicable: true
+        expected_detectability: low
+        notes: "Test coverage may not surface this issue distinctly."
+
+    headline_metric_eligible:
+      repo_only: true
+      reason: "Cross-reference check; mechanical but worth catching."
+
+    contamination:
+      contamination_risk: medium
+      contamination_type:
+        - public_pr
+        - public_issue
+      notes: "Same as bug 10196-1."
+
+    location_answer_key:
+      internal_components:
+        - SavedViewSerializer
+      root_cause_symbols:
+        - "SavedViewSerializer.Meta (fields list)"
+      changed_files:
+        - src/documents/serialisers.py
+      added_tests: []
+
+    expected_findings: >
+      SavedViewSerializer.Meta.fields includes "set_permissions" with no
+      corresponding declared field on the serializer or the model. Remove
+      or define the field.
+
+    expected_tests: []
+    expected_test_intent: >
+      Verify SavedView CRUD operations succeed without referencing
+      set_permissions, and that the serializer instantiates without error.
+
+    post_fix_expected_behavior:
+      should_still_flag: false
+      notes: "Field name removed from Meta.fields."

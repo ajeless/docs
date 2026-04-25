@@ -1,0 +1,184 @@
+schema_version: "1.0"
+file_id: paperless-ngx-ghsa-96jx
+
+# ----------------------------------------------------------------------------
+# Source artifact (security advisory; no PR number)
+# ----------------------------------------------------------------------------
+
+source:
+  project: paperless-ngx
+  project_type: application
+  source_host: github.com
+  repo_url: https://github.com/paperless-ngx/paperless-ngx
+  artifact_type: security_advisory
+  artifact_id: "GHSA-96jx-fj7m-qh6x"
+  artifact_urls:
+    - "https://github.com/paperless-ngx/paperless-ngx/security/advisories/GHSA-96jx-fj7m-qh6x"
+  related_urls: []
+
+commits:
+  pre_fix_commit: 9e9fc6213
+  fix_commit: 7dbf8bdd4aff6ceb4eedd8a4aba7652978d1dc74
+  post_fix_commit: 7dbf8bdd4aff6ceb4eedd8a4aba7652978d1dc74
+
+fix_files_added: []
+fix_files_modified:
+  - src/paperless_mail/serialisers.py
+  - src/paperless_mail/tests/test_api.py
+
+# ----------------------------------------------------------------------------
+# Lifecycle and provenance
+# ----------------------------------------------------------------------------
+
+case_origin: historical
+case_status: accepted
+review_status: self_reviewed
+curator_confidence: high
+
+dataset:
+  dataset_split: exploration
+  split_scope: project_level
+
+curation_notes:
+  ground_truth_limitations: >
+    Security disclosures often deliberately omit detail. The advisory text
+    summarizes the issue but does not enumerate every affected serializer
+    or every related foreign-key permission gap. The case scope is the
+    specific MailRule -> MailAccount issue documented in the advisory; the
+    broader "audit other serializers for the same pattern" follow-up is a
+    related but separate finding.
+  open_questions:
+    - "Are there other serializers in the project with foreign-key fields to user-owned resources that lack equivalent permission checks?"
+  reviewer_notes: >
+    Marquee case for the corpus. Cross-resource authorization gaps are
+    among the most common real-world web app vulnerabilities, and a
+    platform that surfaces this class reliably delivers immediate value.
+    Treat carefully per security_case_handling guidance in curation.md.
+
+# ----------------------------------------------------------------------------
+# Bug episodes
+# ----------------------------------------------------------------------------
+
+bugs:
+
+  - id: paperless-ngx-ghsa-96jx-1
+    short_name: mailrule_attaches_unowned_mailaccount
+    summary: >
+      MailRuleSerializer accepts any MailAccount primary key in the `account`
+      field with no permission check on the referenced MailAccount. A user
+      authorized to create MailRules can therefore attach a MailRule to a
+      MailAccount owned by another user — effectively gaining the ability
+      to act on that other user's mailbox (read messages, mark/move/tag,
+      etc.) via the rule. This is an authorization-bypass / IDOR-class
+      vulnerability where the access control on resource A (MailRule) is
+      checked but the access control on the referenced resource B
+      (MailAccount) is not.
+    bug_class: cross_resource_authorization_missing
+    reasoning_tier: 4
+    capability_demand:
+      - code_reasoning
+      - domain_knowledge
+      - system_modeling
+      - risk_calibration
+      - testing_theory
+
+    mode_applicability:
+      repo_only:
+        applicable: true
+        expected_detectability: medium
+        notes: >
+          Detectable from repo-only inspection if the system reasons about
+          cross-resource authorization. The pattern is: serializer S has a
+          foreign key field F referencing a user-owned resource R, but S's
+          field-level validation does not check the user's permission on R.
+          A platform with risk-calibration around auth boundaries should
+          flag this even without prompting; a platform without that
+          calibration probably won't.
+      issue_assisted:
+        applicable: false
+        expected_detectability: not_expected
+        notes: >
+          Security advisory text would constitute a major spoiler.
+          Issue-assisted mode is not meaningful for security cases; the
+          system should be evaluated either repo-only or diff-assisted.
+      diff_assisted:
+        applicable: true
+        expected_detectability: high
+      post_fix_test_assessment:
+        applicable: true
+        expected_detectability: medium
+
+    headline_metric_eligible:
+      repo_only: true
+      reason: >
+        Detectable from repository inspection given general web-app auth
+        domain knowledge. This is precisely the class of bug a testing
+        platform should excel at; including it in the headline metric is
+        appropriate even though the expected detectability is honestly
+        only medium.
+
+    contamination:
+      contamination_risk: high
+      contamination_type:
+        - public_advisory
+        - widely_indexed
+        - likely_training_data
+      notes: >
+        Published security advisory (GHSA-96jx-fj7m-qh6x). Public advisories
+        are aggressively indexed by security databases and discussed in
+        security blogs. Models trained on public corpora may have specific
+        knowledge of this advisory. Mutated-historical or seeded variants
+        of this pattern would be much more contamination-resistant.
+
+    location_answer_key:
+      public_surface:
+        type: api_endpoint
+        value: "POST /api/mail_rules/"
+      internal_components:
+        - MailRuleSerializer
+        - MailAccount
+        - "OwnedObjectSerializer (parent)"
+      root_cause_symbols:
+        - "MailRuleSerializer (missing validate_account method)"
+      changed_files:
+        - src/paperless_mail/serialisers.py
+      added_tests:
+        - src/paperless_mail/tests/test_api.py
+
+    expected_findings: >
+      MailRuleSerializer accepts a MailAccount foreign key reference
+      without verifying the requesting user has change permission on the
+      referenced MailAccount. This is a cross-resource authorization gap:
+      the user is authorized to create MailRules but is not necessarily
+      authorized to act on the specific MailAccount they're attaching.
+      Add a validate_account method that calls the project's
+      permission-aware check (has_perms_owner_aware) and raises
+      PermissionDenied otherwise. Audit other serializers with foreign
+      keys to user-owned resources for the same pattern.
+
+    expected_tests:
+      - src/paperless_mail/tests/test_api.py
+    expected_test_intent: >
+      Create a MailAccount owned by user A. Authenticate as user B (who
+      has general MailRule create permission). Attempt to POST a MailRule
+      referencing user A's MailAccount. Verify the request is rejected
+      with 403, no MailRule is created, and (separately) verify that
+      granting user B the change_mailaccount permission on that specific
+      account allows the request to succeed.
+
+    post_fix_expected_behavior:
+      should_still_flag: false
+      notes: >
+        validate_account method now enforces the permission check. Note
+        the broader audit recommendation: a platform that flags this and
+        also recommends auditing similar foreign-key fields elsewhere in
+        the project is producing higher-quality output than one that only
+        flags the single fixed case.
+
+    scoring_support:
+      risk_category_match: "cross-resource authorization / IDOR-class"
+      false_positive_notes: >
+        Other foreign-key fields in serializers may legitimately not require
+        per-object permission checks (e.g. references to globally-readable
+        resources). The platform should distinguish user-owned vs
+        globally-readable foreign keys in its risk assessment.

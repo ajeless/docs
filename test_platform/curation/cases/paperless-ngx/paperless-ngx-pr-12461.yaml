@@ -1,0 +1,152 @@
+schema_version: "1.0"
+file_id: paperless-ngx-pr-12461
+
+# ----------------------------------------------------------------------------
+# Source artifact
+# ----------------------------------------------------------------------------
+
+source:
+  project: paperless-ngx
+  project_type: application
+  source_host: github.com
+  repo_url: https://github.com/paperless-ngx/paperless-ngx
+  artifact_type: pull_request
+  artifact_id: "12461"
+  artifact_urls:
+    - https://github.com/paperless-ngx/paperless-ngx/pull/12461
+  related_urls: []
+
+commits:
+  pre_fix_commit: 501cdd92d276451384cec4f944a878d1289aa4ea~1
+  fix_commit: 501cdd92d276451384cec4f944a878d1289aa4ea
+  post_fix_commit: 501cdd92d276451384cec4f944a878d1289aa4ea
+
+fix_files_added: []
+fix_files_modified:
+  - src/documents/views.py
+  - src/documents/tests/test_api_documents.py
+
+# ----------------------------------------------------------------------------
+# Lifecycle and provenance
+# ----------------------------------------------------------------------------
+
+case_origin: historical
+case_status: accepted
+review_status: self_reviewed
+curator_confidence: high
+
+dataset:
+  dataset_split: exploration
+  split_scope: project_level
+
+curation_notes:
+  ground_truth_limitations: ""
+  open_questions: []
+  reviewer_notes: >
+    Pairs naturally with paperless-ngx-10196-1 (the singleton case): both
+    surface as "ModelViewSet is too permissive," but the *reason* it's too
+    permissive differs. A platform that learns "ModelViewSet on certain
+    resources is suspicious" generalizes; one that learns "ModelViewSet on
+    singletons is wrong" misses this case. Useful pair for testing whether
+    risk_calibration generalizes.
+
+# ----------------------------------------------------------------------------
+# Bug episodes
+# ----------------------------------------------------------------------------
+
+bugs:
+
+  - id: paperless-ngx-12461-1
+    short_name: sharelink_viewset_exposes_update
+    summary: >
+      ShareLinkViewSet inherits from ModelViewSet, which exposes the full
+      CRUD set including PUT and PATCH update operations. Share links are
+      semantically immutable once created — modifying their target document,
+      expiration, or token would let a user effectively re-issue or
+      repurpose an already-distributed link. The viewset should expose only
+      Create, Retrieve, List, and Destroy. The fix replaces ModelViewSet
+      with explicit mixin composition.
+    bug_class: rest_action_scope_too_broad
+    reasoning_tier: 3
+    capability_demand:
+      - domain_knowledge
+      - code_reasoning
+      - system_modeling
+      - risk_calibration
+
+    mode_applicability:
+      repo_only:
+        applicable: true
+        expected_detectability: medium
+        notes: >
+          Detectable but requires domain reasoning about resource semantics.
+          The system must recognize share links as a sensitive
+          issued-credential resource, and that mutation of issued
+          credentials is generally suspect. ModelViewSet is not wrong by
+          default; it's wrong here specifically because of what share
+          links represent.
+      issue_assisted:
+        applicable: true
+        expected_detectability: high
+      diff_assisted:
+        applicable: true
+        expected_detectability: high
+      post_fix_test_assessment:
+        applicable: true
+        expected_detectability: medium
+
+    headline_metric_eligible:
+      repo_only: true
+      reason: >
+        Detectable from repository inspection given domain reasoning about
+        resource semantics. A platform with sensible risk_calibration on
+        share-link-style resources should catch this.
+
+    contamination:
+      contamination_risk: low
+      contamination_type:
+        - public_pr
+      notes: "Public PR; not a high-profile bug."
+
+    location_answer_key:
+      public_surface:
+        type: api_endpoint
+        value: "PUT /api/share_links/{id}/, PATCH /api/share_links/{id}/"
+      internal_components:
+        - ShareLinkViewSet
+      root_cause_symbols:
+        - "ShareLinkViewSet (inherits ModelViewSet, including UpdateModelMixin)"
+      changed_files:
+        - src/documents/views.py
+      added_tests:
+        - src/documents/tests/test_api_documents.py
+
+    expected_findings: >
+      ShareLinkViewSet uses ModelViewSet, which exposes update (PUT/PATCH)
+      operations. Share links represent issued credentials — once
+      distributed, modifying their target or expiration semantics
+      retroactively is a security concern. Restrict the viewset to
+      Create, Retrieve, List, and Destroy by composing the relevant
+      mixins explicitly instead of inheriting ModelViewSet.
+
+    expected_tests:
+      - src/documents/tests/test_api_documents.py
+    expected_test_intent: >
+      Create a ShareLink, then attempt PUT and PATCH against its detail
+      endpoint. Verify both return 405 Method Not Allowed. Verify GET,
+      POST, DELETE, and LIST continue to work as expected.
+
+    post_fix_expected_behavior:
+      should_still_flag: false
+      notes: >
+        Explicit mixin composition removes UpdateModelMixin. The general
+        pattern (audit ModelViewSet usages on sensitive resources) is a
+        related but separate finding worth flagging.
+
+    scoring_support:
+      risk_category_match: "REST action scope on sensitive resources"
+      false_positive_notes: >
+        Many ModelViewSet usages in the project are correct — most resources
+        legitimately support full CRUD. The platform should flag this case
+        on the basis of what share links represent (issued credentials),
+        not on a blanket suspicion of ModelViewSet.

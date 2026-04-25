@@ -1,0 +1,165 @@
+schema_version: "1.0"
+file_id: paperless-ngx-pr-12289
+
+# ----------------------------------------------------------------------------
+# Source artifact
+# ----------------------------------------------------------------------------
+
+source:
+  project: paperless-ngx
+  project_type: application
+  source_host: github.com
+  repo_url: https://github.com/paperless-ngx/paperless-ngx
+  artifact_type: pull_request
+  artifact_id: "12289"
+  artifact_urls:
+    - https://github.com/paperless-ngx/paperless-ngx/pull/12289
+  related_urls: []
+
+commits:
+  pre_fix_commit: 60319c6d3709718e4d079ca7cd7ebf1394d3422a~1
+  fix_commit: 60319c6d3709718e4d079ca7cd7ebf1394d3422a
+  post_fix_commit: 60319c6d3709718e4d079ca7cd7ebf1394d3422a
+
+fix_files_added: []
+fix_files_modified:
+  - src/documents/signals/handlers.py
+  - src/documents/tests/test_workflows.py
+
+# ----------------------------------------------------------------------------
+# Lifecycle and provenance
+# ----------------------------------------------------------------------------
+
+case_origin: historical
+case_status: accepted
+review_status: self_reviewed
+curator_confidence: high
+
+dataset:
+  dataset_split: exploration
+  split_scope: project_level
+
+curation_notes:
+  ground_truth_limitations: >
+    The fix is a single-line refresh_from_db() addition, which is a precise
+    point fix. The cause, however, is a non-local interaction between
+    run_workflows() and signal handlers fired by custom-field assignment.
+    A complete Discover output should mention both sides of the cascade,
+    not just the file that was changed.
+  open_questions: []
+  reviewer_notes: >
+    Textbook Tier 4. The bug is invisible in run_workflows() alone; it
+    only emerges when reasoning about which signal handlers fire from
+    custom-field assignment and that those handlers mutate the same row.
+
+# ----------------------------------------------------------------------------
+# Bug episodes
+# ----------------------------------------------------------------------------
+
+bugs:
+
+  - id: paperless-ngx-12289-1
+    short_name: workflow_save_clobbers_signal_updated_filename
+    summary: >
+      run_workflows() holds an in-memory Document object. During execution
+      it triggers custom-field assignment, which fires other signal handlers
+      that recompute the storage path, physically move the file on disk, and
+      update the Document row's filename in the database. run_workflows()
+      then calls document.save() on its now-stale in-memory object, clobbering
+      the freshly-updated filename column with the old value. The DB now
+      points at a filename that no longer exists on disk.
+    bug_class: signal_cascade_stale_in_memory_state
+    reasoning_tier: 4
+    capability_demand:
+      - code_reasoning
+      - domain_knowledge
+      - system_modeling
+      - testing_theory
+
+    mode_applicability:
+      repo_only:
+        applicable: true
+        expected_detectability: low
+        notes: >
+          Strictly detectable in repo-only mode but requires building a
+          model of the signal cascade. The system must (a) recognize that
+          custom-field assignment in run_workflows triggers other signal
+          handlers, (b) know that those handlers mutate the same Document
+          row, and (c) recognize that document.save() on the in-memory
+          object will clobber those mutations. Hard, but not unfair.
+      issue_assisted:
+        applicable: true
+        expected_detectability: medium
+        notes: "Issue may name the workflow + filename mismatch symptom."
+      diff_assisted:
+        applicable: true
+        expected_detectability: high
+      post_fix_test_assessment:
+        applicable: true
+        expected_detectability: medium
+
+    headline_metric_eligible:
+      repo_only: true
+      reason: >
+        Hard but not unfair. The bug is statically derivable from the code
+        if the system can model signal cascades. A platform that excels at
+        Tier 4 should catch this; one that doesn't should at minimum flag
+        run_workflows() as a complex cascade requiring careful testing.
+
+    contamination:
+      contamination_risk: low
+      contamination_type:
+        - public_pr
+      notes: >
+        Public PR but no separate issue; the bug is not high-profile and
+        is unlikely to appear prominently in training data.
+
+    location_answer_key:
+      public_surface:
+        type: ui_route
+        value: "(internal: workflow execution; user-visible as document filename mismatch)"
+      internal_components:
+        - run_workflows
+        - update_filename_and_move_files
+      root_cause_symbols:
+        - "src/documents/signals/handlers.py:run_workflows"
+        - "src/documents/signals/handlers.py:update_filename_and_move_files (the signal handler that mutates the row out from under run_workflows)"
+      changed_files:
+        - src/documents/signals/handlers.py
+      added_tests:
+        - src/documents/tests/test_workflows.py
+
+    expected_findings: >
+      run_workflows() saves an in-memory Document instance after triggering
+      actions that may cause other signal handlers to update the same
+      document's filename and archive_filename in the database. The save
+      will overwrite those updates with stale values. Refresh the relevant
+      fields from the database before saving, or restructure to avoid the
+      race between in-memory and persisted state.
+
+    expected_tests:
+      - src/documents/tests/test_workflows.py
+    expected_test_intent: >
+      Construct a workflow that assigns a custom field whose value feeds
+      into the document's storage path template. After the workflow runs,
+      verify the database filename matches the actual on-disk location
+      (i.e. no divergence between DB state and file system state).
+
+    post_fix_expected_behavior:
+      should_still_flag: false
+      notes: >
+        refresh_from_db() before save() restores invariant. Note that the
+        broader pattern (in-memory state being clobbered by signals) may
+        recur elsewhere in the codebase; flagging the general pattern is
+        a separate finding from flagging this specific instance.
+
+    scoring_support:
+      surface_recall_levels:
+        - module
+        - file
+        - symbol
+      risk_category_match: "signal cascade with shared mutable state"
+      false_positive_notes: >
+        run_workflows() is a complex function; flagging it broadly is not
+        the same as identifying the in-memory-vs-DB clobber. Score location
+        recall at the symbol level, not just the file level.
