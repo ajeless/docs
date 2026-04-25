@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 36" role="img" aria-label="divider">
+  <g stroke="#1a1a1a" fill="#1a1a1a">
+    <line x1="120" y1="18" x2="540" y2="18" stroke-width="0.6"></line>
+    <line x1="660" y1="18" x2="1080" y2="18" stroke-width="0.6"></line>
+    <circle cx="580" cy="18" r="1.8" stroke="none"></circle>
+    <circle cx="600" cy="18" r="3" fill="none" stroke-width="0.8"></circle>
+    <circle cx="620" cy="18" r="1.8" stroke="none"></circle>
+  </g>
+</svg>

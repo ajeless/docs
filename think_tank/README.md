@@ -1,3 +1,15 @@
+<div align="center">
+
+<img src="assets/hero-blueprint.svg" alt="Think Tank — a local-first idea workspace" width="100%">
+
+![Status](https://img.shields.io/badge/status-WIP-7fb3ff?style=flat-square&labelColor=0d1b2a)
+![Stage](https://img.shields.io/badge/stage-preliminary-7fb3ff?style=flat-square&labelColor=0d1b2a)
+![Local-First](https://img.shields.io/badge/local--first-yes-7fb3ff?style=flat-square&labelColor=0d1b2a)
+![Multi-Agent](https://img.shields.io/badge/multi--agent-yes-7fb3ff?style=flat-square&labelColor=0d1b2a)
+![License](https://img.shields.io/badge/license-TBD-7fb3ff?style=flat-square&labelColor=0d1b2a)
+
+</div>
+
 # Think Tank
 
 > **Status:** Preliminary idea / WIP. Not under active development.
@@ -5,7 +17,30 @@
 
 A local-first idea workspace where a human and multiple AI agents develop ideas into durable, searchable, versioned artifacts. The core artifact is not the chat transcript — it's a structured, editable project state: claims, questions, evidence, disagreements, decisions, assumptions, artifacts, and changes over time.
 
----
+<img src="assets/divider-blueprint.svg" alt="" width="100%">
+
+## Contents
+
+| § | Section |
+|---|---|
+| `01` | [Why this exists](#why-this-exists) |
+| `02` | [Thesis](#thesis) |
+| `03` | [What it is](#what-it-is) · [What it is NOT](#what-it-is-not) |
+| `04` | [Core abstractions](#core-abstractions) |
+| &nbsp;&nbsp;`04.1` | [Project state (`state.json`)](#project-state-statejson) |
+| &nbsp;&nbsp;`04.2` | [Modes (not "exchange depth")](#modes-not-exchange-depth) |
+| &nbsp;&nbsp;`04.3` | [Hierarchical summaries](#hierarchical-summaries-semantic-zoom-not-compression-ratio) |
+| &nbsp;&nbsp;`04.4` | [Inline elaboration / glossary capture](#inline-elaboration--glossary-capture) |
+| &nbsp;&nbsp;`04.5` | ["IDE for ideas" — what that actually means](#ide-for-ideas--what-that-actually-means) |
+| `05` | [Project layout (provisional)](#project-layout-provisional) |
+| `06` | [Relationship to Deliberation Room](#relationship-to-deliberation-room) |
+| `07` | [Validation plan](#validation-plan) |
+| `08` | [Prior art surveyed](#prior-art-surveyed) |
+| `09` | [Open questions](#open-questions) |
+| `10` | [Risks](#risks) |
+| `11` | [Status & next steps](#status--next-steps) |
+
+<img src="assets/divider-blueprint.svg" alt="" width="100%">
 
 ## Why this exists
 
@@ -19,15 +54,16 @@ Working with AI assistants for ideation is genuinely useful, but the workflow ha
 
 The bet: the most valuable thing isn't a better chat UI. It's a **representation of an evolving idea that survives across sessions, agents, and providers**.
 
----
+<img src="assets/divider-blueprint.svg" alt="" width="100%">
 
 ## Thesis
 
+> [!IMPORTANT]
 > Think Tank is a local-first idea workspace where a human and multiple AI agents develop ideas into durable, searchable, versioned artifacts. Its core artifact is not the chat transcript, but a structured, editable project state.
 
 This is sharper than "multi-agent chat room for ideation," because the latter risks becoming "LibreChat plus some agent turns." The novel artifact is the **project structure itself** — a representation of an evolving idea that's good enough you'd open `state.json` directly the way you'd open a source file.
 
----
+<img src="assets/divider-blueprint.svg" alt="" width="100%">
 
 ## What it is
 
@@ -48,9 +84,30 @@ A workspace where:
 - Not an autonomous agent swarm — the human stays in the loop and in control.
 - Not an extension of [Deliberation Room](#relationship-to-deliberation-room). Sibling, not child.
 
----
+<img src="assets/divider-blueprint.svg" alt="" width="100%">
 
 ## Core abstractions
+
+```mermaid
+flowchart LR
+    H([Human]):::human
+    subgraph providers[Providers]
+      A1[Anthropic]:::agent
+      A2[OpenAI]:::agent
+      A3[Google]:::agent
+      A4[Local / Ollama]:::agent
+    end
+    H --> providers
+    providers --> M{{modes:<br/>blind_parallel · critique<br/>red_team · synthesis}}:::mode
+    M --> S[(state.json)]:::state
+    S --> V[verdict · gist · brief · deep_dive]:::summary
+    S --> H
+    classDef human fill:#7fb3ff,stroke:#0d1b2a,color:#0d1b2a,font-weight:bold;
+    classDef agent fill:#0d1b2a,stroke:#7fb3ff,color:#e8f1ff;
+    classDef mode  fill:#1f3b66,stroke:#7fb3ff,color:#e8f1ff;
+    classDef state fill:#7fb3ff,stroke:#0d1b2a,color:#0d1b2a,font-weight:bold;
+    classDef summary fill:#0d1b2a,stroke:#7fb3ff,color:#e8f1ff;
+```
 
 ### Project state (`state.json`)
 
@@ -90,29 +147,34 @@ The durable artifact. A structured representation of the evolving idea. Provisio
 }
 ```
 
-The schema is intentionally provisional. **Don't design it up front.** Let it emerge from real use — premature schemas collect empty fields you dutifully fill in instead of the fields you actually needed.
+> [!WARNING]
+> The schema is intentionally provisional. **Don't design it up front.** Let it emerge from real use — premature schemas collect empty fields you dutifully fill in instead of the fields you actually needed.
 
 ### Modes (not "exchange depth")
 
 Instead of "have agents talk for N turns," interactions happen in named modes:
 
-- `blind_parallel` — same prompt to multiple agents, no cross-talk, synthesized after
-- `critique` — one agent's output reviewed by another
-- `red_team` — adversarial pass against a position
-- `research_review` — evidence-gathering pass
-- `synthesis` — collapse multi-agent output into one consolidated view
-- `debate_optional` — sequential cross-talk, used sparingly
+| Mode | Behavior |
+|---|---|
+| `blind_parallel` | same prompt to multiple agents, no cross-talk, synthesized after |
+| `critique` | one agent's output reviewed by another |
+| `red_team` | adversarial pass against a position |
+| `research_review` | evidence-gathering pass |
+| `synthesis` | collapse multi-agent output into one consolidated view |
+| `debate_optional` | sequential cross-talk, used sparingly |
 
 The default is **parallel-then-synthesize**. Sequential debate is a tool used deliberately, not a primary loop. Sequential model-to-model debate tends to converge, repeat, or hallucinate unless agents have meaningfully different roles, tools, or evidence.
 
 ### Hierarchical summaries (semantic zoom, not compression ratio)
 
-- `verdict.md` — one line
-- `gist.md` — short human overview
-- `brief.md` — structured summary with major reasoning
-- `deep_dive.md` — detailed synthesis
-- `transcript.jsonl` — complete raw exchange
-- `state.json` — canonical structured project state
+| File | Purpose |
+|---|---|
+| `verdict.md` | one line |
+| `gist.md` | short human overview |
+| `brief.md` | structured summary with major reasoning |
+| `deep_dive.md` | detailed synthesis |
+| `transcript.jsonl` | complete raw exchange |
+| `state.json` | canonical structured project state |
 
 A reader picks a level based on the *kind* of overview they need, not how much patience they have.
 
@@ -157,7 +219,7 @@ Not "chat with projects." The metaphor only delivers if it implements the idea-e
 
 These are graph operations, not chat features. The chat is one input surface; the graph is the product.
 
----
+<img src="assets/divider-blueprint.svg" alt="" width="100%">
 
 ## Project layout (provisional)
 
@@ -176,7 +238,7 @@ These are graph operations, not chat features. The chat is one input surface; th
 
 Per-project sandbox: agents read/write freely **inside** the project folder, never outside.
 
----
+<img src="assets/divider-blueprint.svg" alt="" width="100%">
 
 ## Relationship to Deliberation Room
 
@@ -202,7 +264,7 @@ What's not portable:
 
 The repo is still useful. Fork the concepts, not the product.
 
----
+<img src="assets/divider-blueprint.svg" alt="" width="100%">
 
 ## Validation plan
 
@@ -250,7 +312,7 @@ Only after Layer 2 has earned its keep:
 - Sub-agent / sub-project support
 - Visualizations (Mermaid, charts, mind-maps, flow-charts)
 
----
+<img src="assets/divider-blueprint.svg" alt="" width="100%">
 
 ## Prior art surveyed
 
@@ -268,9 +330,10 @@ Only after Layer 2 has earned its keep:
 | Cursor / Claude Code | Sandboxed agent files | Code-centric |
 | Cloudflare Project Think | Durable sub-agents + sandboxes | Infrastructure, not idea workspace |
 
-**White space:** a structured, editable, versionable representation of an evolving idea, with multiple agents reading/writing it and the human keeping editorial control.
+> [!TIP]
+> **White space:** a structured, editable, versionable representation of an evolving idea, with multiple agents reading/writing it and the human keeping editorial control.
 
----
+<img src="assets/divider-blueprint.svg" alt="" width="100%">
 
 ## Open questions
 
@@ -286,19 +349,20 @@ To resolve through use, not up-front design:
 - What's the right capture cadence for the glossary so it doesn't become a graveyard?
 - Where does the review surface live? Weekly digest? `tt review` command? Stale-claim linter?
 
----
+<img src="assets/divider-blueprint.svg" alt="" width="100%">
 
 ## Risks
 
-- **UX overload.** Multi-agent output is verbose. Hierarchical summaries are not optional.
-- **False consensus.** Same-family models converge. Need explicit roles, not just turns.
-- **Cost and latency.** Frontier-model debate isn't cheap. Design for restraint — parallel-then-synthesize over long debates, on-demand over scheduled.
-- **Sandbox safety.** Agents read/write inside the project folder, never outside.
-- **Schema rigidity.** A premature schema collects empty fields. Let it emerge.
-- **Capture-without-review.** Glossary and state files become graveyards if there's no review surface. Build the review path from day one, even if it's just a digest.
-- **Sunk-cost bias toward DR.** The Deliberation Room repo is mature, but its design philosophy doesn't fully fit. Resist the pull to port it wholesale.
+> [!CAUTION]
+> - **UX overload.** Multi-agent output is verbose. Hierarchical summaries are not optional.
+> - **False consensus.** Same-family models converge. Need explicit roles, not just turns.
+> - **Cost and latency.** Frontier-model debate isn't cheap. Design for restraint — parallel-then-synthesize over long debates, on-demand over scheduled.
+> - **Sandbox safety.** Agents read/write inside the project folder, never outside.
+> - **Schema rigidity.** A premature schema collects empty fields. Let it emerge.
+> - **Capture-without-review.** Glossary and state files become graveyards if there's no review surface. Build the review path from day one, even if it's just a digest.
+> - **Sunk-cost bias toward DR.** The Deliberation Room repo is mature, but its design philosophy doesn't fully fit. Resist the pull to port it wholesale.
 
----
+<img src="assets/divider-blueprint.svg" alt="" width="100%">
 
 ## Status & next steps
 
@@ -310,6 +374,10 @@ To resolve through use, not up-front design:
 - [ ] Schema refinement based on observed needs
 - [ ] Decision: build, compose from existing tools, or drop
 
----
+<img src="assets/divider-blueprint.svg" alt="" width="100%">
+
+<div align="center">
 
 *This document synthesizes ideation across multiple AI-assisted conversations. It is preliminary and reflects current thinking, not commitments.*
+
+</div>
