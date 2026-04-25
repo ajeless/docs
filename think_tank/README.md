@@ -33,12 +33,13 @@ A local-first idea workspace where a human and multiple AI agents develop ideas 
 | &nbsp;&nbsp;`04.4` | [Inline elaboration / glossary capture](#inline-elaboration--glossary-capture) |
 | &nbsp;&nbsp;`04.5` | ["IDE for ideas" — what that actually means](#ide-for-ideas--what-that-actually-means) |
 | `05` | [Project layout (provisional)](#project-layout-provisional) |
-| `06` | [Relationship to Deliberation Room](#relationship-to-deliberation-room) |
-| `07` | [Validation plan](#validation-plan) |
-| `08` | [Prior art surveyed](#prior-art-surveyed) |
-| `09` | [Open questions](#open-questions) |
-| `10` | [Risks](#risks) |
-| `11` | [Status & next steps](#status--next-steps) |
+| `06` | [A day in the life](#a-day-in-the-life) |
+| `07` | [Relationship to Deliberation Room](#relationship-to-deliberation-room) |
+| `08` | [Validation plan](#validation-plan) |
+| `09` | [Prior art surveyed](#prior-art-surveyed) |
+| `10` | [Open questions](#open-questions) |
+| `11` | [Risks](#risks) |
+| `12` | [Status & next steps](#status--next-steps) |
 
 <img src="assets/divider-blueprint.svg" alt="" width="100%">
 
@@ -150,6 +151,9 @@ The durable artifact. A structured representation of the evolving idea. Provisio
 > [!WARNING]
 > The schema is intentionally provisional. **Don't design it up front.** Let it emerge from real use — premature schemas collect empty fields you dutifully fill in instead of the fields you actually needed.
 
+> [!NOTE]
+> **Human-readability is a real concern.** If `state.json` becomes the canonical artifact too early, the project folder may feel alien — you'd be reading raw JSON to understand your own thinking. One option (deferred to Layer 3): treat `state.json` as canonical but always render a `state.md` alongside it as a read-only human view, regenerated on every change. Or skip canonical state entirely for the prototype and let it emerge from `notes/` and `transcripts/`. See [Open questions](#open-questions).
+
 ### Modes (not "exchange depth")
 
 Instead of "have agents talk for N turns," interactions happen in named modes:
@@ -237,6 +241,112 @@ These are graph operations, not chat features. The chat is one input surface; th
 ```
 
 Per-project sandbox: agents read/write freely **inside** the project folder, never outside.
+
+<img src="assets/divider-blueprint.svg" alt="" width="100%">
+
+## A day in the life
+
+The clearest way to picture Think Tank is to walk through a session. The example below is fictional — it shows what *would* happen if the prototype existed today and you used it on this very project.
+
+### Day 1 — first prompt
+
+```bash
+tt new think-tank --description "A local-first idea workspace where humans and agents develop ideas into versioned artifacts."
+tt agent add skeptic --model claude-opus-4-7
+tt agent add researcher --model gpt-5
+tt agent add synthesizer --model gemini-3
+tt ask "Is Think Tank worth building?"
+```
+
+After the command finishes, the project folder looks like:
+
+```
+~/thinktank/think-tank/
+  state.json
+  verdict.md           # "Possibly. Validate the workflow before the architecture."
+  gist.md              # 2–3 paragraph human overview
+  brief.md             # structured summary with disagreements surfaced
+  deep_dive.md         # full synthesis of all three agents
+  transcripts/
+    2026-04-25T0930.jsonl    # raw responses from all three agents
+  notes/
+  artifacts/
+  .git/                # initial commit
+```
+
+Open `verdict.md` and you see one line. Open `gist.md` and you see the human overview. Open `state.json` and you see the structured representation: candidate claims, open questions, where the agents disagreed, and which mode produced each piece.
+
+### Day 3 — pushback on a claim
+
+A couple of days later, you've spent some time using MultipleChat for real ideation. Side-by-side comparison turned out to be more useful than the original framing assumed. You run:
+
+```bash
+tt ask "Update: I tried MultipleChat for two days. Side-by-side comparison was actually useful — keeping multiple drafts visible helped me see disagreements I'd otherwise miss. Reconsider the 'not a model comparison tool' anti-goal."
+```
+
+The agents respond, the synthesizer revises state, and `git diff state.json` shows:
+
+```diff
+- {
+-   "id": "claim_003",
+-   "text": "Side-by-side model comparison is incidental, not the point.",
+-   "status": "active",
+-   "confidence": "high"
+- }
++ {
++   "id": "claim_003",
++   "text": "Side-by-side model comparison is incidental, not the point.",
++   "status": "superseded",
++   "confidence": "high",
++   "superseded_by": "claim_007"
++ }
++ {
++   "id": "claim_007",
++   "text": "Visible parallel responses are useful when the user is comparing model framings, not just merging into a single answer.",
++   "status": "active",
++   "confidence": "medium",
++   "supersedes": ["claim_003"],
++   "supporting_evidence": ["notes/2026-04-27-multiplechat-trial.md"]
++ }
+```
+
+That's the durable record. Two weeks from now, you can answer "why did I change my mind on this?" by reading the supersession chain — not by scrolling through chats.
+
+### Day 10 — inline elaboration captures a term
+
+Mid-conversation, an agent uses the phrase "semantic zoom." You half-know what they mean. Instead of breaking flow to ask, you select the phrase and run:
+
+```bash
+tt elaborate "semantic zoom" --as=define
+```
+
+A glossary entry appears in `state.json` (and any rendered view alongside it):
+
+```json
+{
+  "id": "term_014",
+  "term": "semantic zoom",
+  "definition": "A summarization model where each level captures a different kind of information (verdict, gist, reasoning, full detail) rather than a different compression ratio. Contrasts with percentage-based summaries.",
+  "captured_from": "transcripts/2026-05-04T1402.jsonl#L23",
+  "captured_at": "2026-05-04T14:09:00Z",
+  "status": "captured"
+}
+```
+
+You keep going. Later, `tt review` surfaces the term in a weekly digest so it doesn't sit unread in a graveyard.
+
+### What you can answer two weeks later
+
+| Question | How |
+|---|---|
+| "How has my view of X changed?" | `git log -p state.json` filtered by claim id |
+| "Where did I first say Y?" | grep across `transcripts/` |
+| "What did I decide about Z?" | `decisions[]` in `state.json` |
+| "Which claims am I least confident in?" | query `state.json` by `confidence` |
+| "What questions are still open?" | `questions[]` in `state.json` |
+| "Which terms did I never come back to?" | `tt review --stale` |
+
+The product is the answer to those questions, not the chat that produced them.
 
 <img src="assets/divider-blueprint.svg" alt="" width="100%">
 
@@ -348,6 +458,7 @@ To resolve through use, not up-front design:
 - Where does the workspace boundary actually fall? Per-idea, per-domain, per-month?
 - What's the right capture cadence for the glossary so it doesn't become a graveyard?
 - Where does the review surface live? Weekly digest? `tt review` command? Stale-claim linter?
+- **Canonical state: JSON, Markdown, or both?** If `state.json` is canonical, the project folder may feel alien to a human reader. If `state.md` is canonical, structured queries get harder. A render-from-JSON `state.md` view avoids the dual-canonical sync problem but adds a build step. May be best to defer until the prototype reveals which feels worse in practice.
 
 <img src="assets/divider-blueprint.svg" alt="" width="100%">
 
