@@ -214,7 +214,7 @@ Three decisions that shape how the system gets built. Each is summarized here; t
 ### Stack decisions
 
 > [!IMPORTANT]
-> **Python engine with `uv`, aisuite for provider abstraction, CLI first, FastAPI later.** The engine knows nothing about UI. The CLI is a thin adapter. When a UI eventually exists, it talks to the same engine through HTTP.
+> **Python engine, aisuite for provider abstraction, CLI first, FastAPI later.** The engine knows nothing about UI. The CLI is a thin adapter. When a UI eventually exists, it talks to the same engine through HTTP.
 
 - **Python over Go for the engine.** The LLM ecosystem is overwhelmingly Python-first — provider SDKs, abstraction libraries, examples, and community fixes all assume Python. Go's concurrency advantage doesn't earn its keep here because the workload is I/O-bound (waiting on remote APIs), not CPU-bound. `asyncio.gather` over `httpx` coroutines handles parallel fanout cleanly. Go remains an option for specific later components (a long-running indexer, a system-service daemon) that would talk to the Python engine over IPC.
 - **[aisuite](https://github.com/andrewyng/aisuite) over LiteLLM, LangChain, or roll-your-own.** aisuite is a thin wrapper around official provider SDKs — no daemon, no proxy, no separate process. The `provider:model` string identifier maps cleanly to what `state.json` needs to record about each turn. LiteLLM is over-engineered for a personal tool; LangChain hides the data flow we want to see; rolling our own re-creates the work aisuite already finished.
