@@ -15,9 +15,13 @@
 | Layer | Choice | What was rejected |
 |---|---|---|
 | Engine language | **Python** | Go (good concurrency, wrong ecosystem) |
+| Toolchain | **`uv`** | `pip`/`venv` directly, `poetry`, `pipenv`, `conda` |
 | Provider abstraction | **[aisuite](https://github.com/andrewyng/aisuite)** | LiteLLM (over-engineered), LangChain (opaque), roll-your-own (re-creates aisuite) |
 | Concurrency model | **`asyncio` + `httpx`** | Threads, Go-style channels |
 | CLI framework | **`typer`** (or `click`) | argparse (verbose), bare-bones |
+| Terminal output | **[`rich`](https://github.com/Textualize/rich)** | Plain `print` (no formatting), `colorama` (just colors) |
+| Interactive prompts | **[`questionary`](https://github.com/tmbo/questionary)** | Raw `typer.prompt` (no menus), `rich.prompt` alone (no arrow-key selection) |
+| Test framework | **`pytest`** + **`pytest-asyncio`** | `unittest` (boilerplate-heavy), nose (deprecated) |
 | Future API | **FastAPI** | Flask (older), Django (overkill) |
 | Storage | **JSONL + JSON** | SQLite (premature), Postgres (way premature) |
 | Versioning | **git** | Custom revision history (reinventing the wheel) |
@@ -194,6 +198,65 @@ The test: **you should be able to delete the CLI and write a new one in another 
 - Mature, well-documented, low ceremony.
 
 The whole HTTP layer is probably ~100 lines once the engine exists. Don't write it before you need it.
+
+### Why uv over pip/poetry/pipenv
+
+`uv` (from Astral, the makers of `ruff`) handles environment management, dependency resolution, lock files, and Python version pinning in one fast Rust-based tool. It replaces the `pip + venv + pip-tools + pyenv` stack that's been the norm and is meaningfully faster than alternatives like `poetry` or `pipenv`.
+
+The toolchain rule that follows from this choice is enforced literally in `AGENTS.md`: never invoke `python` directly, never use `pip install`, always go through `uv run`. The reason is that `uv` manages the project's environment, lock file, and Python version automatically — bypassing it with raw `pip` mutates state outside the lock file and produces non-reproducible builds. The discipline is small (always type `uv run` before commands) and the payoff is a sane environment forever.
+
+### Why rich for terminal output
+
+`rich` is the modern Python library for formatted terminal output — colors, tables, panels, progress bars, syntax highlighting, formatted tracebacks. Typer itself uses Rich under the hood for `--help` formatting, so it's effectively a transitive dependency anyway.
+
+What Rich gives us: pretty output without ANSI escape codes leaking into piped output (Rich auto-detects TTY vs pipe and disables formatting when piped), formatted error messages that are easier to read than raw tracebacks, and a clean substrate for the eventual `tt render` command and HTML render bundle.
+
+What Rich is *not* used for: interactive selection. `rich.prompt` exists but it's line-based (ask a question, type an answer) and doesn't support arrow-key menus, multi-select, or autocomplete. Those go to `questionary`.
+
+### Why questionary for interactive prompts
+
+`questionary` is built on `prompt_toolkit` and provides arrow-key navigation, type-to-filter, multi-select with checkboxes, and autocomplete-as-you-type. It's what tools like `gh`, modern `pip` interactive flows, and most polished Python CLIs use today.
+
+For Think Tank, questionary handles the interactive moments: `tt config init` selecting from detected providers, future setup flows, anywhere the user is being guided through choices. Single dependency, well-maintained, integrates cleanly inside Typer command handlers.
+
+The division of labor between Rich and questionary is the natural one: **Rich for output, questionary for choosing.** They compose well within the same command — a `tt config init` can use Rich panels for framing and questionary menus for selection. They're complementary, not competing.
+
+<img src="assets/divider-blueprint.svg" alt="" width="100%">
+
+## Setup commands vs work commands
+
+The CLI's surface splits into two categories with sharply different rules. This split is a stack decision because it determines which libraries get used where.
+
+### Setup commands
+
+Examples: `tt config init`, `tt config edit`, future `tt project new`.
+
+These are commands the user runs *explicitly to configure or initialize something*. They're allowed to be interactive — to use `questionary` menus, prompt for values, validate input mid-flow, walk the user through decisions. They're allowed to use Rich's full output palette (panels, colored detection summaries, progress indicators).
+
+Setup commands are the moments where a guided experience adds real value. The user came to be guided.
+
+### Work commands
+
+Examples: `tt ask`, future `tt synthesize`, future `tt visualize`.
+
+These are the commands that exercise the engine to do real work. They are non-negotiably non-interactive: every required input arrives via arguments or flags, and missing input produces an error that points at how to provide it — never an interactive prompt. Output is plain enough to pipe and grep cleanly; Rich's auto-detection of TTY vs. pipe means formatted output in a terminal becomes plain output when piped to a file or another command.
+
+Why the asymmetry: work commands need to be **scriptable, testable, and embeddable**. Interactive prompts in work commands break all three:
+
+- **Scriptable.** A user wanting to run `tt ask "..." | grep ...` cannot have a prompt blocking the pipeline.
+- **Testable.** A test that exercises `tt ask` should not need a TTY emulator or input mocking.
+- **Embeddable.** A future API or another tool calling Think Tank's engine should not have to handle interactive prompts mid-call.
+
+The principle generalizes beyond CLI: the *engine* never prompts, ever. Setup commands prompt; the engine doesn't. This keeps the engine's surface clean for every consumer (CLI, future HTTP API, future UI, scripts, tests).
+
+### What "interactive" means precisely
+
+"Interactive" here means *requiring user input mid-execution* — selection menus, free-text prompts, confirmation dialogs that block until the user responds. Pretty output is not interaction; it's display, and it's fine in any command.
+
+So:
+- A work command using Rich to colorize "anthropic" green when detected? Fine — that's display.
+- A work command using `questionary.select` to ask which model to use? Not fine — that's interaction.
+- A setup command using both? Fine — setup is where guidance lives.
 
 <img src="assets/divider-blueprint.svg" alt="" width="100%">
 

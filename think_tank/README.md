@@ -30,6 +30,7 @@ A local-first idea workspace where a human and multiple AI agents develop ideas 
 | &nbsp;&nbsp;`04.1` | [Use what you already have](#use-what-you-already-have) |
 | &nbsp;&nbsp;`04.2` | [Credentials live in the environment](#credentials-live-in-the-environment) |
 | &nbsp;&nbsp;`04.3` | [Local-first](#local-first) |
+| &nbsp;&nbsp;`04.4` | [No opinions imposed on the user](#no-opinions-imposed-on-the-user) |
 | `05` | [Implementation approach](#implementation-approach) |
 | &nbsp;&nbsp;`05.1` | [Stack decisions](#stack-decisions) |
 | &nbsp;&nbsp;`05.2` | [Domain model — let it emerge](#domain-model--let-it-emerge) |
@@ -185,6 +186,24 @@ Design choices that fall out of this:
 Everything lives on your machine. State, transcripts, artifacts — all in `~/thinktank/<project>/`. Git is the version control layer. No cloud sync, no server-side state, no account, no telemetry.
 
 This isn't an aesthetic preference — it's the consequence of the no-new-middleman commitment. A cloud-hosted Think Tank would have the same data-pipe problem the tool was built to avoid.
+
+### No opinions imposed on the user
+
+The tool may default *between* user-supplied options. The tool must not pick *on the user's behalf*.
+
+> [!IMPORTANT]
+> **The line that determines whether a default is acceptable.** Are we choosing between things the user supplied, or choosing for them? The first is fine. The second is not.
+
+Examples:
+
+- **Acceptable:** "If multiple credentials are configured, prefer the subscription token over the API key." (Choosing between user-supplied options.)
+- **Acceptable:** "If multiple providers are detected, ask the user which to use as the default." (Surfacing the choice rather than making it.)
+- **Not acceptable:** "If no model is configured, default to `anthropic:claude-opus-4-7`." (Choosing on the user's behalf.)
+- **Not acceptable:** "If no provider is set up, silently use OpenAI because most people have it." (Importing an opinion the user didn't supply.)
+
+When the user hasn't supplied something the tool needs, the right behavior is to fail with a clear error pointing at how to supply it — never to invent a default that bypasses the user's choice. "Easier-to-start" defaults that pick on the user's behalf are middleman behavior in disguise; the tool rejects them for the same reason it rejects the cloud-routed middlemen named in the first commitment.
+
+This applies to code, config, prompts, and error messages. If a default is being written anywhere in the system, the test is: did the user supply the alternatives, or are we inventing one?
 
 <img src="assets/divider-blueprint.svg" alt="" width="100%">
 
