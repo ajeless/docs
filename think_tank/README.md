@@ -2,8 +2,8 @@
 
 <img src="assets/hero-blueprint.svg" alt="Think Tank — a local-first idea workspace" width="100%">
 
-![Status](https://img.shields.io/badge/status-WIP-7fb3ff?style=flat-square&labelColor=0d1b2a)
-![Stage](https://img.shields.io/badge/stage-preliminary-7fb3ff?style=flat-square&labelColor=0d1b2a)
+![Status](https://img.shields.io/badge/status-building-7fb3ff?style=flat-square&labelColor=0d1b2a)
+![Stage](https://img.shields.io/badge/stage-prototype-7fb3ff?style=flat-square&labelColor=0d1b2a)
 ![Local-First](https://img.shields.io/badge/local--first-yes-7fb3ff?style=flat-square&labelColor=0d1b2a)
 ![Multi-Agent](https://img.shields.io/badge/multi--agent-yes-7fb3ff?style=flat-square&labelColor=0d1b2a)
 ![License](https://img.shields.io/badge/license-TBD-7fb3ff?style=flat-square&labelColor=0d1b2a)
@@ -12,8 +12,8 @@
 
 # Think Tank
 
-> **Status:** Preliminary idea / WIP. Not under active development.
-> This document captures the current thinking so it can be picked up later. Most of it is still up for revision.
+> **Status:** Building — prototype phase.
+> This document captures the current thinking and decisions made so far. Major design choices reference companion documents for the full reasoning.
 
 A local-first idea workspace where a human and multiple AI agents develop ideas into durable, searchable, versioned artifacts. The core artifact is not the chat transcript — it's a structured, editable project state: claims, questions, evidence, disagreements, decisions, assumptions, artifacts, and changes over time.
 
@@ -26,20 +26,34 @@ A local-first idea workspace where a human and multiple AI agents develop ideas 
 | `01` | [Why this exists](#why-this-exists) |
 | `02` | [Thesis](#thesis) |
 | `03` | [What it is](#what-it-is) · [What it is NOT](#what-it-is-not) |
-| `04` | [Core abstractions](#core-abstractions) |
-| &nbsp;&nbsp;`04.1` | [Project state (`state.json`)](#project-state-statejson) |
-| &nbsp;&nbsp;`04.2` | [Modes (not "exchange depth")](#modes-not-exchange-depth) |
-| &nbsp;&nbsp;`04.3` | [Hierarchical summaries](#hierarchical-summaries-semantic-zoom-not-compression-ratio) |
-| &nbsp;&nbsp;`04.4` | [Inline elaboration / glossary capture](#inline-elaboration--glossary-capture) |
-| &nbsp;&nbsp;`04.5` | ["IDE for ideas" — what that actually means](#ide-for-ideas--what-that-actually-means) |
-| `05` | [Project layout (provisional)](#project-layout-provisional) |
-| `06` | [A day in the life](#a-day-in-the-life) |
-| `07` | [Relationship to Deliberation Room](#relationship-to-deliberation-room) |
-| `08` | [Validation plan](#validation-plan) |
-| `09` | [Prior art surveyed](#prior-art-surveyed) |
-| `10` | [Open questions](#open-questions) |
-| `11` | [Risks](#risks) |
-| `12` | [Status & next steps](#status--next-steps) |
+| `04` | [Design commitments](#design-commitments) |
+| &nbsp;&nbsp;`04.1` | [Use what you already have](#use-what-you-already-have) |
+| &nbsp;&nbsp;`04.2` | [Credentials live in the environment](#credentials-live-in-the-environment) |
+| &nbsp;&nbsp;`04.3` | [Local-first](#local-first) |
+| `05` | [Implementation approach](#implementation-approach) |
+| &nbsp;&nbsp;`05.1` | [Stack decisions](#stack-decisions) |
+| &nbsp;&nbsp;`05.2` | [Domain model — let it emerge](#domain-model--let-it-emerge) |
+| &nbsp;&nbsp;`05.3` | [Prompts as a first-class subsystem](#prompts-as-a-first-class-subsystem) |
+| `06` | [Core abstractions](#core-abstractions) |
+| &nbsp;&nbsp;`06.1` | [Project state (`state.json`)](#project-state-statejson) |
+| &nbsp;&nbsp;`06.2` | [Modes (not "exchange depth")](#modes-not-exchange-depth) |
+| &nbsp;&nbsp;`06.3` | [Hierarchical summaries](#hierarchical-summaries-semantic-zoom-not-compression-ratio) |
+| &nbsp;&nbsp;`06.4` | [Inline elaboration / glossary capture](#inline-elaboration--glossary-capture) |
+| &nbsp;&nbsp;`06.5` | ["IDE for ideas" — what that actually means](#ide-for-ideas--what-that-actually-means) |
+| `07` | [Project layout (provisional)](#project-layout-provisional) |
+| `08` | [A day in the life](#a-day-in-the-life) |
+| `09` | [Relationship to Deliberation Room](#relationship-to-deliberation-room) |
+| `10` | [Build plan](#build-plan) |
+| `11` | [Prior art surveyed](#prior-art-surveyed) |
+| `12` | [Open questions](#open-questions) |
+| `13` | [Risks](#risks) |
+| `14` | [Status & next steps](#status--next-steps) |
+
+**Companion documents.** This README is the overview. The deep reasoning lives in dedicated docs in this same directory:
+
+- [`domain-model.md`](./domain-model.md) — what "domain model" means here, candidate nouns and verbs, and the discipline of letting the schema emerge from real use.
+- [`prompts.md`](./prompts.md) — the prompt assembly pipeline, role/mode/context layers, prompt management strategies, and why the synthesizer's prompt is the most important piece of the whole product.
+- [`stack-decisions.md`](./stack-decisions.md) — provider abstraction (aisuite vs LiteLLM vs LangChain vs roll-your-own), Python-vs-Go for the engine, CLI-first-then-API architecture, and migration paths.
 
 <img src="assets/divider-blueprint.svg" alt="" width="100%">
 
@@ -84,6 +98,154 @@ A workspace where:
 - Not an agent orchestration framework (LangGraph, CrewAI, OpenAI Agents SDK exist).
 - Not an autonomous agent swarm — the human stays in the loop and in control.
 - Not an extension of [Deliberation Room](#relationship-to-deliberation-room). Sibling, not child.
+
+<img src="assets/divider-blueprint.svg" alt="" width="100%">
+
+## Design commitments
+
+Three principles that shape every downstream decision. They emerged from triaging existing tools and finding that most of them fail at least one — often the first.
+
+### Use what you already have
+
+Most tools in this space are middlemen. They sit between you and the provider APIs you're already paying for, take a cut (subscription, data access, or both), and gate access behind their UI choices. Think Tank rejects that pattern.
+
+> [!IMPORTANT]
+> **No new middleman.** Think Tank uses the auth method you already have. It auto-detects credentials in your environment. It prefers subscription auth (where the provider permits) over per-token API billing. It never re-sells access to models you already pay for elsewhere.
+
+What this means in practice:
+
+- **Auto-detect on first run.** Scan environment variables (`$ANTHROPIC_API_KEY`, `$OPENAI_API_KEY`, `$GEMINI_API_KEY`, `$XAI_API_KEY`, `$OPENROUTER_API_KEY`, etc.), common config locations (`~/.anthropic/`, `~/.openai/`), and OS keychains. Show the user what was found and ask which to enable. No "paste your key here" prompt as the default path.
+- **Subscription wins by default.** When a provider supports both subscription tokens (e.g. via `claude setup-token`) and API keys, the subscription path is preferred — it's free at the margin for users who already pay for it. Per-call override is trivial (`tt --auth=apikey ask ...`).
+- **No silent escalation.** If a subscription token rate-limits or expires, the tool asks before falling back to API key billing. People budget very differently for "$200 flat" vs "pay per token"; surprise per-token charges are the most common complaint about every tool in this space.
+- **Per-provider auth list with fallback.** Each provider has an ordered list of supported methods: subscription token → direct API key → aggregator key (OpenRouter, etc.). The tool stays neutral about which the user picks; ToS posture per provider is documented so the user can choose with eyes open.
+
+> [!NOTE]
+> **Anthropic-specific caveat.** Anthropic's official position is that subscription OAuth is intended for Claude Code and Claude.ai, not third-party tools. The `claude setup-token` path technically works but sits in a gray zone per the consumer ToS. For purely personal use on your own subscription the practical risk is low (a temporary flag at worst). For productized use, this becomes API-keys-only. Treat any subscription auth path as potentially temporary and architect for graceful fallback.
+
+### Credentials live in the environment
+
+The lazy default in most tools is to prompt for an API key on first run, store it in tool-specific config, and move on. That creates secret sprawl: the same key duplicated across five tools in five different formats, eventually committed by accident.
+
+> [!IMPORTANT]
+> **One source of truth for credentials.** Secrets live in a user-managed location outside any repo. The tool reads from the environment. Setup guidance teaches the pattern; it doesn't bypass it.
+
+Three-layer model:
+
+| Layer | Purpose | Lifetime |
+|---|---|---|
+| `~/.secrets/` *(configurable, sourced via shell rc)* | API keys and subscription tokens | Long-lived, rotated on schedule |
+| `~/.config/thinktank/config.toml` | Tool preferences (default models, secrets directory, modes) | Per-user |
+| `~/thinktank/<project>/` | Project state, transcripts, artifacts, notes | Per-project, git-tracked |
+
+Each layer has clear rules. **Secrets never appear in tool config or project files. Project files never contain credentials. Tool config never contains secrets, only paths and preferences.**
+
+#### First-run setup teaches the pattern
+
+If no credentials are detected, the tool guides the user toward the right pattern instead of offering a "paste your key here" shortcut:
+
+```text
+$ tt setup
+No provider credentials detected.
+
+Think Tank reads keys from your environment. The recommended setup
+is to keep keys in a single location outside any repo, sourced from
+your shell rc, so every CLI you install picks them up automatically.
+
+Where would you like to store them? [~/.secrets]
+> ~/.dotfiles/.secrets
+
+Created ~/.dotfiles/.secrets (chmod 700)
+
+Add a credential file for which provider?
+  1) Anthropic    2) OpenAI    3) Google    4) xAI
+  5) OpenRouter   6) Mistral   7) Done
+
+> 1
+Paste your Anthropic API key (input hidden):
+> ********************************
+Wrote ~/.dotfiles/.secrets/anthropic (chmod 600)
+
+To use these keys, source them from your shell rc:
+  for f in ~/.dotfiles/.secrets/*; do source "$f"; done
+
+Saved preferences to ~/.config/thinktank/config.toml.
+```
+
+Design choices that fall out of this:
+
+- **`--dir` is configurable.** Default is `~/.secrets/`, but users with their own conventions (`~/.dotfiles/.secrets/`, `/opt/local/secrets/`, etc.) can override on first setup or any subsequent run. The choice is remembered in `~/.config/thinktank/config.toml` so subsequent commands don't need it again.
+- **Validation, not paternalism.** The tool refuses to write secrets inside any directory containing a `.git/`. It checks directory permissions and offers to fix `700`/`600` if loose. `--no-validate` bypasses for users with unusual setups.
+- **Migration is supported.** `tt setup --dir <new-path> --migrate` moves existing files (preserving permissions), updates config, and reminds the user to update shell rc. Reorganizing dotfiles shouldn't break the tool.
+- **No tool-local key storage fallback.** Once that escape hatch exists, it becomes the path of least resistance and the pedagogy collapses. The tool only supports env-var-based auth. Users with truly unusual needs can write a wrapper.
+
+### Local-first
+
+Everything lives on your machine. State, transcripts, artifacts — all in `~/thinktank/<project>/`. Git is the version control layer. No cloud sync, no server-side state, no account, no telemetry.
+
+This isn't an aesthetic preference — it's the consequence of the no-new-middleman commitment. A cloud-hosted Think Tank would have the same data-pipe problem the tool was built to avoid.
+
+<img src="assets/divider-blueprint.svg" alt="" width="100%">
+
+## Implementation approach
+
+Three decisions that shape how the system gets built. Each is summarized here; the full reasoning is in the linked companion documents.
+
+### Stack decisions
+
+> [!IMPORTANT]
+> **Python engine, aisuite for provider abstraction, CLI first, FastAPI later.** The engine knows nothing about UI. The CLI is a thin adapter. When a UI eventually exists, it talks to the same engine through HTTP.
+
+- **Python over Go for the engine.** The LLM ecosystem is overwhelmingly Python-first — provider SDKs, abstraction libraries, examples, and community fixes all assume Python. Go's concurrency advantage doesn't earn its keep here because the workload is I/O-bound (waiting on remote APIs), not CPU-bound. `asyncio.gather` over `httpx` coroutines handles parallel fanout cleanly. Go remains an option for specific later components (a long-running indexer, a system-service daemon) that would talk to the Python engine over IPC.
+- **[aisuite](https://github.com/andrewyng/aisuite) over LiteLLM, LangChain, or roll-your-own.** aisuite is a thin wrapper around official provider SDKs — no daemon, no proxy, no separate process. The `provider:model` string identifier maps cleanly to what `state.json` needs to record about each turn. LiteLLM is over-engineered for a personal tool; LangChain hides the data flow we want to see; rolling our own re-creates the work aisuite already finished.
+- **CLI first, then HTTP API.** The engine functions return data, never print, and never read environment without an explicit config object. The CLI (`typer` or `click`) is a thin argv-to-engine-call adapter. Adding FastAPI later is ~100 lines because the engine's surface is already shaped for it. Future UIs in any language talk to the API.
+
+> [!NOTE]
+> The full analysis — including why aisuite specifically, how Go's concurrency model would actually play here, and the migration paths between options — is in [`stack-decisions.md`](./stack-decisions.md).
+
+### Domain model — let it emerge
+
+> [!IMPORTANT]
+> **Don't commit to a domain model before two weeks of real use.** The candidate nouns (`claim`, `question`, `agent`, `mode`, `glossary_entry`) and verbs (`ask`, `elaborate`, `synthesize`, `supersede`) all *look* obvious until you try to use them on real problems and discover edge cases that warp the abstraction.
+
+The first prototype represents state as plain Python dicts read from and written to `state.json`. No Pydantic models, no SQLAlchemy schemas, no typed dataclass hierarchies. When the same dict-massaging code shows up in three places, *that's* the signal to extract an abstraction. Premature abstraction is what "committing to a domain model too early" means in practice.
+
+Examples of questions only real use can answer:
+
+- Is `claim` one thing, or three? Is "I think X because Y" one claim with embedded reasoning, or a claim plus a supporting argument?
+- Is `glossary_entry` separate from `claim`, or just a `claim` with `type: "definition"`?
+- Is `agent` something the user creates and persists ("I have an agent named 'skeptic'"), or just a runtime label ("this turn used Claude with the skeptic prompt")?
+- Is `mode` a property of an agent, of a turn, or of a session?
+- Does `transcript` need internal structure, or is it dumb append-only audit log?
+
+> [!NOTE]
+> See [`domain-model.md`](./domain-model.md) for the full reasoning, the candidate vocabulary, and the discipline for letting the right abstractions emerge from places where the code is fighting you.
+
+### Prompts as a first-class subsystem
+
+> [!IMPORTANT]
+> **The product is, mechanically, a system for sending prompts to LLMs and processing their output.** Prompts get versioned, composed, and managed like first-class artifacts — not buried as inline strings forever.
+
+Every model call is a composition of layers:
+
+```
+[base system prompt — what Think Tank is, how to behave]
+[role prompt — skeptic / researcher / synthesizer]
+[mode prompt — critique / blind_parallel / red_team]
+[project context — current state.json or a summary]
+[conversation context — what happened earlier this session]
+[user turn — the actual question or instruction]
+```
+
+Prompt management evolves through three stages, each only adopted when the previous one is fighting back:
+
+1. **Hardcoded in `prompts.py`** — right starting point. Easy to read, grep, and change.
+2. **Files in `~/.config/thinktank/prompts/`** — `roles/skeptic.md`, `modes/critique.md`. Edit prompts without touching code; per-project overrides become possible.
+3. **Prompts as part of project state** — versioning prompt changes alongside the project they belong to. Defer until the case is proven.
+
+The synthesizer's prompt is the single most important piece of text in the whole product, because it's the only agent whose output mutates durable state. Synthesizer quality dominates user-perceived quality.
+
+> [!NOTE]
+> See [`prompts.md`](./prompts.md) for the full pipeline, the multiple kinds of "user turns" (human-asked, synthesizer-fed, glossary-trigger, state-mutation-request), provider-specific prompt quirks, and why agents probably start as config dicts rather than persistent objects.
 
 <img src="assets/divider-blueprint.svg" alt="" width="100%">
 
@@ -376,51 +538,47 @@ The repo is still useful. Fork the concepts, not the product.
 
 <img src="assets/divider-blueprint.svg" alt="" width="100%">
 
-## Validation plan
+## Build plan
 
-Three layers, in order. Don't skip ahead.
+Three layers, in order. The decision to build is made; what remains is the discipline of building in the right order so the schema and abstractions emerge from real use rather than guesswork.
 
-### Layer 1 — Test existing tools first
+### Layer 1 — Spike on what already exists *(triaged)*
 
-Before building, use what's already out there for real ideation tasks. The goal is to find specifically what each one fails to do.
+Originally framed as "test existing tools first." After partial evaluation, this layer collapsed: most candidate tools (MultipleChat, TypingMind, Poe, AnythingLLM cloud, ChatPlayground) fail the [no-new-middleman commitment](#use-what-you-already-have) by design — subscription-gated, route through their backends, ask for payment for access already covered by existing subscriptions. That's a structural mismatch with Think Tank's positioning, not a UX problem to learn from.
 
-- [Open WebUI](https://github.com/open-webui/open-webui) — open-source, multi-model, self-hostable, has experimental synthesis
-- [LibreChat](https://github.com/danny-avila/LibreChat) — agents, files, code interpreter, MCP, memory
-- [MultipleChat](https://multiplechat.com) — closest pitch to "agents working together"
-- [TypingMind](https://typingmind.com) — multi-model parallel responses
-- [AnythingLLM](https://anythingllm.com) — workspace-centric, RAG-heavy
-- [Poe](https://poe.com) — multi-bot rooms with `@` mentions
+> [!NOTE]
+> Two self-hostable, BYOK alternatives remain worth a one-evening spike each, just to confirm they don't already cover the project-state-and-versioning gap: [Open WebUI](https://github.com/open-webui/open-webui) and [LibreChat](https://github.com/danny-avila/LibreChat). Either could plausibly host the workflow as a notes folder + git, but neither is built around structured state as the durable artifact. Quick verification, not extended evaluation.
 
-Without doing this, the build is against a strawman of existing tools. "It's not local," "no versioning," or "agents don't share memory" — those answers shape Think Tank.
+### Layer 2 — Weekend prototype
 
-### Layer 2 — Weekend script
-
-Smallest possible local prototype. No UI, no framework, no sandboxing, no provider manager. ~200 lines of Python.
+Smallest possible local prototype. ~200 lines of Python plus aisuite. No UI, no framework, no sandboxing, no provider manager beyond what aisuite gives for free.
 
 ```text
 1. Read state.json + user prompt
-2. Send in parallel to 2–3 model providers
+2. Send in parallel to 2–3 model providers via aisuite
 3. Append responses to transcripts/
-4. Ask one model to update state.json
+4. Ask one model (the synthesizer) to update state.json
 5. Generate summary files
 6. Git commit
 ```
 
-Use it on three real ideation problems for two weeks. **The product test:** after two weeks, do I prefer opening this folder over scrolling through old chats?
+Use it on three real ideation problems. **The product test:** after two weeks, do I prefer opening this folder over scrolling through old chats?
 
 ### Layer 3 — Schema and interface
 
-Only after Layer 2 has earned its keep:
+After Layer 2 has earned its keep:
 
-- Refine `state.json` schema based on what actually emerged
+- Refine `state.json` schema based on what actually emerged from use
+- Decide between hardcoded prompts and file-based prompts (see [`prompts.md`](./prompts.md))
 - Build TUI or web UI
 - Inline elaboration / glossary capture (right-click context menu)
 - Search (ripgrep first, vector later)
 - Visual graph view of claims and dependencies
 - Sandboxed artifact creation
-- Provider manager and key auto-discovery
+- Provider manager and key auto-discovery refinements
 - Sub-agent / sub-project support
 - Visualizations (Mermaid, charts, mind-maps, flow-charts)
+- HTTP API layer (FastAPI) — only when a non-CLI frontend actually needs it
 
 <img src="assets/divider-blueprint.svg" alt="" width="100%">
 
@@ -477,18 +635,21 @@ To resolve through use, not up-front design:
 
 ## Status & next steps
 
-- [x] Initial ideation captured (this doc)
-- [ ] Hands-on evaluation: Open WebUI / LibreChat / MultipleChat
-- [ ] Document specific gaps in those tools
-- [ ] Weekend script prototype
+- [x] Initial ideation captured
+- [x] Design commitments documented (no-new-middleman, env-based credentials, local-first)
+- [x] Stack decisions made (Python, aisuite, CLI-first)
+- [x] Companion documents written ([domain](./domain-model.md), [prompts](./prompts.md), [stack](./stack-decisions.md))
+- [x] Decision: build
+- [ ] One-evening spike: Open WebUI and LibreChat (confirm structured-state gap)
+- [ ] Weekend prototype: Layer 2 build
 - [ ] Two weeks of real-use evaluation
 - [ ] Schema refinement based on observed needs
-- [ ] Decision: build, compose from existing tools, or drop
+- [ ] Layer 3: schema, interface, sub-agents, artifacts
 
 <img src="assets/divider-blueprint.svg" alt="" width="100%">
 
 <div align="center">
 
-*This document synthesizes ideation across multiple AI-assisted conversations. It is preliminary and reflects current thinking, not commitments.*
+*This document synthesizes ideation across multiple AI-assisted conversations. It captures current thinking and decisions made; deeper reasoning lives in the companion documents.*
 
 </div>
