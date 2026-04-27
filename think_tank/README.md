@@ -34,6 +34,7 @@ A local-first idea workspace where a human and multiple AI agents develop ideas 
 | &nbsp;&nbsp;`05.1` | [Stack decisions](#stack-decisions) |
 | &nbsp;&nbsp;`05.2` | [Domain model — let it emerge](#domain-model--let-it-emerge) |
 | &nbsp;&nbsp;`05.3` | [Prompts as a first-class subsystem](#prompts-as-a-first-class-subsystem) |
+| &nbsp;&nbsp;`05.4` | [Rich outputs as a first-class capability](#rich-outputs-as-a-first-class-capability) |
 | `06` | [Core abstractions](#core-abstractions) |
 | &nbsp;&nbsp;`06.1` | [Project state (`state.json`)](#project-state-statejson) |
 | &nbsp;&nbsp;`06.2` | [Modes (not "exchange depth")](#modes-not-exchange-depth) |
@@ -54,6 +55,7 @@ A local-first idea workspace where a human and multiple AI agents develop ideas 
 - [`domain-model.md`](./domain-model.md) — what "domain model" means here, candidate nouns and verbs, and the discipline of letting the schema emerge from real use.
 - [`prompts.md`](./prompts.md) — the prompt assembly pipeline, role/mode/context layers, prompt management strategies, and why the synthesizer's prompt is the most important piece of the whole product.
 - [`stack-decisions.md`](./stack-decisions.md) — provider abstraction (aisuite vs LiteLLM vs LangChain vs roll-your-own), Python-vs-Go for the engine, CLI-first-then-API architecture, and migration paths.
+- [`rich-outputs.md`](./rich-outputs.md) — agents producing visualizations, diagrams, charts, and mind maps as first-class outputs alongside text; the artifact subsystem; render targets; and the progression from source-only to interactive UI.
 
 <img src="assets/divider-blueprint.svg" alt="" width="100%">
 
@@ -74,9 +76,9 @@ The bet: the most valuable thing isn't a better chat UI. It's a **representation
 ## Thesis
 
 > [!IMPORTANT]
-> Think Tank is a local-first idea workspace where a human and multiple AI agents develop ideas into durable, searchable, versioned artifacts. Its core artifact is not the chat transcript, but a structured, editable project state.
+> Think Tank is a local-first idea workspace where a human and multiple AI agents develop ideas into durable, searchable, versioned artifacts. The core deliverables are the structured project state and the rich visual artifacts that agents produce alongside it — not the chat transcripts that generated them.
 
-This is sharper than "multi-agent chat room for ideation," because the latter risks becoming "LibreChat plus some agent turns." The novel artifact is the **project structure itself** — a representation of an evolving idea that's good enough you'd open `state.json` directly the way you'd open a source file.
+This is sharper than "multi-agent chat room for ideation," because the latter risks becoming "LibreChat plus some agent turns." The novel artifacts are the **project structure itself** and the **visualizations agents produce as part of working on it** — diagrams, mind maps, charts, mocks, and structured data that make ideas inspectable, not just readable.
 
 <img src="assets/divider-blueprint.svg" alt="" width="100%">
 
@@ -88,8 +90,8 @@ A workspace where:
 - The output of those calls feeds into a **structured project state** — not just a transcript.
 - That state is **human-editable, versioned, and source-control-friendly**.
 - Every agent (including new ones brought into a session later) automatically reads from the same shared project state, so context doesn't have to be re-explained.
-- Agents can **read and write artifacts** in a per-project sandbox (notes, drafts, diagrams, data).
-- Inline **right-click-elaborate** lets you capture definitions, examples, and clarifications into a project glossary without breaking the conversation.
+- Agents work as **research assistants, not chat partners** — producing diagrams, mind maps, charts, flow charts, structured data, and mocks alongside their textual responses. Visualization is a first-class output, not a side feature.
+- Inline **right-click-elaborate** lets you capture definitions, examples, clarifications, and on-the-fly visualizations into the project without breaking the conversation.
 
 ## What it is NOT
 
@@ -247,6 +249,25 @@ The synthesizer's prompt is the single most important piece of text in the whole
 > [!NOTE]
 > See [`prompts.md`](./prompts.md) for the full pipeline, the multiple kinds of "user turns" (human-asked, synthesizer-fed, glossary-trigger, state-mutation-request), provider-specific prompt quirks, and why agents probably start as config dicts rather than persistent objects.
 
+### Rich outputs as a first-class capability
+
+> [!IMPORTANT]
+> **Agents are research assistants, not chat partners.** They produce visualizations — Mermaid diagrams, mind maps, charts, flow charts, structured data, and mocks — as primary outputs alongside text. The artifact subsystem is a first-class engine concern, not a folder of side effects.
+
+A lot of ideation is text — like the conversations that produced this README. But a lot of it isn't. Some ideas only become legible when you can *see* them: the supersession history of a claim as a graph, the project's open questions as a mind map, an architectural sketch as a diagram. Those visualizations are not summaries of the work — they are the work, captured in a form that text can't carry.
+
+What this means structurally:
+
+- **The artifact subsystem is real.** Artifacts have IDs, types, generators, and links back to the concepts in `state.json` they represent. A claim *has* an associated visualization; a glossary entry *has* a diagram; the project's claim-supersession graph is regenerated when state changes.
+- **Engine produces sources, consumers render.** Agents output Mermaid text, SVG markup, GraphViz DOT, structured chart data — not pre-rendered images. The CLI shows a path or opens the source; an HTML render bundle (the natural intermediate before a real UI) renders inline; a future UI renders interactively. Same artifact, multiple render paths.
+- **Artifact generation is its own role.** Adding "produce visualizations" to the synthesizer's already-overloaded role would push quality down across the board. Artifact generation is a separate pass with its own prompt, its own model preferences, and its own validation step.
+- **Provider/model selection matters more.** Different models have very different competence at producing usable rich outputs. Some emit clean Mermaid; some hallucinate it. The artifact registry tracks which providers are good at which artifact types.
+
+This shifts how the build progresses: rich outputs aren't a Layer 3 nice-to-have — they're a Layer 2.5 capability, added as soon as the text-only loop has earned its keep but before any UI work begins. The intermediate "HTML render bundle" output gets you visualization viewing without committing to a frontend stack, and gives you the data to decide whether interactive UI is worth building.
+
+> [!NOTE]
+> See [`rich-outputs.md`](./rich-outputs.md) for the artifact subsystem in detail: artifact types, the type registry, why artifact generation is a separate role, provider competence per output type, the HTML render bundle, and how artifacts relate to structured state.
+
 <img src="assets/divider-blueprint.svg" alt="" width="100%">
 
 ## Core abstractions
@@ -351,7 +372,7 @@ Select text in the conversation, pick a verb from a context menu, get an answer 
 | Verb | What it does | Lands in |
 |---|---|---|
 | `define` | "What does this mean?" | glossary |
-| `concretize` | "Real-world examples?" | glossary / artifacts |
+| `concretize` | "Real-world examples?" | glossary |
 | `simplify` | "Plain-English version?" | glossary |
 | `deepen` | "Go further on this." | notes |
 | `compare-to` | "How does this differ from X?" | claims |
@@ -359,6 +380,7 @@ Select text in the conversation, pick a verb from a context menu, get an answer 
 | `steelman` | "Best version of this argument?" | claims-to-verify |
 | `critique` | "Strongest objection?" | claims-to-verify |
 | `branch` | "Related concepts worth exploring?" | open questions |
+| `visualize` | "Show me this as a diagram / chart / mind map." | artifacts (linked to source concept) |
 
 The verb determines both the prompt to the sub-agent and the destination in state. Same UI gesture, different bucket. Solves the "I keep stopping to ask what something means" problem and builds a personal knowledge graph as a side effect of normal use.
 
@@ -391,18 +413,25 @@ These are graph operations, not chat features. The chat is one input surface; th
 
 ```
 ~/thinktank/<project>/
-  notes/         # markdown notes, human and agent
-  transcripts/   # JSONL of every model call
-  artifacts/     # diagrams, drafts, data, generated outputs
-  state.json     # canonical structured project state
+  notes/             # markdown notes, human and agent
+  transcripts/       # JSONL of every model call
+  artifacts/         # rich outputs — diagrams, charts, mocks, structured data
+    diagrams/        # Mermaid sources (.mmd)
+    charts/          # chart specs (Vega-Lite, chart.js JSON)
+    mindmaps/        # Mermaid mindmap or markmap sources
+    flows/           # GraphViz DOT, Mermaid flowcharts
+    mocks/           # SVG, HTML mocks
+    data/            # CSV, JSON datasets agents produce or use
+  state.json         # canonical structured project state
   verdict.md
   gist.md
   brief.md
   deep_dive.md
+  render.html        # generated render bundle — view artifacts inline
   .git/
 ```
 
-Per-project sandbox: agents read/write freely **inside** the project folder, never outside.
+Per-project sandbox: agents read/write freely **inside** the project folder, never outside. Artifact subdirectories are stable so agents always know where to put a given output type, and the eventual render layer always knows where to find them.
 
 <img src="assets/divider-blueprint.svg" alt="" width="100%">
 
@@ -429,14 +458,22 @@ After the command finishes, the project folder looks like:
   gist.md              # 2–3 paragraph human overview
   brief.md             # structured summary with disagreements surfaced
   deep_dive.md         # full synthesis of all three agents
+  render.html          # browse claims, glossary, artifacts in one place
   transcripts/
     2026-04-25T0930.jsonl    # raw responses from all three agents
   notes/
   artifacts/
+    diagrams/
+      claim-supersession.mmd  # Mermaid graph of how claims relate so far
+    mindmaps/
+    charts/
+    flows/
+    mocks/
+    data/
   .git/                # initial commit
 ```
 
-Open `verdict.md` and you see one line. Open `gist.md` and you see the human overview. Open `state.json` and you see the structured representation: candidate claims, open questions, where the agents disagreed, and which mode produced each piece.
+Open `verdict.md` and you see one line. Open `gist.md` and you see the human overview. Open `state.json` and you see the structured representation: candidate claims, open questions, where the agents disagreed, which mode produced each piece, and which artifacts represent which concepts. Open `render.html` and you see all of it laid out together — claims with their associated diagrams rendered inline.
 
 ### Day 3 — pushback on a claim
 
@@ -474,6 +511,41 @@ The agents respond, the synthesizer revises state, and `git diff state.json` sho
 
 That's the durable record. Two weeks from now, you can answer "why did I change my mind on this?" by reading the supersession chain — not by scrolling through chats.
 
+### Day 5 — agents produce a visualization
+
+The project's getting complex enough that you want to see how the claims relate. You ask:
+
+```bash
+tt visualize --of claims --as mindmap --focus "design commitments"
+```
+
+The artifact-generation pass routes to whichever model the registry says is best at Mermaid mindmaps. It returns a source file the engine validates (does it parse as Mermaid?), then writes:
+
+```
+artifacts/mindmaps/design-commitments.mmd
+```
+
+The engine also updates `state.json` to link the artifact to the claims it represents:
+
+```diff
++ "artifacts": [
++   {
++     "id": "art_004",
++     "type": "mindmap",
++     "format": "mermaid",
++     "path": "artifacts/mindmaps/design-commitments.mmd",
++     "represents": ["claim_001", "claim_002", "claim_007", "claim_011"],
++     "generated_by": "anthropic:claude-opus-4-7",
++     "generated_at": "2026-04-29T1542",
++     "stale": false
++   }
++ ]
+```
+
+You open `render.html` in your browser. The mindmap is rendered inline, and the claims it visualizes are linked. You see a structural relationship that wasn't obvious in the prose. You make a note that one branch of the mindmap is suspiciously empty — that's an open question you didn't realize you had.
+
+When `claim_007` later gets superseded, the engine marks `art_004` as `stale: true` because it's tied to a now-outdated state. You can ask for a regenerated visualization with one command.
+
 ### Day 10 — inline elaboration captures a term
 
 Mid-conversation, an agent uses the phrase "semantic zoom." You half-know what they mean. Instead of breaking flow to ask, you select the phrase and run:
@@ -507,6 +579,9 @@ You keep going. Later, `tt review` surfaces the term in a weekly digest so it do
 | "Which claims am I least confident in?" | query `state.json` by `confidence` |
 | "What questions are still open?" | `questions[]` in `state.json` |
 | "Which terms did I never come back to?" | `tt review --stale` |
+| "What does this project look like as a whole?" | open `render.html` — claims, glossary, and artifacts in one view |
+| "Which visualizations are out of date?" | query `artifacts[]` by `stale: true` |
+| "Show me the supersession history" | `tt visualize --of claims --as graph` |
 
 The product is the answer to those questions, not the chat that produced them.
 
@@ -551,7 +626,7 @@ Originally framed as "test existing tools first." After partial evaluation, this
 
 ### Layer 2 — Weekend prototype
 
-Smallest possible local prototype. ~200 lines of Python plus aisuite. No UI, no framework, no sandboxing, no provider manager beyond what aisuite gives for free.
+Smallest possible local prototype. ~200 lines of Python plus aisuite. No UI, no framework, no sandboxing, no provider manager beyond what aisuite gives for free. Text-only — rich outputs come next.
 
 ```text
 1. Read state.json + user prompt
@@ -564,21 +639,34 @@ Smallest possible local prototype. ~200 lines of Python plus aisuite. No UI, no 
 
 Use it on three real ideation problems. **The product test:** after two weeks, do I prefer opening this folder over scrolling through old chats?
 
+### Layer 2.5 — Rich outputs
+
+Once the text-only loop has earned its keep, add the artifact subsystem before any UI work. The intermediate goal is being able to *see* visualizations agents produce, without committing to a frontend stack.
+
+- Artifact type registry (Mermaid, GraphViz, Vega-Lite chart specs, SVG, structured data)
+- Artifact-generation as a separate role with its own prompt
+- Validation step (does generated Mermaid actually parse?)
+- Linking artifacts to the concepts in `state.json` they represent
+- Staleness tracking (when state changes, which artifacts are outdated?)
+- HTML render bundle (`render.html`) — single-file output that renders all artifacts inline, browseable in any browser
+- `tt visualize --of <concept> --as <type>` command
+
+This layer is what turns Think Tank from "structured text deliberation" into "research assistant with visual outputs." See [`rich-outputs.md`](./rich-outputs.md).
+
 ### Layer 3 — Schema and interface
 
-After Layer 2 has earned its keep:
+After Layers 2 and 2.5 have earned their keep:
 
 - Refine `state.json` schema based on what actually emerged from use
 - Decide between hardcoded prompts and file-based prompts (see [`prompts.md`](./prompts.md))
-- Build TUI or web UI
+- Build TUI or web UI (the HTML render bundle from 2.5 informs whether interactive UI is actually needed)
 - Inline elaboration / glossary capture (right-click context menu)
 - Search (ripgrep first, vector later)
-- Visual graph view of claims and dependencies
-- Sandboxed artifact creation
+- Interactive graph view of claims and dependencies
+- Sandboxed artifact creation refinements
 - Provider manager and key auto-discovery refinements
 - Sub-agent / sub-project support
-- Visualizations (Mermaid, charts, mind-maps, flow-charts)
-- HTTP API layer (FastAPI) — only when a non-CLI frontend actually needs it
+- HTTP API layer (FastAPI) — when a non-CLI frontend actually needs it
 
 <img src="assets/divider-blueprint.svg" alt="" width="100%">
 
@@ -595,8 +683,9 @@ After Layer 2 has earned its keep:
 | ChatPlayground | Many-model comparison | Comparison-focused, not deliberation |
 | LangGraph / CrewAI / OpenAI Agents SDK | Agent orchestration | Frameworks, not end-user products |
 | Microsoft Agent Framework / AutoGen | Group-chat patterns | Developer-facing, not idea-facing |
-| Cursor / Claude Code | Sandboxed agent files | Code-centric |
+| Cursor / Claude Code | Sandboxed agent files, can produce rich artifacts | Code-centric; not idea-shaped |
 | Cloudflare Project Think | Durable sub-agents + sandboxes | Infrastructure, not idea workspace |
+| Anthropic Artifacts (in Claude.ai) | Rich outputs alongside chat | Cloud-only, no project structure, no multi-agent |
 
 > [!TIP]
 > **White space:** a structured, editable, versionable representation of an evolving idea, with multiple agents reading/writing it and the human keeping editorial control.
@@ -617,6 +706,10 @@ To resolve through use, not up-front design:
 - What's the right capture cadence for the glossary so it doesn't become a graveyard?
 - Where does the review surface live? Weekly digest? `tt review` command? Stale-claim linter?
 - **Canonical state: JSON, Markdown, or both?** If `state.json` is canonical, the project folder may feel alien to a human reader. If `state.md` is canonical, structured queries get harder. A render-from-JSON `state.md` view avoids the dual-canonical sync problem but adds a build step. May be best to defer until the prototype reveals which feels worse in practice.
+- **Which artifact types earn their keep?** Mermaid is cheap and widely useful. SVG is harder for models to produce reliably. Image generation (DALL-E, etc.) is a different beast — different APIs, different costs. The artifact type registry probably starts conservative and expands based on what's actually requested.
+- **How do artifacts relate to claims?** One-to-one (each claim has one canonical visualization)? Many-to-many (artifacts can represent groups of claims)? Hierarchical (project-level mindmaps vs. claim-level diagrams)?
+- **Staleness propagation.** When a claim is superseded, every artifact representing it is potentially stale. How aggressively should the engine flag this? Should regeneration be automatic, prompted, or manual?
+- **Render bundle vs. interactive UI.** Does `render.html` cover enough that interactive UI is actually optional, or does the visualization workflow only really click when artifacts are zoomable/editable in a real frontend?
 
 <img src="assets/divider-blueprint.svg" alt="" width="100%">
 
@@ -629,6 +722,9 @@ To resolve through use, not up-front design:
 > - **Sandbox safety.** Agents read/write inside the project folder, never outside.
 > - **Schema rigidity.** A premature schema collects empty fields. Let it emerge.
 > - **Capture-without-review.** Glossary and state files become graveyards if there's no review surface. Build the review path from day one, even if it's just a digest.
+> - **Hallucinated artifact sources.** Models produce broken Mermaid, malformed SVG, invalid chart specs. Validation is mandatory, not optional. Failed validation should retry with a different model rather than silently writing broken output.
+> - **Artifact staleness.** Visualizations that drift from the state they represent are worse than no visualizations — they look authoritative but mislead. Staleness must be tracked and surfaced.
+> - **Visual sprawl.** It's easy for agents to over-produce diagrams that look impressive but obscure rather than clarify. The tool should encourage *fewer, more meaningful* visualizations, not generate-on-every-turn.
 > - **Sunk-cost bias toward DR.** The Deliberation Room repo is mature, but its design philosophy doesn't fully fit. Resist the pull to port it wholesale.
 
 <img src="assets/divider-blueprint.svg" alt="" width="100%">
@@ -638,13 +734,15 @@ To resolve through use, not up-front design:
 - [x] Initial ideation captured
 - [x] Design commitments documented (no-new-middleman, env-based credentials, local-first)
 - [x] Stack decisions made (Python, aisuite, CLI-first)
-- [x] Companion documents written ([domain](./domain-model.md), [prompts](./prompts.md), [stack](./stack-decisions.md))
+- [x] Rich outputs framed as a first-class capability, not a side feature
+- [x] Companion documents written ([domain](./domain-model.md), [prompts](./prompts.md), [stack](./stack-decisions.md), [rich outputs](./rich-outputs.md))
 - [x] Decision: build
 - [ ] One-evening spike: Open WebUI and LibreChat (confirm structured-state gap)
-- [ ] Weekend prototype: Layer 2 build
+- [ ] Weekend prototype: Layer 2 build (text-only loop)
 - [ ] Two weeks of real-use evaluation
+- [ ] Layer 2.5: artifact subsystem and render bundle
 - [ ] Schema refinement based on observed needs
-- [ ] Layer 3: schema, interface, sub-agents, artifacts
+- [ ] Layer 3: schema, interface, sub-agents, interactive frontend
 
 <img src="assets/divider-blueprint.svg" alt="" width="100%">
 

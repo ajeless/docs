@@ -266,6 +266,6 @@ These answers inform the Layer 3 decisions about whether and when to migrate any
 
 <div align="center">
 
-*Companion doc to [README.md](./README.md). See also [`domain-model.md`](./domain-model.md) and [`prompts.md`](./prompts.md).*
+*Companion doc to [README.md](./README.md). See also [`domain-model.md`](./domain-model.md), [`prompts.md`](./prompts.md), and [`rich-outputs.md`](./rich-outputs.md).*
 
 </div>

@@ -62,6 +62,7 @@ What the agent's job is in this conversation:
 - **Researcher** — gather evidence, cite sources where possible, distinguish what's known from what's inferred.
 - **Synthesizer** — collapse multiple agent responses into a consolidated view, surface disagreements rather than hiding them, propose updates to `state.json`.
 - **Concretizer** — give specific examples, real-world analogies, edge cases.
+- **Artifact generator** — produce visualizations (Mermaid, GraphViz, Vega-Lite, SVG, etc.) representing concepts in the project. See [`rich-outputs.md`](./rich-outputs.md) for why this is a separate role.
 
 The same provider/model can play multiple roles in a single session. Claude doesn't *become* a skeptic; Claude gets a system prompt that puts Claude in the skeptic role for that turn. So when the README says "agents" and the design discusses "providers" — strictly, *prompts* have roles, providers/models execute them. One Anthropic API key can run all roles backed by Claude.
 
@@ -96,6 +97,7 @@ The "user turn" from the model's perspective isn't always the human's prompt. Th
 | Glossary-trigger | "Define 'semantic zoom' in the context of this conversation. Capture as a glossary entry." |
 | State-mutation | "User edited claim_003 manually. Validate consistency with the rest of state and flag anything affected." |
 | Background-elaboration | "User flagged 'this needs more concrete examples.' Generate 3 concrete examples for claim_007." |
+| Visualization-request | "Visualize the supersession history of claim_003 as a Mermaid graph. Validate output before returning." |
 
 Each has its own template. The synthesizer-fed prompt is the most sophisticated and most consequential — it's the only one whose output changes durable state.
 
@@ -244,6 +246,6 @@ These answers feed the stage 1 → stage 2 migration decision and the eventual s
 
 <div align="center">
 
-*Companion doc to [README.md](./README.md). See also [`domain-model.md`](./domain-model.md) and [`stack-decisions.md`](./stack-decisions.md).*
+*Companion doc to [README.md](./README.md). See also [`domain-model.md`](./domain-model.md), [`stack-decisions.md`](./stack-decisions.md), and [`rich-outputs.md`](./rich-outputs.md).*
 
 </div>

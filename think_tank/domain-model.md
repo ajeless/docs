@@ -77,6 +77,17 @@ They produce different products. The right answer depends on whether modes feel 
 
 Sync problems are the kind of bug that doesn't show up for two months and then never goes away.
 
+### How does `artifact` relate to the other nouns?
+
+With rich outputs as a first-class capability ([rich-outputs.md](./rich-outputs.md)), `artifact` is a real domain noun, not just folder content. Open questions:
+
+- **Cardinality.** Does each claim get one canonical artifact, or can it have many? If many, how do they relate (variants? perspectives? generated-at-different-times)?
+- **Ownership.** Is an artifact "owned by" the claim it represents, or is it a peer with a `represents` relationship? The latter is more flexible; the former is simpler.
+- **Lifetime.** When the claim it represents is superseded, is the artifact also superseded, or just marked stale? When it's deleted, is the artifact deleted or archived?
+- **Cross-referencing.** Can a single artifact represent multiple concepts (a project-wide mindmap)? If so, how does staleness propagate when only one of the represented concepts changes?
+
+These don't have right answers yet. Real use will pressure-test the choices.
+
 <img src="assets/divider-blueprint.svg" alt="" width="100%">
 
 ## What this means in practice
@@ -138,6 +149,7 @@ Keep a running notes file during real use. The questions to track:
 - [ ] Did "agents" want persistence, or were they fine as runtime labels?
 - [ ] Did mode attach to agents, turns, or sessions in actual use?
 - [ ] Did the transcript need structure beyond append-only, or was `state.json` enough?
+- [ ] Did `artifact`-to-`claim` relationships feel one-to-one, many-to-many, or hierarchical?
 - [ ] Were there nouns we didn't predict that turned out to matter?
 - [ ] Were there nouns we predicted that turned out to be empty fields?
 - [ ] Where did the code fight back? Those are the abstraction extraction points.
@@ -148,6 +160,6 @@ The answers to these become the basis for the schema commitment that happens in 
 
 <div align="center">
 
-*Companion doc to [README.md](./README.md). See also [`prompts.md`](./prompts.md) and [`stack-decisions.md`](./stack-decisions.md).*
+*Companion doc to [README.md](./README.md). See also [`prompts.md`](./prompts.md), [`stack-decisions.md`](./stack-decisions.md), and [`rich-outputs.md`](./rich-outputs.md).*
 
 </div>
