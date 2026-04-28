@@ -4,8 +4,6 @@ A local-first engine for ideating with multiple LLMs. The user works through an 
 
 The engine is the product. A lean CLI is the first adapter that lets a human drive it from a terminal. Other adapters may follow. The whole thing runs on your machine, against your data, through a single OpenRouter API key.
 
-> **Status:** Design notes for a forthcoming code repository at https://github.com/ajeless/think-tank.
-
 ---
 
 ## What makes Think Tank distinct

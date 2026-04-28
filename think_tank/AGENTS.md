@@ -10,7 +10,7 @@ The user fills this in further over time. The skeleton below is the minimum to s
 
 An engine for ideating with multiple LLMs through a single OpenRouter API key. The engine maintains structured project state across multi-agent ideation sessions — workspaces, transcripts, claims, questions, decisions, eventually artifacts. The state is the durable artifact of the work.
 
-The CLI is the first adapter that lets a human drive the engine from a terminal. The engine is the product; the CLI is one way to drive it.
+The CLI is the first adapter that lets a human drive the engine from a terminal. The engine is the product; the CLI is merely one way to drive it.
 
 ---
 
@@ -54,7 +54,7 @@ If something doesn't fit these patterns, ask before reaching for the older toolc
 
 ## Design principles
 
-**Engine first; CLI is one adapter.** Engine functions return structured data. They don't print, don't read environment variables unless given a config object, don't depend on Typer or Rich, and don't prompt interactively. Adapters format engine output for their surface.
+**Engine first; CLI is just one adapter.** Engine functions return structured data. They don't print, don't read environment variables unless given a config object, don't depend on Typer or Rich, and don't prompt interactively. Adapters format engine output for their surface.
 
 **OpenRouter is the only provider boundary.** Models are addressed by their OpenRouter identifiers. No per-provider auth, no provider abstraction below OpenRouter. `OPENROUTER_API_KEY` is the only credential the tool reads.
 
@@ -71,9 +71,9 @@ If something doesn't fit these patterns, ask before reaching for the older toolc
 ## Branching and commits
 
 - Never work in or commit directly to `main`. Open a working branch.
-- Commit and push directly to the working branch — no approval needed.
+- Commit and push directly to the working branch, no approval needed.
 - When the slice is ready for review, create a PR and raise it in chat.
-- Commit messages describe what changed and why, not how.
+- Try to limit commit messages to 10 bullet points or less. Commit messages describe what will change and only if absolutely necessary why.  They use present tense add,refactor,remove,update. NEVER past tense.  NO: added/refactored,removed,updated.
 
 ---
 
