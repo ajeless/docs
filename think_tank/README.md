@@ -1,8 +1,8 @@
 # Think Tank
 
-A local-first engine for ideating with multiple LLMs. The user works through an idea with several models in parallel; the engine turns those interactions into durable, structured project state that accumulates across sessions. Transcripts. Claims. Questions. Evidence. Disagreements. Decisions. Eventually artifacts — diagrams, charts, mind maps that make ideas inspectable rather than just readable.
+A local-first engine for ideating with multiple LLMs. The user works through an idea with several models in parallel; the engine turns those interactions into durable, structured project state that accumulates across sessions. Transcripts. Claims. Questions. Evidence. Disagreements. Decisions. Eventually artifacts like diagrams, charts, mind maps, interactive visualizations, and dashboards that make ideas inspectable rather than just readable.
 
-The engine is the product. A lean CLI is the first adapter that lets a human drive it from a terminal. Other adapters may follow. The whole thing runs on your machine, against your data, through a single OpenRouter API key.
+The engine is the product. A lean CLI is the first adapter that lets a human drive it from a terminal. Other adapters will follow. The whole thing runs on your machine, against your data, through a single OpenRouter API key.
 
 ---
 
@@ -163,6 +163,8 @@ Workspaces, state, transcripts, config — all on your machine. Git is the versi
 
 OpenRouter is the only way models get called. The engine has no per-provider auth, no provider abstraction layer below OpenRouter, no fallback routing across providers in code. `OPENROUTER_API_KEY` is the only credential the tool reads. Models are addressed by their OpenRouter identifiers.
 
+**OpenRouter is the provider abstraction.** The engine treats it as one HTTP API speaking the OpenAI Chat Completions protocol; this is the entire abstraction the engine needs. Don't build a layer that wraps OpenRouter in a "ModelProvider" interface designed to support other providers later. If support for direct provider auth ever becomes worth the cost, that's a different project.
+
 This trades a small markup over direct provider rates for radical simplification of the provider boundary. For a personal tool, the trade is worth it: it makes the engine work — fanout, synthesis, state mutation, artifacts — meaningfully cheaper to build.
 
 ### Engine first; CLI is one adapter
@@ -175,7 +177,9 @@ The tool ships with reasonable defaults where the user hasn't expressed a prefer
 
 ### The tool reads config; it doesn't write it
 
-The config file is text the user owns. The tool may create the file on first run with comments and example values. After that, only reads. There are no commands for managing config. If something needs to be persisted as a result of work, it's project state — it lives in the workspace, not in global config.
+The config file is text the user owns. The tool may create the file on first run with comments and example values. After that, only reads. There are no commands for managing config.
+
+**Config is for durable user choices, not active state.** If something is being modified in response to commands or accumulating as work happens, it's not config — it's project state, and it belongs in the workspace's `state.json` or transcripts. The line is sharp: config files are read by the tool, never written by the tool. This rule is what prevents the config surface from becoming a managed product feature.
 
 ### Setup commands may use interactive prompts; work commands must not
 
@@ -189,7 +193,7 @@ Not when "it would be nice." Not when documentation says it should exist. Only w
 
 ## Configuration shape
 
-A single global config file at `~/.config/think-tank/config.toml`. No per-project config until friction earns it.
+A single global config file at `~/.config/think-tank/config.toml`. The tool creates it on first run if absent and reads it thereafter; the user edits it in their editor.
 
 ```toml
 [defaults]
@@ -213,7 +217,29 @@ models = [
 ]
 ```
 
-The user edits this file in their editor. The tool reads it.
+That's the full config shape for the early slices. No per-project config. No provider sections. No auth metadata. No model registries. The file is small on purpose, and the tool's interaction with it is small on purpose: read at startup, validate, use the values.
+
+### What the config is allowed to grow into
+
+If real use surfaces project-specific friction — particular workspaces wanting different default profiles than the global one — the eventual shape is **two-layer with project overrides only**:
+
+- **Global config** at `~/.config/think-tank/config.toml` is canonical. Profile definitions live here. Adding a model to `profiles.frontier` updates it everywhere.
+- **Per-workspace config** at `<workspace>/.think-tank/config.toml` is optional and *overrides only*. It can change `[defaults]` for that workspace (e.g., this project uses `fast` by default). It does **not** redefine profiles. It does **not** hold secrets. It does **not** mirror the global config.
+
+Profile definitions never live per-workspace. Only the choice of which profile is the default for that workspace.
+
+This is direction, not current scope. Don't build the per-workspace config layer until typing `--profile X` repeatedly for the same workspace becomes a real friction point. When that friction surfaces, the lookup rule is dead simple: profiles always come from global; defaults come from project-local first, then global, then error if neither has one.
+
+### What the config will not grow into
+
+The following are explicit non-goals for the config file. If a future feature seems to want them, the answer is "that's project state, put it in the workspace" — not "expand the config schema."
+
+- **Auth metadata.** The only credential the tool reads is `OPENROUTER_API_KEY` from the environment. Config does not record auth methods, env var names, provider readiness, or anything related to credentials.
+- **Provider definitions.** OpenRouter is the only provider boundary; the config doesn't enumerate providers, validate them, or hold provider-specific settings.
+- **Model registries.** Models are addressed by their OpenRouter identifiers at the point of use. Config doesn't maintain a list of available models, fetch them from OpenRouter, or validate them ahead of time.
+- **Mutable state.** Anything the tool would modify in response to commands belongs in workspace state, not config.
+
+The earlier attempt at this project drifted into all four of these. Each individual addition seemed reasonable; the cumulative effect was that config management became the dominant product surface. Not here.
 
 ---
 
@@ -307,6 +333,14 @@ Companion documents — domain model, prompts, rich outputs, stack decisions —
 
 ## Status & next steps
 
+- [x] OpenRouter-only commitment made
+- [x] Engine vision captured
+- [x] Configuration shape decided (global, read-only by tool)
+- [x] CLI shape sketched
+- [x] Workspace shape sketched
+- [x] Build path mapped
+- [ ] Code repo created at https://github.com/ajeless/think-tank
+- [ ] AGENTS.md drafted at root of code repo
 - [ ] Slice 1 — single-model ask
 - [ ] Slice 2 — multi-model fanout
 - [ ] Slice 3 — workspace and persistent transcripts

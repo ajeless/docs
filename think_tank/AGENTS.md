@@ -1,14 +1,12 @@
 # AGENTS.md
 
-You are working in the Think Tank code repository. Treat this file as a living document — rules earn their place from real friction.
-
-The user fills this in further over time. The skeleton below is the minimum to start.
+You are working in the Think Tank code repository. Treat this file as a living document. Rules earn their place from real friction. The user fills this in further over time. The skeleton below is the minimum to start.
 
 ---
 
 ## What Think Tank is
 
-An engine for ideating with multiple LLMs through a single OpenRouter API key. The engine maintains structured project state across multi-agent ideation sessions — workspaces, transcripts, claims, questions, decisions, eventually artifacts. The state is the durable artifact of the work.
+An engine for ideating with multiple LLMs through a single OpenRouter API key. The engine maintains structured project state across multi-agent ideation sessions, including project workspaces, transcripts, claims, questions, decisions, eventually artifacts. The state is the durable artifact of the work.
 
 The CLI is the first adapter that lets a human drive the engine from a terminal. The engine is the product; the CLI is merely one way to drive it.
 
