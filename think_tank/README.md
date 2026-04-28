@@ -1,8 +1,10 @@
 # Think Tank
 
-A local-first engine for ideating with multiple LLMs. The user works through an idea with several models in parallel; the engine turns those interactions into durable, structured project state that accumulates across sessions. Transcripts. Claims. Questions. Evidence. Disagreements. Decisions. Eventually artifacts like diagrams, charts, mind maps, interactive visualizations, and dashboards that make ideas inspectable rather than just readable.
+A local-first engine for ideating with multiple LLMs. The user works through an idea with several models in parallel; the engine turns those interactions into durable, structured project state that accumulates across sessions. Transcripts. Claims. Questions. Evidence. Disagreements. Decisions. Eventually artifacts — diagrams, charts, mind maps that make ideas inspectable rather than just readable.
 
-The engine is the product. A lean CLI is the first adapter that lets a human drive it from a terminal. Other adapters will follow. The whole thing runs on your machine, against your data, through a single OpenRouter API key.
+The engine is the product. A lean CLI is the first adapter that lets a human drive it from a terminal. Other adapters may follow. The whole thing runs on your machine, against your data, through a single OpenRouter API key.
+
+> **Status:** Design notes for a forthcoming code repository at https://github.com/ajeless/think-tank.
 
 ---
 
@@ -16,7 +18,11 @@ That structured state is what enables everything else: synthesis across multi-ag
 
 ---
 
-## The shape of a session
+## A walk through a project
+
+The clearest way to understand Think Tank is to walk through a session. The example below is fictional — it shows what a workspace would look like after several sessions of real use.
+
+### Day 1 — the workspace
 
 You make a workspace for an idea you want to think through:
 
@@ -32,25 +38,95 @@ think ask "Should we prioritize building-by-building outreach or a single citywi
   --profile frontier
 ```
 
-Each model responds with its own framing. The synthesizer reads across them, surfaces consensus and disagreement, and updates the workspace's `state.json` with new claims, questions raised, and decisions worth tracking. You see the synthesis in your terminal; the durable record sits in your workspace.
+Each model responds with its own framing. The synthesizer reads across them, surfaces consensus and disagreement, and proposes updates to `state.json`. The workspace now has three claims (one of them flagged as a disagreement between models), two open questions, and the start of a glossary entry for "social capital" because two models used the term and you weren't sure they meant the same thing.
 
-You read through the responses. One says something about "social capital" you want to understand better. You select that phrase and run:
+You read `gist.md` in the workspace. Three paragraphs. Bottom line: the models lean toward building-by-building outreach but disagree on how to scale it. Open questions noted.
+
+### Day 3 — pushback on a claim
+
+Two days later, you've talked to a real organizer. They told you something that contradicts one of the claims the synthesizer captured. You run:
 
 ```bash
-think elaborate "social capital" --as define --project ./tenant-organizing-strategy
+think ask "An organizer told me that building-by-building outreach plateaus at 15-20 buildings without a citywide identity to anchor it. This contradicts claim_002. Reconsider." \
+  --project ./tenant-organizing-strategy
 ```
 
-A definition gets captured to your project glossary. The next time any agent works in this project, they have access to that definition as context.
+The synthesizer revises state. A `git diff state.json` shows:
 
-A few sessions later, you want to see how the strategy has evolved:
+```diff
+- {
+-   "id": "claim_002",
+-   "text": "Building-by-building outreach scales linearly with effort.",
+-   "status": "active",
+-   "confidence": "medium"
+- }
++ {
++   "id": "claim_002",
++   "text": "Building-by-building outreach scales linearly with effort.",
++   "status": "superseded",
++   "confidence": "medium",
++   "superseded_by": "claim_007"
++ }
++ {
++   "id": "claim_007",
++   "text": "Building-by-building outreach plateaus at 15-20 buildings without a citywide identity to anchor it.",
++   "status": "active",
++   "confidence": "high",
++   "supporting_evidence": ["organizer conversation, 2026-04-30"],
++   "supersedes": ["claim_002"]
++ }
+```
+
+That's the durable record. Two weeks from now, you can answer "why did I change my mind on this?" by reading the supersession chain — not by scrolling through chat logs.
+
+### Day 5 — capturing a definition
+
+Mid-session, an agent uses the phrase "deep canvassing" in a way that suggests it's a term of art. You half-know what it means but want to be sure. Without breaking flow:
+
+```bash
+think elaborate "deep canvassing" --as define --project ./tenant-organizing-strategy
+```
+
+A glossary entry gets added to `state.json`:
+
+```json
+{
+  "id": "term_004",
+  "term": "deep canvassing",
+  "definition": "A canvassing technique that focuses on extended two-way conversations about lived experience, rather than persuasion through information. Distinct from traditional canvassing in its emphasis on listening and emotional connection.",
+  "captured_from": "transcripts/2026-05-04T1402.jsonl",
+  "captured_at": "2026-05-04T14:09:00Z"
+}
+```
+
+You keep going. The next session, when you ask a question that touches on canvassing strategy, every agent has access to the captured definition as context. The conversation doesn't have to re-establish what you mean.
+
+### Day 10 — visualizing accumulation
+
+A week and a half in, the project has accumulated enough that you want to see how the strategy has taken shape. You ask for a visualization:
 
 ```bash
 think visualize --of decisions --as timeline --project ./tenant-organizing-strategy
 ```
 
-The engine generates a Mermaid timeline showing decisions in order, what they superseded, what they led to. It's saved as an artifact in the workspace, linked to the decisions it represents.
+The artifact-generator role produces a Mermaid timeline showing decisions in order — which superseded which, which led to which. The artifact is saved to `artifacts/diagrams/decision-timeline.mmd` and linked in `state.json` to the decisions it represents.
 
-That's the destination. Each piece is a slice's worth of work, and slices ship one at a time.
+You open `render.html` in your browser. The timeline is rendered inline alongside the claims it visualizes. You see one branch of the timeline that's suspiciously empty — that's an open question you didn't realize you had.
+
+### What you can answer two weeks later
+
+| Question | How |
+|---|---|
+| "How has my view of X changed?" | `git log -p state.json` filtered by claim id |
+| "Where did I first say Y?" | grep across `transcripts/` |
+| "What did I decide about Z?" | `decisions[]` in `state.json` |
+| "Which claims am I least confident in?" | query `state.json` by `confidence` |
+| "What questions are still open?" | `questions[]` in `state.json` |
+| "What does this project look like as a whole?" | open `render.html` — claims, glossary, and artifacts in one view |
+| "Which visualizations are out of date?" | query `artifacts[]` by `stale: true` |
+| "Show me the supersession history" | `think visualize --of claims --as graph` |
+
+The product is the answer to those questions, not the chat that produced them.
 
 ---
 
@@ -74,6 +150,22 @@ A single fanout is one *mode* of multi-agent interaction. The engine supports se
 - `debate_optional` — sequential cross-talk, used sparingly.
 
 Modes are orthogonal to the prompts; the same models can play different modes turn-to-turn. The mode determines what kind of pass this is, the prompt determines the substance.
+
+### Roles
+
+A *role* is the job an agent is doing on a given turn. Same model, different role, different work. Claude doesn't *become* a skeptic — Claude is run with a system prompt that puts it in the skeptic role for that turn. One OpenRouter API key can run every role backed by every model.
+
+The roles the engine supports:
+
+- **Skeptic** — finds weaknesses, prefers pointed questions over confident assertions, surfaces assumptions the user hasn't named.
+- **Researcher** — gathers evidence, cites sources where possible, distinguishes what's known from what's inferred.
+- **Concretizer** — produces specific examples, real-world analogies, edge cases that test abstractions.
+- **Synthesizer** — consolidates multi-agent responses, surfaces disagreements rather than hiding them, proposes updates to `state.json`.
+- **Artifact generator** — produces visualizations (diagrams, charts, mind maps) representing concepts in the project.
+
+Roles are orthogonal to modes. A skeptic can run in critique mode (critique someone's claim) or red-team mode (attack a stated position). A researcher can run in research_review mode (gather evidence) or synthesis mode (consolidate findings). The cartesian product is large; not every combination makes sense, but the ones that do are the engine's expressive surface.
+
+Configuration names which role plays which model. The user can set a default role-to-model mapping in their config, override per-call with flags, or let a profile imply both at once. Roles are not persistent agent objects — they're labels that determine which prompt template gets composed for a given turn.
 
 ### The synthesizer
 
@@ -113,6 +205,48 @@ Each workspace has a `state.json` that the engine maintains as the project devel
 - **Glossary** — captured definitions, terms of art, project-specific vocabulary.
 - **Artifacts** — generated diagrams, charts, visualizations linked to the concepts they represent.
 
+A provisional shape:
+
+```json
+{
+  "schema_version": 1,
+  "project": {
+    "name": "Tenant organizing strategy",
+    "one_sentence_description": "",
+    "current_thesis": "",
+    "status": "exploring"
+  },
+  "claims": [
+    {
+      "id": "claim_001",
+      "text": "...",
+      "status": "active",
+      "confidence": "medium",
+      "supporting_evidence": [],
+      "objections": [],
+      "supersedes": [],
+      "superseded_by": null,
+      "created_at": "...",
+      "updated_at": "..."
+    }
+  ],
+  "questions": [],
+  "assumptions": [],
+  "decisions": [],
+  "disagreements": [],
+  "evidence": [],
+  "glossary": [],
+  "artifacts": [],
+  "change_log": []
+}
+```
+
+Two principles govern how the schema evolves:
+
+**Schema-versioned from day one.** The `schema_version` field is present in the first version of `state.json` ever written, even when the schema is small. Adding versioning later, after dozens of workspaces exist with schemaless state files, is annoying enough that migrations get avoided and the codebase calcifies. Migration functions take a `version: N` dict and return `version: N+1`; they run on load.
+
+**Don't design the schema up front; let it emerge.** The shape above is provisional. The right granularity for a "claim" is unknown until real use surfaces edge cases. Whether `glossary_entry` is its own type or just a `claim` with `type: "definition"` is unknown. Whether `decision` differs from `current_thesis` is unknown. Resist the urge to flesh out every field before the slice that needs it. The schema grows from where the code is fighting back, not from imagined needs.
+
 The state file is the durable answer to "what does this project look like right now." The user can open it directly. The engine reads it as context for every new turn.
 
 ### Hierarchical summaries
@@ -138,7 +272,20 @@ Image generation is deferred. The cheaper text-based formats need to prove their
 
 ### Hierarchy of summary, hierarchy of detail
 
-The combination of structured state plus hierarchical summaries plus inline elaboration produces something close to "an IDE for ideas." Not in the sense of a chat with projects — in the sense of jump-to-definition (via the glossary), find-references (via search across transcripts), version diffs (via git on `state.json`), and structural views (via artifact generation). The user works at whatever level of detail the moment calls for, and the project remembers all of them.
+The combination of structured state plus hierarchical summaries plus inline elaboration produces something close to "an IDE for ideas." Not in the sense of a chat with projects — in the sense that the engine offers idea-equivalents of what makes IDEs useful for code:
+
+| Code IDE feature | Think Tank equivalent |
+|---|---|
+| Jump to definition | Jump to original claim, source, decision in `state.json` |
+| Find references | Where else have I discussed this concept? Across transcripts and state. |
+| Refactor | Rename or reframe a concept across the project |
+| Type-checking | Check claim consistency — does this claim contradict existing ones? |
+| Linting | Detect stale, unsupported, vague, or contradictory claims |
+| Git diff | Show how my position has changed over time |
+| Dependency graph | Show claims and the evidence, assumptions, objections that support them |
+| Tests | Validate claims against sources or examples |
+
+These are graph operations, not chat features. The chat is one input surface; the graph is the product. The user works at whatever level of detail the moment calls for, and the project remembers all of them.
 
 ---
 
@@ -317,6 +464,40 @@ Vertical slices, each shipping a noticeably more capable Think Tank. The early s
 **Then — artifacts.** Mermaid first, GraphViz and chart specs after, SVG and richer when the foundation supports them. The HTML render bundle for in-browser viewing without server infrastructure.
 
 The order isn't fixed past slice 3. What ships next depends on what real use surfaces as the most valuable next step. The point is that the destination is rich and the path to it is incremental.
+
+---
+
+## Open questions
+
+These are deliberately unresolved — they're the questions whose answers should emerge from real use rather than from up-front design. Listed here so future-me knows which uncertainties are intentional.
+
+- **What's the right granularity for a "claim"?** When does a long agent response become one claim versus many?
+- **Do questions need hierarchy, or is a flat list sufficient?**
+- **How does state degrade gracefully when an agent confidently writes nonsense into it?** What signals catch low-quality synthesis?
+- **Is "decision" different from "conclusion"? From "current thesis"?** Or do these collapse into one type with status fields?
+- **Does the change log need to be human-readable, or is git diff enough?**
+- **How does this scale across multiple related projects?** Cross-project search? Shared glossary? Or are projects strictly siloed?
+- **Where does the workspace boundary actually fall?** Per-idea, per-domain, per-month?
+- **What's the right capture cadence for the glossary so it doesn't become a graveyard?** What's the review surface?
+- **Which artifact types earn their keep?** Mermaid is cheap and widely useful. SVG is harder to produce reliably. Image generation is a different beast. The artifact type registry probably starts conservative.
+- **How do artifacts relate to claims?** One-to-one (each claim has one canonical visualization)? Many-to-many (artifacts can represent groups of claims)?
+- **Staleness propagation.** When a claim is superseded, every artifact representing it is potentially stale. How aggressively should the engine flag this? Should regeneration be automatic, prompted, or manual?
+- **Render bundle vs. interactive UI.** Does `render.html` cover enough that interactive UI is actually optional, or does the visualization workflow only really click when artifacts are zoomable and editable in a real frontend?
+
+---
+
+## Risks
+
+> [!CAUTION]
+> - **UX overload.** Multi-agent output is verbose. Hierarchical summaries are not optional; they're load-bearing.
+> - **False consensus.** Same-family models converge. Need explicit roles with meaningfully different framings, not just multiple models in parallel.
+> - **Cost and latency.** Frontier-model fanout isn't cheap. Design for restraint — parallel-then-synthesize over long debates, on-demand over scheduled.
+> - **Capture-without-review.** Glossary and state files become graveyards if there's no review surface. Build the review path early, even if it's just a digest command.
+> - **Schema rigidity.** A premature `state.json` schema collects empty fields you dutifully populate instead of the fields you actually need. Let it emerge.
+> - **Hallucinated artifact sources.** Models produce broken Mermaid, malformed SVG, invalid chart specs. Validation is mandatory, not optional. Failed validation should retry rather than silently writing broken output.
+> - **Artifact staleness.** Visualizations that drift from the state they represent are worse than no visualizations — they look authoritative but mislead. Staleness must be tracked and surfaced.
+> - **Visual sprawl.** It's easy for agents to over-produce diagrams that look impressive but obscure rather than clarify. The tool should encourage *fewer, more meaningful* visualizations, not generate-on-every-turn.
+> - **Workspace agent boundaries.** Agents read and write inside the workspace freely; outside the workspace, never. This needs to be enforced, not assumed.
 
 ---
 
