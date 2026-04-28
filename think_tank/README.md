@@ -4,8 +4,6 @@ A local-first engine for ideating with multiple LLMs. The user works through an 
 
 The engine is the product. A lean CLI is the first adapter that lets a human drive it from a terminal. Other adapters may follow. The whole thing runs on your machine, against your data, through a single OpenRouter API key.
 
-> **Status:** Design notes for a forthcoming code repository at https://github.com/ajeless/think-tank.
-
 ---
 
 ## What makes Think Tank distinct
@@ -514,15 +512,8 @@ Companion documents — domain model, prompts, rich outputs, stack decisions —
 
 ## Status & next steps
 
-- [x] OpenRouter-only commitment made
-- [x] Engine vision captured
-- [x] Configuration shape decided (global, read-only by tool)
-- [x] CLI shape sketched
-- [x] Workspace shape sketched
-- [x] Build path mapped
-- [ ] Code repo created at https://github.com/ajeless/think-tank
-- [ ] AGENTS.md drafted at root of code repo
-- [ ] Slice 1 — single-model ask
-- [ ] Slice 2 — multi-model fanout
-- [ ] Slice 3 — workspace and persistent transcripts
-- [ ] Slice 4+ — synthesis and structured state
+- [ ] Slice 1: read from config and provider:model connection validated
+- [ ] Slice 2: single-model ask
+- [ ] Slice 3: multi-model fanout
+- [ ] Slice 4: workspace and persistent transcripts
+- [ ] Slice 5+: synthesis and structured state
