@@ -1,58 +1,161 @@
 # Think Tank
 
-> **Status:** Design notes for a forthcoming code repository.
-> Implementation will live at https://github.com/ajeless/think-tank (to be created). A retired earlier attempt is at https://github.com/ajeless/idea001 with its docs at https://github.com/ajeless/docs/tree/main/idea001.
+A local-first engine for ideating with multiple LLMs. The user works through an idea with several models in parallel; the engine turns those interactions into durable, structured project state that accumulates across sessions. Transcripts. Claims. Questions. Evidence. Disagreements. Decisions. Eventually artifacts — diagrams, charts, mind maps that make ideas inspectable rather than just readable.
 
-A local-first engine for ideating with multiple LLMs, accessed through a single OpenRouter API key. Think Tank turns a conversation with several models into durable, structured project state — transcripts, claims, questions, evidence, eventually artifacts — that the user owns and can return to.
+The engine is the product. A lean CLI is the first adapter that lets a human drive it from a terminal. Other adapters may follow. The whole thing runs on your machine, against your data, through a single OpenRouter API key.
 
-The first adapter is a lean CLI. Other adapters (an HTTP API, eventually a UI) may come later. The engine is the product; the CLI is one way to drive it.
-
----
-
-## The shape of the thing
-
-You start a workspace for an idea you want to think through. You ask a question. Multiple models respond in parallel. Their responses get written to durable transcripts. Over time, as you keep asking, the engine maintains a structured representation of the project — what's been claimed, what's been questioned, what's been decided, what's still open. You can return to a workspace days later and see where you left off, what's accumulated, what still needs work.
-
-That's the destination. Not all of it ships in slice one. The early slices establish the foundation: workspace, fanout, transcripts. Later slices add state mutation, synthesis, glossary capture, eventually artifacts (diagrams, charts, mind maps). The engine is what enables all of that; the CLI is what lets the user drive it.
+> **Status:** Design notes for a forthcoming code repository at https://github.com/ajeless/think-tank.
 
 ---
 
-## What this is
+## What makes Think Tank distinct
 
-- An engine that maintains durable, structured project state from your interactions with multiple LLMs.
-- A lean CLI as the first adapter — kept small on purpose so engine work has room to progress.
-- A workspace per idea: state file, transcripts, eventually artifacts, all in plain files on your machine.
-- Local-first. Single user. Your config, your transcripts, your machine.
-- OpenRouter-only at the provider boundary. One HTTP endpoint, one API key, every model worth using.
+Most tools that talk to multiple LLMs treat the chat as the artifact. The user types a question, gets a response, scrolls through history later if they want to find something. The work disappears into chat logs.
+
+Think Tank treats the **structured project state** as the artifact. The chat happens, but it's the substrate, not the product. As you ask questions, the engine maintains a representation of what's accumulated — what's been claimed, what's been questioned, what's still open, where the models agreed, where they disagreed. You can return to a workspace days or weeks later and see where you left off, what's been decided, what still needs work.
+
+That structured state is what enables everything else: synthesis across multi-agent responses, glossary capture, search across transcripts, eventually rich artifacts that visualize how the ideas connect. The CLI is small on purpose — it's the input surface to a richer system, not the system itself.
+
+---
+
+## The shape of a session
+
+You make a workspace for an idea you want to think through:
+
+```bash
+think new ./tenant-organizing-strategy
+```
+
+You ask a question, fanning out to multiple models in parallel:
+
+```bash
+think ask "Should we prioritize building-by-building outreach or a single citywide push?" \
+  --project ./tenant-organizing-strategy \
+  --profile frontier
+```
+
+Each model responds with its own framing. The synthesizer reads across them, surfaces consensus and disagreement, and updates the workspace's `state.json` with new claims, questions raised, and decisions worth tracking. You see the synthesis in your terminal; the durable record sits in your workspace.
+
+You read through the responses. One says something about "social capital" you want to understand better. You select that phrase and run:
+
+```bash
+think elaborate "social capital" --as define --project ./tenant-organizing-strategy
+```
+
+A definition gets captured to your project glossary. The next time any agent works in this project, they have access to that definition as context.
+
+A few sessions later, you want to see how the strategy has evolved:
+
+```bash
+think visualize --of decisions --as timeline --project ./tenant-organizing-strategy
+```
+
+The engine generates a Mermaid timeline showing decisions in order, what they superseded, what they led to. It's saved as an artifact in the workspace, linked to the decisions it represents.
+
+That's the destination. Each piece is a slice's worth of work, and slices ship one at a time.
+
+---
+
+## What the engine does
+
+These are the engine's capabilities, organized by what they produce.
+
+### Multi-agent fanout
+
+A single question, sent to multiple models in parallel through OpenRouter. Each model responds independently. The user reads across all responses, or asks the synthesizer to consolidate them. Models are addressed by their OpenRouter identifiers (`openrouter/anthropic/claude-opus-4`); profiles in config name common lineups.
+
+### Modes
+
+A single fanout is one *mode* of multi-agent interaction. The engine supports several:
+
+- `blind_parallel` — same prompt to multiple agents, no cross-talk, synthesized after. The default.
+- `critique` — one agent's output reviewed by another.
+- `red_team` — adversarial pass against a stated position.
+- `research_review` — evidence-gathering, sources surfaced where models can.
+- `synthesis` — collapse multi-agent output into a consolidated view.
+- `debate_optional` — sequential cross-talk, used sparingly.
+
+Modes are orthogonal to the prompts; the same models can play different modes turn-to-turn. The mode determines what kind of pass this is, the prompt determines the substance.
+
+### The synthesizer
+
+The synthesizer is the role that mutates project state. It reads multi-agent responses, identifies what's genuinely new, what's a restatement, what's a real disagreement worth tracking, and proposes updates to `state.json`. It's the single most consequential prompt in the system because it's the only one whose output becomes durable record.
+
+Synthesis is split from narrative summary. *Narrative synthesis* writes prose for the user to read; *state mutation* proposes specific edits to structured state. They're different jobs and they're separate prompts.
+
+### Inline elaboration
+
+Anywhere text appears in the workspace — agent responses, transcripts, notes — the user can elaborate on a phrase or idea using a verb that determines both what kind of follow-up gets generated and where in state it lands.
+
+| Verb | What it does | Lands in |
+|---|---|---|
+| `define` | "What does this mean?" | glossary |
+| `concretize` | "Real-world examples?" | glossary |
+| `simplify` | "Plain-English version?" | glossary |
+| `deepen` | "Go further on this." | notes |
+| `compare-to` | "How does this differ from X?" | claims |
+| `cite` / `source` | "Where does this come from?" | evidence |
+| `steelman` | "Best version of this argument?" | claims-to-verify |
+| `critique` | "Strongest objection?" | claims-to-verify |
+| `branch` | "Related concepts worth exploring?" | open questions |
+| `visualize` | "Show me this as a diagram / chart / mind map." | artifacts (linked to source concept) |
+
+The verb is the gesture; the destination is what makes it durable. Define a term once, it's in your glossary forever and every subsequent agent has access to it. Steelman a claim, it goes to claims-to-verify. Branch on a concept, you've got a new open question waiting next time you sit down.
+
+### Structured project state
+
+Each workspace has a `state.json` that the engine maintains as the project develops. Schema-versioned from commit one. The shape evolves with use, but the core elements are stable:
+
+- **Claims** — assertions the project has accumulated, with confidence levels, evidence, supersession history.
+- **Questions** — open issues the project is working through.
+- **Assumptions** — things the project is taking as given, marked as such.
+- **Decisions** — choices the user has made, with rationale and what they superseded.
+- **Disagreements** — places where models or sessions disagreed, surfaced rather than collapsed.
+- **Evidence** — citations and sources, linked to the claims they support.
+- **Glossary** — captured definitions, terms of art, project-specific vocabulary.
+- **Artifacts** — generated diagrams, charts, visualizations linked to the concepts they represent.
+
+The state file is the durable answer to "what does this project look like right now." The user can open it directly. The engine reads it as context for every new turn.
+
+### Hierarchical summaries
+
+Each workspace produces several read-views, regenerated as state changes:
+
+- `verdict.md` — one line. The current bottom line.
+- `gist.md` — a short human overview. A few paragraphs.
+- `brief.md` — structured summary with major reasoning surfaced.
+- `deep_dive.md` — full synthesis of accumulated work.
+- `state.json` — the canonical structured representation.
+- `transcripts/` — every interaction, append-only.
+
+The user picks the level appropriate to the moment. A quick check uses verdict; a return-to-the-project uses gist; a serious working session uses brief or deep_dive. The engine maintains all of them; the user reads what they need.
+
+### Artifact generation
+
+Eventually, the engine produces visualizations as part of the work — diagrams, charts, mind maps, flow charts, structured data. These are *part of* the structured state, not separate from it: each artifact is linked to the concepts it represents, marked stale when those concepts change, regenerable on request.
+
+The agents producing artifacts work in established formats (Mermaid, GraphViz DOT, Vega-Lite chart specs, SVG, CSV) so the outputs are inspectable as text and renderable in standard tools. An HTML render bundle in each workspace lets the user view all of it inline in any browser without server infrastructure.
+
+Image generation is deferred. The cheaper text-based formats need to prove their worth first.
+
+### Hierarchy of summary, hierarchy of detail
+
+The combination of structured state plus hierarchical summaries plus inline elaboration produces something close to "an IDE for ideas." Not in the sense of a chat with projects — in the sense of jump-to-definition (via the glossary), find-references (via search across transcripts), version diffs (via git on `state.json`), and structural views (via artifact generation). The user works at whatever level of detail the moment calls for, and the project remembers all of them.
+
+---
 
 ## What this is not
 
-- Not a wrapper around your existing chat subscriptions. Subscription auth (Claude, ChatGPT, Gemini accounts) is explicitly out of scope. If subscription auth ever becomes worth solving, it's a different project.
-- Not a multi-agent autonomous system. Agents don't talk to each other unsupervised. The user runs each round.
-- Not a chat interface. The interaction model is "ask once, get N responses, see what accumulates." Continuous chat lives in your transcripts and your editor, not in a chat loop.
-- Not a hosted product. Local-first, single-user, runs on your machine.
-
----
-
-## Why OpenRouter only
-
-The earlier attempt (idea001) tried to support direct provider auth across seven providers, plus subscription paths, plus aggregators. The auth and config complexity dominated the project — 16 of 18 commands shipped were config CRUD, not engine features. The actual product never got built because the infrastructure for the product ate the slices.
-
-Committing to OpenRouter as the single provider boundary collapses that complexity to one HTTP API and one environment variable. Everything downstream — multi-model fanout, synthesis, state mutation, eventually artifact generation — becomes cheaper to build. The engine work that didn't happen in idea001 becomes the work that *does* happen in idea002.
-
-The trade-off: a small markup over direct provider rates, and you can't reuse subscriptions you already have. For a personal tool, this is the right exchange. The constraint isn't a limitation on the engine's capabilities; it's a friction reducer that lets the engine actually get built.
+- **Not a wrapper around your existing chat subscriptions.** Subscription auth (Claude, ChatGPT, Gemini accounts) is out of scope. OpenRouter is the provider boundary; one HTTP API, one key.
+- **Not a multi-agent autonomous system.** Agents don't talk to each other unsupervised. The user runs each round; the synthesizer is invoked deliberately, not on a schedule.
+- **Not a chat interface.** The interaction model is "ask, get N responses, see what accumulates." Continuous conversation lives in transcripts and your editor, not in a chat loop.
+- **Not a hosted product.** Local-first, single-user, runs on your machine. Workspaces are directories you own.
 
 ---
 
 ## Design commitments
 
-These are the principles the project answers to. Each one is a constraint with teeth — meaning it can and will rule out features that violate it.
-
-### Engine first; CLI as one adapter
-
-Think Tank is an engine. The CLI is the first adapter that lets a human drive it from a terminal. The engine returns structured data; adapters format it for whatever surface they live on. This separation means future adapters (an HTTP API, eventually a UI) talk to the same engine without duplicating its logic.
-
-The CLI is kept lean — minimal surface, only what's needed for current slices — so engine work has room to progress. Adding CLI surface is a deliberate decision; it's not the default response to "we need a way for the user to do X."
+These are the principles the engine answers to.
 
 ### Local-first
 
@@ -60,23 +163,29 @@ Workspaces, state, transcripts, config — all on your machine. Git is the versi
 
 ### One provider boundary
 
-OpenRouter is the only way models get called from the engine. Models are addressed by their OpenRouter identifiers (`openrouter/anthropic/claude-opus-4`). The engine does not maintain provider-specific code paths, provider-specific auth, or provider-abstraction layers below OpenRouter.
+OpenRouter is the only way models get called. The engine has no per-provider auth, no provider abstraction layer below OpenRouter, no fallback routing across providers in code. `OPENROUTER_API_KEY` is the only credential the tool reads. Models are addressed by their OpenRouter identifiers.
+
+This trades a small markup over direct provider rates for radical simplification of the provider boundary. For a personal tool, the trade is worth it: it makes the engine work — fanout, synthesis, state mutation, artifacts — meaningfully cheaper to build.
+
+### Engine first; CLI is one adapter
+
+The engine returns structured data. Adapters format it for whatever surface they live on. Future adapters (HTTP API, eventually a UI) talk to the same engine without duplicating its logic. The CLI is kept lean — minimal surface, only what's needed for current capabilities — so engine work has room to progress.
 
 ### Sensible defaults that are easy to override
 
-The tool ships with reasonable defaults where the user hasn't expressed a preference. Defaults are visible (printed in `--help`, documented in the example config file) and trivially overridable.
-
-This is a deliberate calibration of the principle from idea001 ("no opinions imposed on the user"). That earlier framing forbade defaults entirely, which generated friction every time the user had to specify something obvious. The right form is: *defaults are fine; defaults that override user-supplied values are not*. Always pick something sensible when nothing is specified. Always honor the user's explicit choice over the tool's default.
+The tool ships with reasonable defaults where the user hasn't expressed a preference. Defaults are visible (in `--help`, in the example config) and trivially overridable. Always pick something sensible when nothing is specified. Always honor the user's explicit choice over a default.
 
 ### The tool reads config; it doesn't write it
 
-The config file is text the user owns. The tool may create the file on first run with comments and example values. After that, it only reads. There are no `config set` commands. There are no commands that mutate config based on user actions. If something needs to be persisted as a result of work, that's project state — it lives in the workspace's `state.json` or transcripts, not in the global config.
+The config file is text the user owns. The tool may create the file on first run with comments and example values. After that, only reads. There are no commands for managing config. If something needs to be persisted as a result of work, it's project state — it lives in the workspace, not in global config.
 
-This rule is what would have prevented the worst of idea001's drift. It's load-bearing.
+### Setup commands may use interactive prompts; work commands must not
+
+Setup commands (`new`, future setup-related) may prompt where it materially helps. Work commands (`ask`, `elaborate`, `visualize`, etc.) accept all input via arguments and flags. Output is plain text by default with model attribution; `--json` for scripting. The engine itself never prompts.
 
 ### The CLI surface grows only when typing the alternative becomes genuinely tedious
 
-Not when "it would be nice to have." Not when documentation says it should exist. Only when the user finds themselves wishing for a shortcut and reaching for the same long flag combination repeatedly. Idea001 shipped 18 commands; the right number for the early slices is two. CLI growth is earned, not anticipated.
+Not when "it would be nice." Not when documentation says it should exist. Only when the user reports actual friction. CLI growth is earned, not anticipated.
 
 ---
 
@@ -97,18 +206,53 @@ models = [
 
 [profiles.fast]
 models = ["openrouter/openai/gpt-5-mini"]
+
+[profiles.diverse]
+models = [
+  "openrouter/anthropic/claude-opus-4",
+  "openrouter/deepseek/deepseek-r1",
+  "openrouter/meta-llama/llama-3.3-70b-instruct",
+]
 ```
 
-The user edits this file in their editor. The tool reads it. There are no commands for managing config.
+The user edits this file in their editor. The tool reads it.
+
+---
+
+## Workspace shape
+
+A workspace is a directory the user creates with `think new`. It accumulates state, transcripts, summaries, and artifacts as the work develops.
+
+```
+my-idea/
+  state.json           # structured project state, schema-versioned
+  verdict.md           # one-line bottom line
+  gist.md              # short human overview
+  brief.md             # structured summary with reasoning
+  deep_dive.md         # full synthesis
+  transcripts/         # JSONL records of every interaction
+  notes/               # human and agent notes
+  artifacts/
+    diagrams/          # Mermaid sources
+    charts/            # Vega-Lite chart specs
+    mindmaps/          # Mermaid mindmaps
+    flows/             # GraphViz DOT
+    mocks/             # SVG, HTML mocks
+    data/              # CSV, JSON datasets
+  render.html          # generated browseable view of the project
+  .git/                # versioning
+```
+
+`state.json` and `transcripts/` exist from the first version. The summaries get generated as state mutates. Artifacts and the render bundle come later. The user can open any of these files directly; the engine doesn't gatekeep the workspace.
 
 ---
 
 ## CLI shape
 
-Two commands for the early slices:
+The CLI's surface is intentionally small. Two commands for the early slices, growing only as friction earns it.
 
 ```bash
-think new <path>                                          # creates a workspace
+think new <path>                                          # create a workspace
 think ask "<question>" --model <openrouter-model-id>      # one model
 think ask "<question>" --model A --model B --model C      # fanout
 think ask "<question>" --profile frontier                 # named lineup
@@ -116,67 +260,39 @@ think ask "<question>"                                    # uses default profile
 think ask --project <path> "<question>"                   # writes to workspace
 ```
 
-That's the surface for slices 1-3. Output is plain text by default with model attribution; `--json` returns structured output for scripting.
+Future work commands (when their slices ship) follow the same shape:
 
-What comes after depends on what real use surfaces. New commands or flags are added when typing the alternative is genuinely tedious — not before.
-
----
-
-## Workspace shape
-
-A workspace is a directory the user creates with `think new`. It accumulates state and transcripts as the user works in it.
-
-```
-my-idea/
-  state.json           # structured project state, schema-versioned
-  transcripts/         # JSONL records of every interaction
-  notes/               # human and agent notes (slice TBD)
-  artifacts/           # diagrams, charts, etc. (slice TBD)
-  .git/                # versioning
+```bash
+think elaborate "<phrase>" --as <verb> --project <path>
+think visualize --of <concept> --as <type> --project <path>
+think summarize --project <path> --level <verdict|gist|brief|deep>
 ```
 
-`state.json` starts as a small scaffold (schema version, project metadata) and grows as engine features earn their place. The earliest version is read-only context for `think ask`. Later versions get mutated by synthesis passes that consolidate multi-agent responses into structured claims, questions, and decisions. Even later versions track artifacts and the concepts they represent.
-
-The workspace structure above shows the destination. The early slices ship a smaller version — `state.json` plus `transcripts/` — and grow it as needed.
+Output is plain text with model attribution by default. `--json` returns structured output for scripting and embedding.
 
 ---
 
 ## The build path
 
-Vertical slices, each shipping a noticeably more capable Think Tank.
+Vertical slices, each shipping a noticeably more capable Think Tank. The early slices establish the foundation; the engine's distinctive capabilities arrive in steady accumulation across the slices that follow.
 
-**Slice 1 — single-model ask.** `think ask` works end-to-end against one OpenRouter model. No workspace required, no config file required, no profiles. Question and `--model` as inputs; response as output; `OPENROUTER_API_KEY` from environment. Validates the OpenRouter integration, the engine/CLI separation, and the async pattern.
+**Slice 1 — single-model ask.** `think ask` works end-to-end against one OpenRouter model. No workspace required, no config required, no profiles. Validates the OpenRouter integration, the engine/CLI separation, the async pattern.
 
-**Slice 2 — multi-model fanout.** `--model` becomes repeatable. Concurrent calls via `asyncio.gather`. Output shows all responses with model attribution. This is the slice where Think Tank becomes recognizably itself.
+**Slice 2 — multi-model fanout.** `--model` becomes repeatable. Concurrent calls via `asyncio.gather`. Output shows all responses with model attribution. The first slice that's recognizably Think Tank.
 
-**Slice 3 — workspace + persistent transcripts.** `think new` creates a workspace. `think ask --project <path>` writes the interaction to `transcripts/` so it can be referenced later. `state.json` exists as schema-versioned scaffold but isn't mutated yet.
+**Slice 3 — workspace and persistent transcripts.** `think new` creates a workspace; `think ask --project <path>` writes interactions to `transcripts/`. `state.json` exists as schema-versioned scaffold but isn't yet mutated.
 
-**Slice 4 onward — engine work.** The slices that build the engine's core capabilities. Candidates include: state mutation (synthesizer pass updates `state.json` with claims, questions, decisions), structured response shape, glossary capture, search across transcripts. The order depends on what slices 1-3 reveal as the next friction.
+**Slice 4 onward — synthesis and structured state.** The synthesizer arrives. Multi-agent responses get consolidated. `state.json` starts accumulating claims, questions, decisions. The narrative-vs-mutation split gets implemented as two distinct passes.
 
-**Later — artifacts and richer outputs.** Eventually: agents produce diagrams, charts, mind maps as part of working on the project. Each artifact is linked to the concepts in `state.json` it represents. This is direction, not commitment for the early slices — it informs the engine's shape but doesn't get built until the foundation supports it.
+**Then — inline elaboration.** The verb-driven capture mechanism. Define, concretize, steelman, critique, branch — each with its destination in state. Builds the personal knowledge graph as a side effect of normal use.
 
-The key discipline: each slice ships a usable improvement. Internal refactoring that doesn't change user-visible capability is allowed but should be in service of the next user-visible slice, not an end in itself. Idea001 accumulated 39 commits with most of the user-visible capability landing in the first five; the rest was infrastructure that never got connected to a product feature.
+**Then — hierarchical summaries.** The verdict/gist/brief/deep_dive read-views, regenerated as state mutates.
 
----
+**Then — search.** Across transcripts and state. Ripgrep-fast for the common cases, vector when the work earns it.
 
-## What's salvageable from idea001
+**Then — artifacts.** Mermaid first, GraphViz and chart specs after, SVG and richer when the foundation supports them. The HTML render bundle for in-browser viewing without server infrastructure.
 
-The earlier attempt accumulated meaningful architectural work, even though the product never shipped. Worth carrying forward at the architectural level:
-
-- The engine-returns-data discipline, with adapters formatting the result
-- The async pattern for model calls
-- The fake-client testing approach (mock the SDK boundary, no network in unit tests)
-- The workspace folder as the unit of project state
-- Schema-versioned `state.json` from the first commit, even when state is minimal
-
-What gets left behind:
-
-- Multi-provider direct auth (replaced by OpenRouter-only)
-- The config CRUD command surface (replaced by config-file-as-interface)
-- Subscription auth and OAuth flows (out of scope)
-- aisuite (OpenRouter is the abstraction)
-- Per-provider validation, doctor, models-list commands (deferred indefinitely)
-- The "no opinions imposed on the user" principle (replaced by sensible-defaults-easy-to-override)
+The order isn't fixed past slice 3. What ships next depends on what real use surfaces as the most valuable next step. The point is that the destination is rich and the path to it is incremental.
 
 ---
 
@@ -187,20 +303,13 @@ docs/think_tank/
   README.md         (this file)
 ```
 
-Companion documents (domain model, prompts, rich outputs, stack decisions) will be added as their topics earn detailed treatment from real implementation experience. Writing them ahead of slices repeated the failure mode that contributed to idea001's stall.
+Companion documents — domain model, prompts, rich outputs, stack decisions — will be added as their topics earn detailed treatment from real implementation. For now, this README captures the engine vision and the build path.
 
 ---
 
 ## Status & next steps
 
-- [x] Idea001 retired and renamed
-- [x] OpenRouter-only commitment made
-- [x] CLI shape sketched
-- [x] Config shape decided (global, read-only by tool)
-- [x] Engine-first framing recovered
-- [ ] Code repo created at https://github.com/ajeless/think-tank
-- [ ] AGENTS.md drafted at the root of the code repo
 - [ ] Slice 1 — single-model ask
 - [ ] Slice 2 — multi-model fanout
-- [ ] Slice 3 — workspace + transcripts
-- [ ] Slice 4+ — engine work toward state mutation and synthesis
+- [ ] Slice 3 — workspace and persistent transcripts
+- [ ] Slice 4+ — synthesis and structured state
